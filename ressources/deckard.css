@@ -1,0 +1,35 @@
+h1 {
+    text-align : center;
+}
+
+#user_count {
+    float : right;
+}
+
+#upload_spinner {
+    display : none;
+}
+
+#po_uploader {
+    margin-bottom : 15px;
+    margin-top : 10px;
+}
+
+#iframe {
+    height : 600px;
+    width : 100%;
+}
+
+#get_code {
+	text-align: right;
+}
+
+#get_code a {
+	color: black;
+	font-style: italic;
+}
+
+#get_code a:hover {
+	background-color: #FFF4A2;
+	border: 1px solid #FFE944;
+}

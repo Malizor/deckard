@@ -1,0 +1,104 @@
+Tested on Ubuntu 12.04 and 12.10.
+
+
+DEPENDENCIES
+============
+
+You will need the following packages:
+
+libgtk-3-bin
+python3-gi
+python3-jinja2
+libapache2-mod-wsgi-py3
+
+On Ubuntu 12.04 or 12.10 you can get a Broadway enabled GTK+ with this PPA:
+https://launchpad.net/~malizor/+archive/gtk-broadway
+
+You may want to use the latest version of GTK+ if your interfaces depend on new
+widgets.
+
+
+INSTALLATION
+============
+
+Here is how to set up the Deckard site.
+It will be ran as a specific user to secure things a bit.
+
+- Create a user named 'deckard' and it's home directory
+sudo useradd deckard --create-home
+
+- Copy the source folder content in /home/deckard
+  Of course, all files should belong to the 'deckard' user.
+  
+- Copy vhost/apache2/deckard in /etc/apaches/sites-available
+  (you probably want to change ServerAdmin and ServerName before)
+  
+- enable the the site and restart Apache
+sudo a2ensite deckard && sudo service apache restart
+
+And that's it :-)
+
+Now you just have to generate the content that will be displayed.
+
+
+CONTENT
+=======
+
+The Deckard app will look for a "content" folder in it's root.
+It must have a specific layout. Here is a sample tree of it:
+
+content/
+├── module1
+│   └── ....
+├── module2
+│   └── ....
+└── LANGS
+    ├── fr_FR.UTF8
+    │   └── LC_MESSAGES
+    │       ├── module1.mo
+    │       └── module2.mo
+    └── es_ES.UTF8
+        └── LC_MESSAGES
+            ├── module1.mo
+            └── module2.mo
+
+The LANGS tree should not surprise you if you are familiar with Gettext.
+The organisation of files in modules folders is up to you.
+
+"build-content.sh" is the script that is used on deckard.malizor.org to
+automatically generate the content folder. You may wan't reuse or to adapt it.
+
+
+FAQ
+===
+
+My windows are ugly!
+--------------------
+
+You may want to install this package:
+gnome-themes-standard
+
+If still no theme is applied to your windows, you can edit
+~/.config/gtk-3.0/settings.ini
+and add the following lines:
+
+[Settings]
+gtk-theme-name = Adwaita
+gtk-fallback-icon-theme = gnome
+
+Some locales don't work!
+------------------------
+
+Please run:
+locale -a
+
+If your locale is not in the list, then you need to enable it.
+On Ubuntu systems, you need to add your locale in
+/var/lib/locales/supported.d/local
+Then you have run:
+sudo dpkg-reconfigure locales
+
+I found a bug/I have an idea!
+-----------------------------
+
+Please report it on https://bugs.launchpad.net/deckard

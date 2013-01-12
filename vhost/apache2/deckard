@@ -1,0 +1,30 @@
+<VirtualHost *:80>
+	ServerAdmin	webmaster+deckard@malizor.org
+	ServerName	deckard.malizor.org
+	WSGIDaemonProcess deckard_qh user=deckard group=deckard python-path=/home/deckard
+	WSGIScriptAlias / /home/deckard/wsgi/deckard_qh.wsgi
+	Alias /ressources /home/deckard/ressources
+
+	SetEnv DECKARD_ROOT /home/deckard
+	SetEnv DECKARD_MAX_USERS 10
+
+	LimitRequestBody 409600  # Reject too large uploads
+
+	<Directory /home/deckard/wsgi>
+		WSGIProcessGroup deckard_qh
+		WSGIApplicationGroup %{GLOBAL}
+		Order deny,allow
+		Allow from all
+	</Directory>
+
+	<Directory /home/deckard/ressources>
+		Order deny,allow
+		Allow from all
+	</Directory>
+
+	ErrorLog ${APACHE_LOG_DIR}/error.log
+
+	LogLevel warn
+
+	CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
