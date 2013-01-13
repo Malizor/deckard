@@ -83,7 +83,7 @@ function get_module {
 cd content_tmp
 
 # Get relevant modules
-get_module cheese
+#get_module cheese
 get_module empathy
 get_module eog
 get_module evolution
