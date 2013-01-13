@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 # Supported locales
-locales=(de_DE.UTF8 es_ES.UTF8 fr_FR.UTF8)
+locales=(ar_AE.UTF8 de_DE.UTF8 es_ES.UTF8 fr_FR.UTF8 ja_JP.utf8 ru_RU.utf8 zh_CN.UTF8)
 
 rm -rf content_tmp
 
