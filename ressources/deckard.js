@@ -16,6 +16,7 @@
  */
  
 var session = '';
+var process_running = false;
 var keep_alive_loop;
 var stored_po = Array();
 var upload_button = document.getElementById('upload_button');
@@ -140,7 +141,13 @@ function spawn_return(req) {
         }
         // Wait for the remote process to be fully started
         iframe.src = 'ressources/waiting.html';
-        setTimeout(update_iframe, 800);
+        if (process_running) {
+            setTimeout(update_iframe, 500);
+        } else {
+            // Wait a bit more if we don't replace a running process
+            setTimeout(update_iframe, 1500);
+        }
+        process_running = true;
         return;
     } else if (res['status'] == 'error') {
         abort_session();
@@ -174,6 +181,7 @@ function keep_alive_return(req) {
 
 function abort_session() {
     session = '';
+    process_running = false;
     langs.length = language_count;
     document.getElementById('user_count').innerHTML = 'disconnected';
 }
