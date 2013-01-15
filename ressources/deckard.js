@@ -28,6 +28,16 @@ switch_file_selector(); // initialize the file selector
 
 var langs = document.getElementById('language_selector');
 var language_count = langs.length;
+
+// Try to preselect the right language
+var user_language = window.navigator.userLanguage || window.navigator.language;
+for (var i = 0; i < langs.length; i++) {
+    if (langs[i].label.indexOf(user_language) == 0) {
+        langs.selectedIndex = i;
+        break;
+    }
+}
+
 var iframe = document.getElementById('iframe');
 iframe.src = 'about:blank';
 
