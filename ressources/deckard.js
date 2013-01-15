@@ -152,10 +152,10 @@ function spawn_return(req) {
         // Wait for the remote process to be fully started
         iframe.src = 'ressources/waiting.html';
         if (process_running) {
-            setTimeout(update_iframe, 500);
+            setTimeout(update_iframe, 700);
         } else {
             // Wait a bit more if we don't replace a running process
-            setTimeout(update_iframe, 1500);
+            setTimeout(update_iframe, 1700);
         }
         process_running = true;
         return;
