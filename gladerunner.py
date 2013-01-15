@@ -36,7 +36,6 @@ class %(name)s(Gtk.Label):
                                      "<i>unknown widget</i></span>")
         self.set_use_markup(True)
 """
-# CcEditableEntry
 
 class GladeRunner:
     """Module to load a Glade file and display all windows in it"""
@@ -92,7 +91,7 @@ class GladeRunner:
                 obj.set_sensitive(False)
                 continue
             # remove links
-            if hasattr(obj, 'get_uri'):
+            if hasattr(obj, 'do_activate_link'):
                 obj.connect('activate-link', self.ignore_link)
             if hasattr(obj, 'is_toplevel') and obj.is_toplevel():
                 name = Gtk.Buildable.get_name(obj)
