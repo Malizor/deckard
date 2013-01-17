@@ -55,7 +55,7 @@ function refresh_lang_list() {
     if (stored_po[module_selector.value]) {
         for (var i = 0; i < stored_po[module_selector.value].length; i++) {
             var option = document.createElement('option');
-            option.text = res['custom_files'][i];
+            option.text = stored_po[module_selector.value][i];
             langs.add(option);
         }
     }
