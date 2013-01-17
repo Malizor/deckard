@@ -71,6 +71,7 @@ def application(environ, start_response):
                                                           fs['po_module'].value)
                 response = {'status': 'ok',
                             'session': uuid,
+                            'module': fs['po_module'].value,
                             'custom_files': po_list}
 
             else:

@@ -18,16 +18,17 @@
 var session = '';
 var process_running = false;
 var keep_alive_loop;
-var stored_po = Array();
+var stored_po = {};
 var upload_button = document.getElementById('upload_button');
 var upload_spinner = document.getElementById('upload_spinner');
 var po_selector = document.getElementById('po_file')
 var module_selector = document.getElementById('module_selector');
 var current_file_selector = document.getElementById('file_selector_' + module_selector.value);
-switch_file_selector(); // initialize the file selector
 
 var langs = document.getElementById('language_selector');
 var language_count = langs.length;
+
+switch_file_selector(); // initialize the file selector
 
 // Try to preselect the right language
 var user_language = window.navigator.userLanguage || window.navigator.language;
@@ -45,6 +46,19 @@ function switch_file_selector() {
     current_file_selector.style.display = 'none';
     current_file_selector = document.getElementById('file_selector_' + module_selector.value);
     current_file_selector.style.display = 'block';
+    refresh_lang_list();  // if there is any custom PO for this module
+}
+
+function refresh_lang_list() {
+    // rebuild the language list
+    langs.length = language_count;
+    if (stored_po[module_selector.value]) {
+        for (var i = 0; i < stored_po[module_selector.value].length; i++) {
+            var option = document.createElement('option');
+            option.text = res['custom_files'][i];
+            langs.add(option);
+        }
+    }
 }
 
 function check_file() {
@@ -107,15 +121,11 @@ function upload_po_return(req) {
     res = JSON.parse(req.responseText);
     if (res['status'] == 'ok') {
         session = res['session'];
-
-        // rebuild the language list
-        langs.length = language_count;
-        for (var i = 0; i < res['custom_files'].length; i++) {
-            var option = document.createElement('option');
-        option.text = res['custom_files'][i];
-        langs.add(option);
+        stored_po[res['module']] = res['custom_files'];
+        refresh_lang_list();
+        if (res['module'] == module_selector.value) {
+            langs.selectedIndex = langs.length - 1;  // focus the last item
         }
-    langs.selectedIndex = langs.length - 1;  // focus the last item
 
         keep_alive_loop = setInterval(keep_alive, 2000);
         return;
@@ -132,7 +142,12 @@ function upload_po_return(req) {
 
 function spawn() {
     var data = 'action=spawn&module='+module_selector.value+'&file='+current_file_selector.value;
-    data += '&lang='+langs.value.substr(0, langs.value.indexOf('\u2003'));
+    var i = langs.value.indexOf('\u2003');
+    if (i == -1) {
+        data += '&lang='+langs.value;  // custom PO
+    } else {
+        data += '&lang='+langs.value.substr(0, i);
+    }
     if (session != '') {
         // Attach to the current session
         data += '&session=' + session;
@@ -194,4 +209,5 @@ function abort_session() {
     process_running = false;
     langs.length = language_count;
     document.getElementById('user_count').innerHTML = 'disconnected';
+    stored_po = {};
 }
