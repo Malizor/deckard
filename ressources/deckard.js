@@ -132,7 +132,7 @@ function upload_po_return(req) {
 
 function spawn() {
     var data = 'action=spawn&module='+module_selector.value+'&file='+current_file_selector.value;
-    data += '&lang='+langs.value;
+    data += '&lang='+langs.value.substr(0, langs.value.indexOf('\u2003'));
     if (session != '') {
         // Attach to the current session
         data += '&session=' + session;

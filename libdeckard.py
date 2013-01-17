@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-"""Sessions handling for the deckard project"""
+"""Sessions handling and utilities for the deckard project"""
 
 import os
 import shutil
@@ -24,10 +24,50 @@ from threading import Lock, Timer
 from collections import OrderedDict
 from subprocess import Popen, PIPE, STDOUT, check_output, CalledProcessError
 
+locale_language_mapping = {
+    'POSIX': 'No translation',
+    'ar_AE.UTF-8': 'العربية',
+    'ca_ES.UTF-8': 'Català',
+    'cs_CZ.UTF-8': 'Čeština',
+    'da_DK.UTF-8': 'Dansk',
+    'de_DE.UTF-8': 'Deutsch',
+    'el_GR.UTF-8': 'ελληνικά',
+    'en_US.UTF-8': 'English (US)',
+    'es_ES.UTF-8': 'Español',
+    'et_EE.UTF-8': 'Eesti keel',
+    'fi_FI.UTF-8': 'Suomi',
+    'fr_FR.UTF-8': 'Français',
+    'gl_ES.UTF-8': 'Galego',
+    'hr_HR.UTF-8': 'Hrvatski jezik',
+    'hu_HU.UTF-8': 'Magyar',
+    'nb_NO.UTF-8': 'Bokmål',
+    'nl_NL.UTF-8': 'Nederlands',
+    'he_IL.UTF-8': 'עִבְרִית',
+    'is_IS.UTF-8': 'Íslenska',
+    'it_IT.UTF-8': 'Italiano',
+    'ja_JP.UTF-8': '日本語',
+    'ko_KR.UTF-8': '한국말',
+    'lt_LT.UTF-8': 'Lietuvių kalba',
+    'nn_NO.UTF-8': 'Nynorsk',
+    'pl_PL.UTF-8': 'Język polski',
+    'pt_PT.UTF-8': 'Português',
+    'ro_RO.UTF-8': 'Română',
+    'ru_RU.UTF-8': 'Pусский язык',
+    'sk_SK.UTF-8': 'Slovenčina',
+    'sl_SI.UTF-8': 'Slovenščina',
+    'sv_SE.UTF-8': 'Svenska',
+    'th_TH.UTF-8': 'ภาษาไทย',
+    'tr_TR.UTF-8': 'Türkçe',
+    'ug_CN.UTF-8': 'ئۇيغۇرچە',
+    'zh_CN.UTF-8': '汉语'
+}
+
+
 class DeckardException(Exception):
     """Standard exception"""
     def __init__(self, short, log):
         Exception.__init__(self, '%s\n\n%s' % (short, log))
+
 
 class Session:
     """
@@ -120,7 +160,7 @@ class Session:
         elif len(self.custom_po) >= self.max_custom_po:
             # delete the oldest
             shutil.rmtree(self.custom_po.popitem(last=False)[1])
-            
+
         self.custom_po[name] = lang_root
         return list(self.custom_po.keys())
 
@@ -236,7 +276,7 @@ class SessionsManager:
             else:
                 session._removable = False
 
-            if  session.port == 0:
+            if session.port == 0:
                 port = self._find_free_port()
             else:
                 port = session.port  # Reuse the same port

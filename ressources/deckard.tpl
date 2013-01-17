@@ -39,9 +39,9 @@
           <td>Select a language:</td>
           <td>
             <select id="language_selector">
-              <option selected="selected">POSIX</option>
+              <option selected="selected">POSIX&emsp;( No translation )</option>
               {% for lang in content['LANGS']|sort(case_sensitive=true) %}
-              <option>{{ lang }}</option>
+              <option>{{ lang }}&emsp;( {{ content['LANGS'][lang] }} )</option>
               {% endfor %}
             </select>
           </td>
@@ -52,20 +52,20 @@
       <br/>
     </form>
 
-	<form id="po_uploader">
-	  <table>
-	    <tr>
-	      <td>Custom PO file for this UI:</td>
-	      <td><input type="file" id="po_file" onchange="check_file();"></td>
-	    </tr>
-	  </table>
-	  <table>
-	    <tr>
-	      <td><input id="upload_button" type="button" value="Upload" onclick="upload_po();" disabled="disabled"></td>
-	      <td><img id="upload_spinner" src="ressources/spinner_tiny.gif" alt="Uploading..." title="Uploading..."/></td>
-	    </tr>
-	  </table>
-	</form>
+    <form id="po_uploader">
+      <table>
+        <tr>
+          <td>Custom PO file for this UI:</td>
+          <td><input type="file" id="po_file" onchange="check_file();"></td>
+        </tr>
+      </table>
+      <table>
+        <tr>
+          <td><input id="upload_button" type="button" value="Upload" onclick="upload_po();" disabled="disabled"></td>
+          <td><img id="upload_spinner" src="ressources/spinner_tiny.gif" alt="Uploading..." title="Uploading..."/></td>
+        </tr>
+      </table>
+    </form>
 
     <iframe id="iframe" src="about:blank"></iframe>
     <p id="get_code"><a title="Launchpad project" href="https://launchpad.net/deckard">Get the code!</a></p>

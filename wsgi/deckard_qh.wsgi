@@ -102,13 +102,13 @@ def application(environ, start_response):
                                     'message': 'disconnected'}
 
                 else:
-                    response = {'status' : 'error', 'message': 'bad query'}
+                    response = {'status': 'error', 'message': 'bad query'}
 
         except libdeckard.DeckardException as e:
             response = {'status': 'error',
                         'message': str(e)}
         except Exception as e:
-            response = {'status' : 'error',
+            response = {'status': 'error',
                         'message': 'An error occurred: %s' % str(e)}
 
         status = '200 OK'
@@ -123,13 +123,17 @@ def application(environ, start_response):
             res = template.render(content=content)
         except Exception as e:
             res = 'Something went wrong: %s' % e
-        start_response('200 OK', [('Content-Type', 'text/html')])
-        return res
+        start_response('200 OK', [('Content-Type',
+                                   'text/html; charset=utf-8')])
+        return [res.encode('utf-8')]
 
 
 def get_content():
-    content = {'LANGS': os.listdir(os.path.join(content_root, 'LANGS')),
+    content = {'LANGS': {},
                'MODULES': {}}
+
+    for lang in os.listdir(os.path.join(content_root, 'LANGS')):
+        content['LANGS'][lang] = libdeckard.locale_language_mapping[lang]
     for directory in os.listdir(content_root):
         if directory != 'LANGS':
             content['MODULES'][directory] = []
