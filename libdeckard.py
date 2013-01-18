@@ -81,7 +81,7 @@ class Session:
         self.port = 0
         self.uuid = uuid  # unique id to avoid session spoofing
         self.process = None
-        self.custom_po = OrderedDict()  # {'language': 'lang_root_path'}
+        self.custom_po = OrderedDict()  # {po_name: (module, root_path)}
         self.removable = False  # can the manager delete this Session?
         self.gladerunner = gladerunner
         self.content_root = content_root
@@ -104,7 +104,11 @@ class Session:
             self.process.kill()
 
         if language in self.custom_po:
-            lang_root = os.path.join(self.custom_po[language], 'LANGS')
+            if self.custom_po[language][0] != module:
+                raise DeckardException('"%s" does not exist' % language,
+                                       'No such file was registered for the '
+                                       '%s module.' % module)
+            lang_root = os.path.join(self.custom_po[language][1], 'LANGS')
             # This locale has to be available on your system
             language = 'en_US.UTF-8'
         else:
@@ -126,8 +130,8 @@ class Session:
 
         If a file with the same name is attached to this session, it will be
         replaced.
-        Returns the list of all stored PO files for this session,
-        from the older to the newest.
+        Returns a dictionary, associating all relevant modules with a list of
+        stored PO files for it on this session, from the older to the newest.
         """
         lang_root = tempfile.mkdtemp(prefix='deckard_')
         po_path = os.path.join(lang_root, 'file.po')
@@ -155,14 +159,21 @@ class Session:
             raise DeckardException('Error while building the .mo', log)
 
         if name in self.custom_po:
-            shutil.rmtree(self.custom_po[name])
+            shutil.rmtree(self.custom_po[name][1])
             del self.custom_po[name]  # drop to re-add at the end of the queue
         elif len(self.custom_po) >= self.max_custom_po:
             # delete the oldest
-            shutil.rmtree(self.custom_po.popitem(last=False)[1])
+            shutil.rmtree(self.custom_po.popitem(last=False)[1][1])
 
-        self.custom_po[name] = lang_root
-        return list(self.custom_po.keys())
+        self.custom_po[name] = (module, lang_root)
+
+        res = {}
+        for item in self.custom_po:
+            if self.custom_po[item][0] not in res:
+                res[self.custom_po[item][0]] = [item]
+            else:
+                res[self.custom_po[item][0]].append(item)
+        return res
 
     def keep_process_alive(self):
         """Beg the runner (if any) to stay alive
@@ -193,7 +204,7 @@ class Session:
         if self.process is not None and self.process.poll() is None:
             self.process.kill()
         for name in self.custom_po:
-            shutil.rmtree(self.custom_po[name])
+            shutil.rmtree(self.custom_po[name][1])
 
 
 class SessionsManager:
@@ -290,8 +301,9 @@ class SessionsManager:
 
         If a file with the same name is attached to this session, it will be
         replaced.
-        Returns a tuple with the session uuid and a list of all stored PO files
-        for this session, from the older to the newest.
+        Returns a tuple with the session uuid and a dictionary, associating all
+        relevant modules with a list of stored PO files for it on this session,
+        from the older to the newest.
         """
         with self._lock:
             # get or create the session

@@ -121,9 +121,9 @@ function upload_po_return(req) {
     res = JSON.parse(req.responseText);
     if (res['status'] == 'ok') {
         session = res['session'];
-        stored_po[res['module']] = res['custom_files'];
+        stored_po = res['custom_files'];
         refresh_lang_list();
-        if (res['module'] == module_selector.value) {
+        if (stored_po[module_selector.value]) {
             langs.selectedIndex = langs.length - 1;  // focus the last item
         }
 

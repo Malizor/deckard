@@ -65,14 +65,13 @@ def application(environ, start_response):
                 if 'session' in fs:
                     uuid = fs['session'].value
 
-                uuid, po_list = sessions_manager.store_po(uuid,
-                                                          fs['po_file'].file,
-                                                          fs['po_name'].value,
-                                                          fs['po_module'].value)
+                uuid, custom_files = sessions_manager.store_po(uuid,
+                                                               fs['po_file'].file,
+                                                               fs['po_name'].value,
+                                                               fs['po_module'].value)
                 response = {'status': 'ok',
                             'session': uuid,
-                            'module': fs['po_module'].value,
-                            'custom_files': po_list}
+                            'custom_files': custom_files}
 
             else:
                 request_body_size = int(environ['CONTENT_LENGTH'])
