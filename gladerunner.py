@@ -37,6 +37,7 @@ class %(name)s(Gtk.Label):
         self.set_use_markup(True)
 """
 
+
 class GladeRunner:
     """Module to load a Glade file and display all windows in it"""
 
@@ -77,7 +78,7 @@ class GladeRunner:
             # I'm forever alone, this life is not worth living...
             Gtk.main_quit()
             os._exit(0)
-        
+
     def load(self):
         """Load the provided glade file"""
         locale.bindtextdomain(self.gettext_domain, self.lang_path)
@@ -136,16 +137,16 @@ class GladeRunner:
                     self._load()
                 except:
                     print(message)
-                    exit(42)
+                    sys.exit(1)
             else:
                 print(message)
-                exit(42)
+                sys.exit(1)
 
     def display(self):
         """Display all windows"""
         if len(self.windows) == 0:
             print('Nothing to display. Did you load the file first?')
-            exit(1)
+            sys.exit(1)
         else:
             for name in self.windows:
                 self.windows[name].connect("delete-event", self.close_window)
@@ -185,4 +186,3 @@ if __name__ == '__main__':
                      args.suicidal)
     gr.load()
     gr.display()
-    exit(0)
