@@ -145,7 +145,6 @@ get_module gnome-sudoku
 get_module gnome-system-log
 get_module gnome-system-monitor
 get_module gnome-terminal
-get_module gnome-user-share
 get_module gnumeric
 get_module goffice
 get_module gpointing-device-settings
