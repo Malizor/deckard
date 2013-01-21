@@ -143,8 +143,7 @@ class GladeRunner:
     def display(self):
         """Display all windows"""
         if len(self.windows) == 0:
-            print('Nothing to display. Did you load the file first?')
-            sys.exit(1)
+            sys.exit('Nothing to display. Did you load the file first?')
         else:
             for name in self.windows:
                 self.windows[name].connect('delete-event', self.close_window)
