@@ -26,5 +26,5 @@
 
 	LogLevel warn
 
-	CustomLog ${APACHE_LOG_DIR}/access.log combined
+	CustomLog ${APACHE_LOG_DIR}/deckard.access.log combined
 </VirtualHost>
