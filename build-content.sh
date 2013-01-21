@@ -108,6 +108,19 @@ function get_module {
     # We don't support odd glade files with type-func attributes (evolution, I'm looking at you)
     rm -f $(grep -lr "type-func" .)
 
+    # Some glade files do not contain anything displayable (eg: cheese, data/cheese-actions.ui)
+    cd ..
+    find content_tmp/$module -name *.ui -exec python3 -c "
+import os
+from gladerunner import GladeRunner
+gr = GladeRunner('{}')
+gr.load()
+if len(gr.windows) == 0:
+    print('Nothing is displayable in {}, removing it...')
+    os.remove('{}')
+" \; 2> /dev/null
+    cd content_tmp
+
     # Remove empty folders
     find $module -type d -empty -exec rmdir 2> /dev/null {} \;
 }
