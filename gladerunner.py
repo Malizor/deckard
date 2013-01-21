@@ -41,8 +41,8 @@ class %(name)s(Gtk.Label):
 class GladeRunner:
     """Module to load a Glade file and display all windows in it"""
 
-    def __init__(self, glade_file_path, gettext_domain=None,
-                 lang_path='None', language='POSIX', suicidal=False):
+    def __init__(self, glade_file_path, gettext_domain='foobar',
+                 lang_path=None, language='POSIX', suicidal=False):
         """Create the GladeRunner instance"""
         self.glade_file_path = glade_file_path
         self.lang_path = lang_path
@@ -169,7 +169,7 @@ def parse():
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--suicidal', action='store_true')
     parser.add_argument('glade_file_path')
-    parser.add_argument('gettext_domain', default='None', nargs='?')
+    parser.add_argument('gettext_domain', default='foobar', nargs='?')
     parser.add_argument('language', default='POSIX', nargs='?')
     parser.add_argument('lang_path', default=None, nargs='?')
     return parser.parse_args()
