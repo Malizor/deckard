@@ -130,17 +130,15 @@ class GladeRunner:
         except Exception as e:
             # Try to detect if we miss a custom widget
             message = str(e)
-            if message.startswith("Invalid object type `"):
+            if message.startswith('Invalid object type `'):
                 try:
                     # This will fails if this placeholder was already defined
                     exec(placeholder_widget % {'name': message[21:-1]})
                     self._load()
                 except:
-                    print(message)
-                    sys.exit(1)
+                    sys.exit(message)
             else:
-                print(message)
-                sys.exit(1)
+                sys.exit(message)
 
     def display(self):
         """Display all windows"""
@@ -149,7 +147,7 @@ class GladeRunner:
             sys.exit(1)
         else:
             for name in self.windows:
-                self.windows[name].connect("delete-event", self.close_window)
+                self.windows[name].connect('delete-event', self.close_window)
                 self.windows[name].show_all()
             GObject.threads_init()
             Gtk.main()
