@@ -74,15 +74,15 @@ function get_module {
         for i in $lang; do lstring+=($i); done
         unset IFS
 
-        if [ -f tmp_clone/po/${lstring[0]}.po ]
+        if [ -f tmp_clone/po/$lang.po ]
         then
-            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo tmp_clone/po/${lstring[0]}.po
+            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo tmp_clone/po/$lang.po
         elif [ -f tmp_clone/po/${lstring[0]}_${lstring[1]}.po ]
         then
             msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo tmp_clone/po/${lstring[0]}_${lstring[1]}.po
-        elif [ -f tmp_clone/po/$lang.po ]
+        elif [ -f tmp_clone/po/${lstring[0]}.po ]
         then
-            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo tmp_clone/po/$lang.po
+            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo tmp_clone/po/${lstring[0]}.po
         else
             echo "No PO file found for $lang in $module!"
         fi
