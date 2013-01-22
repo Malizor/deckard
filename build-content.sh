@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-export GDK_BACKEND=broadway  # necessary for X-less servers
-
 # Supported locales
 locales=(ar_AE.UTF-8 \
          ca_ES.UTF-8 \
@@ -42,6 +40,7 @@ locales=(ar_AE.UTF-8 \
          nn_NO.UTF-8 \
          nl_NL.UTF-8 \
          pl_PL.UTF-8 \
+         pt_BR.UTF-8 \
          pt_PT.UTF-8 \
          ro_RO.UTF-8 \
          ru_RU.UTF-8 \

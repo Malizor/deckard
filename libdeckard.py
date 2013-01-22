@@ -50,6 +50,7 @@ locale_language_mapping = {
     'lt_LT.UTF-8': 'Lietuvių kalba',
     'nn_NO.UTF-8': 'Nynorsk',
     'pl_PL.UTF-8': 'Język polski',
+    'pt_BR.UTF-8': 'Português (Brasil)',
     'pt_PT.UTF-8': 'Português',
     'ro_RO.UTF-8': 'Română',
     'ru_RU.UTF-8': 'Pусский язык',
