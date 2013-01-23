@@ -133,7 +133,8 @@ def get_content():
                'MODULES': {}}
 
     for lang in os.listdir(os.path.join(content_root, 'LANGS')):
-        content['LANGS'][lang] = libdeckard.locale_language_mapping[lang]
+        if lang in libdeckard.locale_language_mapping:
+            content['LANGS'][lang] = libdeckard.locale_language_mapping[lang]
     for directory in os.listdir(content_root):
         if directory != 'LANGS':
             content['MODULES'][directory] = []
