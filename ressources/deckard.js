@@ -30,17 +30,46 @@ var language_count = langs.length;
 
 switch_file_selector(); // initialize the file selector
 
-// Try to preselect the right language
-var user_language = window.navigator.userLanguage || window.navigator.language;
+var iframe = document.getElementById('iframe');
+iframe.src = 'about:blank';
+
+// URL parameters handling
+var param_locale = getParameterByName('locale');
+if (!param_locale) {
+    // No locale was specified, try to preselect the browser language
+    param_locale = window.navigator.userLanguage || window.navigator.language;
+}
+
 for (var i = 0; i < langs.length; i++) {
-    if (langs[i].label.indexOf(user_language) == 0) {
+    if (langs[i].label.indexOf(param_locale) == 0) {
         langs.selectedIndex = i;
         break;
     }
 }
 
-var iframe = document.getElementById('iframe');
-iframe.src = 'about:blank';
+var param_module = getParameterByName('module');
+if (param_module) {
+    // select this module (if it exists)
+    for (var i = 0; i < module_selector.length; i++) {
+        if (module_selector[i].label == param_module) {
+            module_selector.selectedIndex = i;
+            switch_file_selector();
+            break;
+        }
+    }
+}
+
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
+    var regex_string = '[\\?&]' + name + '=([^&#]*)';
+    var regex = new RegExp(regex_string);
+    var results = regex.exec(window.location.search);
+    if(!results) {
+        return null;
+    } else {
+        return decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+}
 
 function switch_file_selector() {
     current_file_selector.style.display = 'none';
