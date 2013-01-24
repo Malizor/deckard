@@ -39,9 +39,9 @@
           <td>Select a language:</td>
           <td>
             <select id="language_selector">
-              <option selected="selected">POSIX&emsp;( No translation )</option>
+              <option selected="selected">POSIX&emsp;-&emsp;No translation</option>
               {% for lang in content['LANGS']|sort(case_sensitive=true) %}
-              <option>{{ lang }}&emsp;( {{ content['LANGS'][lang] }} )</option>
+              <option>{{ lang }}&emsp;-&emsp;{{ content['LANGS'][lang] }}</option>
               {% endfor %}
             </select>
           </td>
