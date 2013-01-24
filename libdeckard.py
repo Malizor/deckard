@@ -26,6 +26,7 @@ from subprocess import Popen, PIPE, STDOUT, check_output, CalledProcessError
 
 locale_language_mapping = {
     'POSIX': 'No translation',
+    'af_ZA.UTF-8': 'Afrikaans',
     'ar_AE.UTF-8': 'العربية',
     'bn_IN.UTF-8': 'বাংলা',
     'ca_ES.UTF-8': 'Català',
@@ -36,6 +37,7 @@ locale_language_mapping = {
     'en_US.UTF-8': 'English (US)',
     'es_ES.UTF-8': 'Español',
     'et_EE.UTF-8': 'Eesti keel',
+    'eu_ES.UTF-8': 'Euskara',
     'fi_FI.UTF-8': 'Suomi',
     'fr_FR.UTF-8': 'Français',
     'gl_ES.UTF-8': 'Galego',

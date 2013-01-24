@@ -20,6 +20,7 @@ export GDK_BACKEND=broadway  # necessary for X-less servers
 
 # Supported locales
 locales=(ar_AE.UTF-8 \
+         af_ZA.UTF-8 \
          bn_IN.UTF-8 \
          ca_ES.UTF-8 \
          cs_CZ.UTF-8 \
@@ -28,6 +29,7 @@ locales=(ar_AE.UTF-8 \
          el_GR.UTF-8 \
          es_ES.UTF-8 \
          et_EE.UTF-8 \
+         eu_ES.UTF-8 \
          fi_FI.UTF-8 \
          fr_FR.UTF-8 \
          gl_ES.UTF-8 \
