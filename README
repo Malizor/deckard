@@ -53,11 +53,11 @@ content/
 ├── module2
 │   └── ....
 └── LANGS
-    ├── fr_FR.UTF8
+    ├── fr_FR
     │   └── LC_MESSAGES
     │       ├── module1.mo
     │       └── module2.mo
-    └── es_ES.UTF8
+    └── es_ES
         └── LC_MESSAGES
             ├── module1.mo
             └── module2.mo
@@ -66,7 +66,7 @@ The LANGS tree should not surprise you if you are familiar with Gettext.
 The organisation of files in modules folders is up to you.
 
 "build-content.sh" is the script that is used on deckard.malizor.org to
-automatically generate the content folder. You may wan't reuse or to adapt it.
+automatically generate the content folder. You may want to reuse or to adapt it.
 
 
 FAQ
@@ -95,7 +95,7 @@ locale -a
 If your locale is not in the list, then you need to enable it.
 On Ubuntu systems, you need to add your locale in
 /var/lib/locales/supported.d/local
-Then you have run:
+Then you have to run:
 sudo dpkg-reconfigure locales
 
 I found a bug/I have an idea!
