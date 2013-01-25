@@ -27,10 +27,12 @@ locales=(ar_AE \
          da_DK \
          de_DE \
          el_GR \
+         eo \
          es_ES \
          et_EE \
          eu_ES \
          fi_FI \
+         fur_IT \
          fr_FR \
          gl_ES \
          he_IL \
@@ -54,6 +56,7 @@ locales=(ar_AE \
          ru_RU \
          sk_SK \
          sl_SI \
+         sq_AL \
          sv_SE \
          tg_TJ \
          th_TH \
