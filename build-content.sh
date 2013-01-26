@@ -63,6 +63,7 @@ locales=(ar_AE \
          th_TH \
          tr_TR \
          ug_CN \
+         vi_VN \
          zh_CN)
 
 rm -rf content_tmp

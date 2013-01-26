@@ -71,6 +71,7 @@ locale_language_mapping = {
     'th_TH': 'ภาษาไทย',
     'tr_TR': 'Türkçe',
     'ug_CN': 'ئۇيغۇرچە',
+    'vi_VN': 'Tiếng Việt',
     'zh_CN': '汉语'
 }
 
