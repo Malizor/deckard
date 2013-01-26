@@ -191,7 +191,8 @@ function spawn_return(req) {
         session = res['session'];
         keep_alive_loop = setInterval(keep_alive, 2000);
         function update_iframe() {
-            iframe.src = 'http://'+document.domain+':'+res['port'];
+            // change the '/' before the port by a ':' if you did not configure a proxy to redirect runner ports on port 80
+            iframe.src = 'http://'+document.domain+'/'+res['port']+'/';
         }
         // Wait for the remote process to be fully started
         iframe.src = 'ressources/waiting.html';
