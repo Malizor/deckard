@@ -22,24 +22,69 @@ INSTALLATION
 ============
 
 Here is how to set up the Deckard site.
-It will be ran as a specific user to secure things a bit.
+
+These are tested examples.
+Deckard should not depend on any specific infrastructure, so feel free to use
+whatever suit you best.
+
+Common part
+-----------
+
+Deckard will be ran as a specific user to secure things a bit.
 
 - Create a user named 'deckard' and it's home directory
 sudo useradd deckard --create-home
 
 - Copy the source folder content in /home/deckard
   Of course, all files should belong to the 'deckard' user.
+  On deckard.malizor.org, /home/deckard is actually a bzr repository, which ease
+  deployment of updates.
   
-- Copy vhost/apache2/deckard in /etc/apaches/sites-available
+- Copy conf/apache2/deckard in /etc/apaches/sites-available
   (you probably want to change ServerAdmin and ServerName before)
   
 - enable the the site and restart Apache
-sudo a2ensite deckard && sudo service apache restart
+sudo a2ensite deckard && sudo service apache2 restart
 
-And that's it :-)
+Don't forget to generate the content that will be displayed!
+(please see the CONTENT part below)
 
-Now you just have to generate the content that will be displayed.
+Simple way, with just Apache
+----------------------------
 
+- Edit /etc/apaches/sites-available/deckard and replace the "8080" port by "80"
+- Restart apache
+sudo service apache2 restart
+- Edit ressources/deckard.js and replace the '/' by a ':' in the spawn_return
+  function (there is a comment just before the right line).
+
+And that's it.
+
+Proxy everything on port 80 with HAproxy
+----------------------------------------
+
+This is the current setting on deckard.malizor.org.
+
+With the former setting, previews are launched on ports 2019..2028, which can
+be a problem for people out-there who use proxies.
+Here we will proxy DOMAIN/PORT to DOMAIN:PORT internally, so that the only port
+that will be needed by users is the 80 port.
+Apache itself is still not able to proxy websockets, so we have to use another
+program. It turns out HAproxy does the job quite well, so we will use that.
+
+Please note that HAproxy will be listening on port 80 and that we will move
+Apache to port 8080. If you host other sites, you will need to adapt your
+settings accordingly (ie. editing virtualhosts to change the port and ensuring
+HAproxy properly redirect to the right backend).
+
+- Install the haproxy package
+- Edit /etc/apache2/ports.conf and replace "80" by "8080" everywhere
+- Copy conf/haproxy/haproxy.cfg to /etc/haproxy/haproxy.cfg
+- In /etc/default/haproxy, set ENABLED to 1
+- restart apache and start HAproxy
+sudo service apache2 restart && sudo service haproxy start
+
+And that should be it.
 
 CONTENT
 =======
