@@ -17,6 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 export GDK_BACKEND=broadway  # necessary for X-less servers
+export BROADWAY_DISPLAY=9999  # The default port is 8080, but it is occupied by apache on deckard.malizor.org
 
 # Supported locales
 locales=(ar_AE \
