@@ -51,6 +51,7 @@ locale_language_mapping = {
     'is_IS': 'Íslenska',
     'it_IT': 'Italiano',
     'ja_JP': '日本語',
+    'kn_IN': 'ಕನ್ನಡ',
     'ko_KR': '한국말',
     'lt_LT': 'Lietuvių kalba',
     'nb_NO': 'Bokmål',

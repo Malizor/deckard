@@ -43,6 +43,7 @@ locales=(ar_AE \
          is_IS \
          it_IT \
          ja_JP \
+         kn_IN \
          ko_KR \
          lt_LT \
          nb_NO \
