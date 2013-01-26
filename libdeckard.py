@@ -28,6 +28,7 @@ locale_language_mapping = {
     'POSIX': 'No translation',
     'af_ZA': 'Afrikaans',
     'ar_AE': 'العربية',
+    'be_BY': 'беларуская мова',
     'bn_IN': 'বাংলা',
     'ca_ES': 'Català',
     'cs_CZ': 'Čeština',

@@ -21,6 +21,7 @@ export GDK_BACKEND=broadway  # necessary for X-less servers
 # Supported locales
 locales=(ar_AE \
          af_ZA \
+         be_BY \
          bn_IN \
          ca_ES \
          cs_CZ \
