@@ -206,7 +206,6 @@ class Session:
         try:
             check_output(['msgfmt',
                           '--check',
-                          '--use-fuzzy',
                           '--output-file',
                           os.path.join(mo_path, module) + '.mo',
                           po_path],
