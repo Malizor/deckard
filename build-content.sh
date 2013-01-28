@@ -190,6 +190,7 @@ get_module nemiver
 get_module network-manager-applet
 get_module network-manager-openvpn
 get_module network-manager-pptp
+get_module office-runner
 get_module orca
 get_module pitivi
 get_module rhythmbox
