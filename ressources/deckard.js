@@ -59,6 +59,12 @@ if (param_module) {
     }
 }
 
+var param_file = getParameterByName('file');
+if (param_file) {
+    // Ask the server to get this file from l10n.gnome.org
+    upload_po(param_file);
+}
+
 function getParameterByName(name) {
     name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
     var regex_string = '[\\?&]' + name + '=([^&#]*)';
@@ -117,10 +123,14 @@ function xml_http_post(url, data, callback) {
     xhr.send(data);
 }
 
-function upload_po() {
+function upload_po(file_name_on_l10ngnome) {
     var data = new FormData();
-    data.append('po_name', po_selector.value);
-    data.append('po_file', po_selector.files[0]);
+    if (file_name_on_l10ngnome) {
+        data.append('po_name', file_name_on_l10ngnome);
+    } else {
+        data.append('po_name', po_selector.value);
+        data.append('po_file', po_selector.files[0]);
+    }
     data.append('po_module', module_selector.value);
 
     if (session != '') {

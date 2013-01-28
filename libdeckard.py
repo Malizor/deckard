@@ -19,6 +19,7 @@
 import os
 import shutil
 import tempfile
+import urllib.request
 from uuid import uuid4
 from threading import Lock, Timer
 from collections import OrderedDict
@@ -100,6 +101,11 @@ class Session:
         self.gladerunner = gladerunner
         self.content_root = content_root
         self.max_custom_po = 4
+        self.max_file_download = 1500000  # 1.5 MB
+        # URL sorted by priority
+        # If one URL does not work, the next one will be tried
+        self.po_urls = ['http://l10n.gnome.org/media/upload/%s',
+                        'http://l10n.gnome.org/media/upload-backup/%s']
 
     def spawn_runner(self, module, module_file, language, port):
         """Launch a gladerunner instance.
@@ -140,20 +146,58 @@ class Session:
                              stdin=PIPE,
                              env=env)
 
-    def store_po(self, fd, name, module):
-        """Store a custom PO file.
+    def store_po(self, name, module, fd=None):
+        """Store a custom PO file
 
-        If a file with the same name is attached to this session, it will be
-        replaced.
+        If fd is None, try to download name from self.po_urls.
+        Each url of the list will be tried until the file is found.
+        If a PO file with the same name is already attached to this session,
+        it will be replaced.
         Returns a dictionary, associating all relevant modules with a list of
-        stored PO files for it on this session, from the older to the newest.
+        stored PO files for it on this session, from the oldest to the newest.
         """
+        # Very basic check, msgfmt will crash anyway if the file is not valid
+        if not name.lower().endswith('.po'):
+            raise DeckardException('This is not a PO file',
+                                   '%s is not a PO file.' % name)
         lang_root = tempfile.mkdtemp(prefix='deckard_')
         po_path = os.path.join(lang_root, 'file.po')
         po = open(po_path, 'bw')
-        for line in fd:
-            po.write(line)
-        po.close()
+        if fd is not None:
+            # The file was sent by the user
+            for line in fd:
+                po.write(line)
+            po.close()
+            fd.close()
+        else:
+            # Let's try to download 'name'
+            response = None
+            error = None
+            for url in self.po_urls:
+                try:
+                    response = urllib.request.urlopen(url % name)
+                    break
+                except Exception as e:
+                    error = str(e)
+
+            if response is None:
+                # Most likely a '404: not found' error
+                raise DeckardException('Enable to retrieving the file', error)
+
+            res_len = response.length
+            if res_len > self.max_file_download:
+                response.close()
+                raise DeckardException('File too big',
+                                       'The "%s" file is %d long and this app '
+                                       'will not retrieve a file bigger than '
+                                       '%d bytes.' % (name,
+                                                      res_len,
+                                                      self.max_file_download))
+
+            # Let's finally download this file!
+            po.write(response.read(res_len))
+            response.close()
+            po.close()
 
         # create necessary directories
         mo_path = os.path.join(lang_root, 'LANGS', 'en', 'LC_MESSAGES')
@@ -311,14 +355,15 @@ class SessionsManager:
 
             return uuid, port
 
-    def store_po(self, uuid, fd, name, module):
+    def store_po(self, uuid, name, module, fd=None):
         """Ask a session to store a PO file.
 
-        If a file with the same name is attached to this session, it will be
-        replaced.
+        If fd is None, try to download name from session.po_urls.
+        If a PO file with the same name is already attached to this session,
+        it will be replaced.
         Returns a tuple with the session uuid and a dictionary, associating all
         relevant modules with a list of stored PO files for it on this session,
-        from the older to the newest.
+        from the oldest to the newest.
         """
         with self._lock:
             # get or create the session
@@ -329,7 +374,7 @@ class SessionsManager:
             else:
                 session.removable = False
                 session.keep_process_alive()  # if any
-            return uuid, session.store_po(fd, name, module)
+            return uuid, session.store_po(name, module, fd)
 
     def keep_alive(self, uuid):
         """Keep the uuid session alive a bit more.

@@ -56,19 +56,23 @@ def application(environ, start_response):
         try:
             if environ['CONTENT_TYPE'].startswith('multipart/form-data'):
                 fs = FieldStorage(fp=environ['wsgi.input'], environ=environ)
-                if 'po_file' not in fs or \
-                   'po_name' not in fs or \
-                   'po_module' not in fs:
-                    raise Exception()
+                if 'po_name' not in fs or 'po_module' not in fs:
+                    raise Exception('Malformed input')
 
                 uuid = None
                 if 'session' in fs:
                     uuid = fs['session'].value
 
-                uuid, custom_files = sessions_manager.store_po(uuid,
-                                                               fs['po_file'].file,
-                                                               fs['po_name'].value,
-                                                               fs['po_module'].value)
+                if 'po_file' in fs:
+                    uuid, custom_files = sessions_manager.store_po(uuid,
+                                                                   fs['po_name'].value,
+                                                                   fs['po_module'].value,
+                                                                   fs['po_file'].file)
+                else:
+                    uuid, custom_files = sessions_manager.store_po(uuid,
+                                                                   fs['po_name'].value,
+                                                                   fs['po_module'].value)
+
                 response = {'status': 'ok',
                             'session': uuid,
                             'custom_files': custom_files}
