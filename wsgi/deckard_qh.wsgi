@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""WSGI handler for Deckard"""
+
 import os
 import json
 from cgi import FieldStorage
@@ -133,6 +135,7 @@ def application(environ, start_response):
 
 
 def get_content():
+    """Retrieve available content"""
     content = {'LANGS': {},
                'MODULES': {}}
 
@@ -145,11 +148,11 @@ def get_content():
 
     for module in content['MODULES']:
         mod_root = os.path.join(content_root, module)
-        for root, dirs, files in os.walk(mod_root):
-            for file in files:
-                base, ext = os.path.splitext(file)
+        for root, _, files in os.walk(mod_root):
+            for file_ in files:
+                _, ext = os.path.splitext(file_)
                 if ext == '.ui':
-                    rel_path = os.path.join(root, file).split(mod_root)[1]
+                    rel_path = os.path.join(root, file_).split(mod_root)[1]
                     rel_path = rel_path[1:]  # strip the leading '/'
                     content['MODULES'][module].append(rel_path)
     return content

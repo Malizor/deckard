@@ -213,8 +213,9 @@ class Session:
                          stderr=STDOUT)
         except CalledProcessError as e:
             shutil.rmtree(lang_root)
-            # We don't need to expose the file name
-            log = e.output.decode('unicode_escape').replace('%s:' % po_path, '')
+            # We don't need to expose the file name in the error message
+            log = e.output.decode('unicode_escape').replace('%s:' % po_path,
+                                                            '')
             raise DeckardException('Error while building the .mo', log)
 
         if name in self.custom_po:
@@ -250,7 +251,8 @@ class Session:
         Returns True if no running process is attached to this Session and
         if no PO file is stored.
         It also returns True if this Session was tagged as removable.
-        Otherwise, this function will return False."""
+        Otherwise, this function will return False.
+        """
         if self.removable:
             return True
         elif self.process is None or self.process.poll() is not None:
@@ -316,12 +318,12 @@ class SessionsManager:
         """
         for port in range(self.first_port,
                           self.first_port + self.max_users):
-            next = False
+            try_next = False
             for uuid in self.sessions:
                 if self.sessions[uuid].port == port:
-                    next = True
+                    try_next = True
                     break
-            if not next:
+            if not try_next:
                 return port
 
         # No free port!
@@ -380,7 +382,8 @@ class SessionsManager:
         """Keep the uuid session alive a bit more.
 
         Returns False in case of problem (the session is already dead?),
-        True otherwise."""
+        True otherwise.
+        """
         with self._lock:
             session = self._get_session(uuid)
             if session is not None:

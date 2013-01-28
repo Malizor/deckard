@@ -136,7 +136,7 @@ function upload_po(file_name_on_l10ngnome) {
     if (session != '') {
         // Attach to the current session
         data.append('session', session);
-    clearInterval(keep_alive_loop);
+        clearInterval(keep_alive_loop);
     }
 
     upload_spinner.style.display = 'block';
