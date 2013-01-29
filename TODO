@@ -1,0 +1,18 @@
+- Add more locales! (there are 177 on http://l10n.gnome.org/languages)
+
+- Web design improvements (eg. selectors should not take so much
+   vertical space)
+
+- Dynamically patch the Broadway Javascript code to solve
+   problems like "no scrolling possible when the pointer is on the
+   iframe". And it would also be cool to change the window placement
+   algorithm to provide a kind of tilling view (some previews like Zenity
+   open many windows which are currently one on top of the other)
+
+- Provide a configuration file to easily change things like the content
+   folder location, the max sessions number, PO urls...
+
+- Split the "locale_language_mapping" dict from libdeckard into a
+   dedicated Python file/module
+
+- rewrite "build-content.sh" in Python
