@@ -20,8 +20,12 @@ export GDK_BACKEND=broadway  # necessary for X-less servers
 export BROADWAY_DISPLAY=9999  # The default port is 8080, but it is occupied by apache on deckard.malizor.org
 
 # Supported locales
-locales=(ar_AE \
-         af_ZA \
+locales=(af_ZA \
+         am_ET \
+         an_ES \
+         ar_AE \
+         as_IN \
+         ast_ES \
          be_BY \
          bn_IN \
          ca_ES \
@@ -41,6 +45,7 @@ locales=(ar_AE \
          hi_IN \
          hr_HR \
          hu_HU \
+         hy_AM \
          id_ID \
          is_IS \
          it_IT \
