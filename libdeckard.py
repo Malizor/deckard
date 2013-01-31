@@ -142,7 +142,8 @@ class Session:
             # This locale has to be available on your system
             language = 'en_US.UTF-8'
         else:
-            language = '%s.UTF-8' % language
+            if language != 'POSIX':
+                language = '%s.UTF-8' % language
             lang_root = os.path.join(self.content_root, 'LANGS')
 
         self.process = Popen([self.gladerunner,
