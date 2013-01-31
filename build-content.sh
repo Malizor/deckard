@@ -26,13 +26,18 @@ locales=(af_ZA \
          ar_AE \
          as_IN \
          ast_ES \
+         az_AZ \
          be_BY \
+         bem_ZM \
          bn_IN \
+         brx_IN \
+         bs_BA \
          ca_ES \
          cs_CZ \
          da_DK \
          de_DE \
          el_GR \
+         en_AU \
          eo \
          es_ES \
          et_EE \
