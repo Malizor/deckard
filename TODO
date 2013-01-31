@@ -16,3 +16,5 @@
    dedicated Python file/module
 
 - rewrite "build-content.sh" in Python
+
+- Make Deckard translatable
