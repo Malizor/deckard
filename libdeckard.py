@@ -44,7 +44,7 @@ locale_language_mapping = {
     'da_DK': 'Dansk',
     'de_DE': 'Deutsch',
     'el_GR': 'ελληνικά',
-    'en_US': 'English (Australia)',
+    'en_AU': 'English (Australia)',
     'en_US': 'English (US)',
     'eo': 'Esperanto',
     'es_ES': 'Español',
