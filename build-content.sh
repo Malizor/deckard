@@ -120,7 +120,7 @@ function get_module {
     done
 
     # Detect and keep relevant folders
-    folders=(`find tmp_clone -name *.ui -printf '%h\n' | sort -u`)
+    folders=(`find tmp_clone -iregex ".*\.\(ui\|xml\|glade\)" -printf '%h\n' | sort -u`)
     for folder in ${folders[@]}
     do
 	cp --parents -r $folder $module
@@ -132,17 +132,17 @@ function get_module {
     rm -rf tmp_clone
 
     # Remove unwanted files
-    find $module -not -name *.ui -a -not -name *.png -a -not -name *.jpg -a -not -name *.jpeg -a -not -name *.svg  | xargs rm 2> /dev/null
+    find $module -not -iregex ".*\.\(ui\|xml\|glade\|png\|jpg\|jpeg\|svg\)" | xargs rm 2> /dev/null
 
     # Basic check to remove non-glade files
-    find $module -name *.ui -exec sh -c 'xmllint --xpath /interface/object {} 2> /dev/null > /dev/null || (echo {} is not valid, removing it... && rm -f {})' \;
+    find $module -iregex ".*\.\(ui\|xml\|glade\)" -exec sh -c 'xmllint --xpath /interface/object {} 2> /dev/null > /dev/null || (echo {} is not valid, removing it... && rm -f {})' \;
 
     # We don't support odd glade files with type-func attributes (evolution, I'm looking at you)
     rm -f $(grep -lr "type-func" .)
 
     # Some glade files do not contain anything displayable (eg: cheese, data/cheese-actions.ui)
     cd ..
-    find content_tmp/$module -name *.ui -exec python3 -c "
+    find content_tmp/$module -iregex ".*\.\(ui\|xml\|glade\)" -exec python3 -c "
 import os
 from gladerunner import GladeRunner
 gr = GladeRunner('{}')

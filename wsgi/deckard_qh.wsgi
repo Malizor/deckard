@@ -151,7 +151,8 @@ def get_content():
         for root, _, files in os.walk(mod_root):
             for file_ in files:
                 _, ext = os.path.splitext(file_)
-                if ext == '.ui':
+                ext = ext.lower()
+                if ext == '.ui' or ext == '.xml' or ext == '.glade':
                     rel_path = os.path.join(root, file_).split(mod_root)[1]
                     rel_path = rel_path[1:]  # strip the leading '/'
                     content['MODULES'][module].append(rel_path)
