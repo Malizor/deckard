@@ -53,10 +53,12 @@ for (var i = 0; i < langs.length; i++) {
 }
 
 var param_module = getParameterByName('module');
+var valid_param_module = false;
 if (param_module) {
     // select this module (if it exists)
     for (var i = 0; i < module_selector.length; i++) {
         if (module_selector[i].label == param_module) {
+            valid_param_module = true;
             module_selector.selectedIndex = i;
             switch_file_selector();
             break;
@@ -66,8 +68,13 @@ if (param_module) {
 
 var param_file = getParameterByName('file');
 if (param_file) {
-    // Ask the server to get this file from l10n.gnome.org
-    upload_po(param_file);
+    // A valid module must has been selected at the same time
+    if (!valid_param_module) {
+        alert('You must specify a valid module via the "module" parameter.');
+    } else {
+        // Ask the server to get this file from l10n.gnome.org
+        upload_po(param_file);
+    }
 }
 
 function getParameterByName(name) {
