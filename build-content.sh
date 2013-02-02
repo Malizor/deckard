@@ -178,6 +178,7 @@ get_module gcalctool
 get_module gedit
 get_module gedit-latex
 get_module gedit-plugins
+get_module gevice
 get_module gnome-bluetooth
 get_module gnome-chess
 get_module gnome-color-manager
