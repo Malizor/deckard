@@ -84,7 +84,12 @@ locale_language_mapping = {
     'tr_TR': 'Türkçe',
     'ug_CN': 'ئۇيغۇرچە',
     'vi_VN': 'Tiếng Việt',
-    'zh_CN': '汉语'
+    'wa_BE': 'Walloon',
+    'xh_ZA': 'IsiXhosa',
+    'zh_CN': '汉语',
+    'zh_HK': '汉语 (香港)',
+    'zh_TW': '汉语 (臺灣)',
+    'zu_ZA': 'IsiZulu'
 }
 
 

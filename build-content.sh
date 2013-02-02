@@ -76,7 +76,12 @@ locales=(af_ZA \
          tr_TR \
          ug_CN \
          vi_VN \
-         zh_CN)
+         wa_BE \
+         xh_ZA \
+         zh_CN \
+         zh_HK \
+         zh_TW \
+         zu_ZA)
 
 rm -rf content_tmp
 
