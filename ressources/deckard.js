@@ -38,6 +38,8 @@ var param_locale = getParameterByName('locale');
 if (!param_locale) {
     // No locale was specified, try to preselect the browser language
     param_locale = window.navigator.userLanguage || window.navigator.language;
+    // Browsers use RFC 4646 to represent locales
+    param_locale = param_locale.replace('-', '_');
 }
 
 for (var i = 0; i < langs.length; i++) {
