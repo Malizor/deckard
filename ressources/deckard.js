@@ -40,6 +40,9 @@ if (!param_locale) {
     param_locale = window.navigator.userLanguage || window.navigator.language;
     // Browsers use RFC 4646 to represent locales
     param_locale = param_locale.replace('-', '_');
+    if (param_locale == 'en') { // Special case
+        param_locale = 'POSIX';
+    }
 }
 
 for (var i = 0; i < langs.length; i++) {
