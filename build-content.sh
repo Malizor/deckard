@@ -70,11 +70,16 @@ locales=(af_ZA \
          sk_SK \
          sl_SI \
          sq_AL \
+         sr_RS \
          sv_SE \
+         ta_IN \
+         te_IN \
          tg_TJ \
          th_TH \
          tr_TR \
          ug_CN \
+         uk_UA \
+         uz_UZ \
          vi_VN \
          wa_BE \
          xh_ZA \
