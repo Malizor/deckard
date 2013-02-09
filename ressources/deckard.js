@@ -67,12 +67,10 @@ if (param_module) {
 }
 
 var param_ui = getParameterByName('ui');
-var valid_param_module = false;
 if (param_ui) {
     // select this ui (if it exists)
     for (var i = 0; i < current_ui_selector.length; i++) {
         if (current_ui_selector[i].label == param_ui) {
-            valid_param_module = true;
             current_ui_selector.selectedIndex = i;
             break;
         }
