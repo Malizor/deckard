@@ -16,7 +16,7 @@
         <tr>
           <td>Select a module:</td>
           <td>
-            <select id="module_selector"  onchange="switch_file_selector();">
+            <select id="module_selector"  onchange="switch_ui_selector();">
               {% for item in content['MODULES']|dictsort(true) %}
               <option>{{ item[0] }}</option>
               {% endfor %}
@@ -24,12 +24,12 @@
           </td>
         </tr>
         <tr>
-          <td>Select a file:</td>
+          <td>Select a UI:</td>
           <td>
             {% for item in content['MODULES']|dictsort(true) %}
-            <select style="display:none;" id="file_selector_{{ item[0] }}">
-              {% for file in item[1]|sort(case_sensitive=true) %}
-              <option>{{ file }}</option>
+            <select style="display:none;" id="ui_selector_{{ item[0] }}">
+              {% for ui in item[1]|sort(case_sensitive=true) %}
+              <option>{{ ui }}</option>
               {% endfor %}
             </select>
             {% endfor %}

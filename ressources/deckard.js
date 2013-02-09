@@ -23,12 +23,12 @@ var upload_button = document.getElementById('upload_button');
 var upload_spinner = document.getElementById('upload_spinner');
 var po_selector = document.getElementById('po_file')
 var module_selector = document.getElementById('module_selector');
-var current_file_selector = document.getElementById('file_selector_' + module_selector.value);
+var current_ui_selector = document.getElementById('ui_selector_' + module_selector.value);
 
 var langs = document.getElementById('language_selector');
 var language_count = langs.length;
 
-switch_file_selector(); // initialize the file selector
+switch_ui_selector(); // initialize the file selector
 
 var iframe = document.getElementById('iframe');
 iframe.src = 'about:blank';
@@ -60,7 +60,20 @@ if (param_module) {
         if (module_selector[i].label == param_module) {
             valid_param_module = true;
             module_selector.selectedIndex = i;
-            switch_file_selector();
+            switch_ui_selector();
+            break;
+        }
+    }
+}
+
+var param_ui = getParameterByName('ui');
+var valid_param_module = false;
+if (param_ui) {
+    // select this ui (if it exists)
+    for (var i = 0; i < current_ui_selector.length; i++) {
+        if (current_ui_selector[i].label == param_ui) {
+            valid_param_module = true;
+            current_ui_selector.selectedIndex = i;
             break;
         }
     }
@@ -89,10 +102,10 @@ function getParameterByName(name) {
     }
 }
 
-function switch_file_selector() {
-    current_file_selector.style.display = 'none';
-    current_file_selector = document.getElementById('file_selector_' + module_selector.value);
-    current_file_selector.style.display = 'block';
+function switch_ui_selector() {
+    current_ui_selector.style.display = 'none';
+    current_ui_selector = document.getElementById('ui_selector_' + module_selector.value);
+    current_ui_selector.style.display = 'block';
     refresh_lang_list();  // if there is any custom PO for this module
 }
 
@@ -192,7 +205,7 @@ function upload_po_return(req) {
 }
 
 function spawn() {
-    var data = 'action=spawn&module='+module_selector.value+'&file='+current_file_selector.value;
+    var data = 'action=spawn&module='+module_selector.value+'&file='+current_ui_selector.value;
     var i = langs.value.indexOf('\u2003');
     if (i == -1) {
         data += '&lang='+langs.value;  // custom PO
