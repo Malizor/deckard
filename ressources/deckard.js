@@ -100,6 +100,19 @@ function getParameterByName(name) {
     }
 }
 
+function get_url_for_this_view() {
+    var url = 'http://'+document.domain+'/?module='+module_selector.value+'&ui='+current_ui_selector.value;
+    var i = langs.value.indexOf('\u2003');
+    if (i == -1) {
+        if (langs.value == param_file) {
+            url += '&file='+langs.value;  // PO from l10n.gnome.org
+        } // else, this is a PO uploaded from the user. It is useless for other users.
+    } else {
+        url += '&locale='+langs.value.substr(0, i);
+    }
+    return url;
+}
+
 function switch_ui_selector() {
     current_ui_selector.style.display = 'none';
     current_ui_selector = document.getElementById('ui_selector_' + module_selector.value);
