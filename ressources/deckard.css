@@ -20,16 +20,26 @@ h1 {
     width : 100%;
 }
 
+a {
+    color: black;
+    font-style: italic;
+}
+
+a:hover {
+    background-color: #FFF4A2;
+    border: 1px solid #FFE944;
+}
+
 #get_code {
-	text-align: right;
+    float: right;
 }
 
-#get_code a {
-	color: black;
-	font-style: italic;
+#get_url {
+    float: left;
 }
 
-#get_code a:hover {
-	background-color: #FFF4A2;
-	border: 1px solid #FFE944;
+#url_view {
+    color: #383838;
+    font-style: italic;
 }
+

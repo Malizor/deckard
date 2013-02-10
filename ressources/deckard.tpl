@@ -68,6 +68,10 @@
     </form>
 
     <iframe id="iframe" src="about:blank"></iframe>
+    <p id="get_url"><a title="Display a link to this particular view" href="#url_view" onclick="get_url_for_this_view();">Get URL for this view</a>
+      <br/><br/>
+      <span id="url_view">&nbsp;</span>
+    </p>
     <p id="get_code"><a title="Launchpad project" href="https://launchpad.net/deckard">Get the code!</a></p>
     <script type="text/javascript" src="ressources/deckard.js"></script>
   </body>

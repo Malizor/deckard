@@ -110,7 +110,7 @@ function get_url_for_this_view() {
     } else {
         url += '&locale='+langs.value.substr(0, i);
     }
-    return url;
+    document.getElementById('url_view').innerHTML = url;
 }
 
 function switch_ui_selector() {

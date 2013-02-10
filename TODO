@@ -2,8 +2,6 @@
 
 - Support locales with an '@'
 
-- Add a way to to retrieve a link to the current view
-
 - Web design improvements (eg. selectors should not take so much
    vertical space)
 
