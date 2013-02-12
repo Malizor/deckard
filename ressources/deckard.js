@@ -113,10 +113,11 @@ function get_url_for_this_view() {
     var i = locale_selector.value.indexOf('\u2003');
     if (i == -1) {
         if (locale_selector.value == param_file) {
-            url += '&file='+locale_selector.value;  // PO from l10n.gnome.org
-        } // else, this is a PO uploaded from the user. It is useless for other users.
+            url += '&file='+locale_selector.value+'&display=1';  // PO from l10n.gnome.org
+        } // else, this is a PO uploaded from the user. It can't be transmited via simple parameters.
+          // No automatic display in this case.
     } else {
-        url += '&locale='+locale_selector.value.substr(0, i);
+        url += '&locale='+locale_selector.value.substr(0, i)+'&display=1';
     }
     document.getElementById('url_view').innerHTML = url;
 }
