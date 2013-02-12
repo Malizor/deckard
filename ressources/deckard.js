@@ -77,6 +77,8 @@ if (param_ui) {
     }
 }
 
+var param_display = getParameterByName('display');
+
 var param_file = getParameterByName('file');
 if (param_file) {
     // A valid module must has been selected at the same time
@@ -86,7 +88,13 @@ if (param_file) {
         // Ask the server to get this file from l10n.gnome.org
         upload_po(param_file);
     }
+} else if (param_display == '1') {
+    // The 'display' parameter should only affect the initial loading
+    param_display = '0';
+    // Display the preselected view
+    spawn();
 }
+
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
@@ -203,6 +211,12 @@ function upload_po_return(req) {
         }
 
         keep_alive_loop = setInterval(keep_alive, 2000);
+        if (param_display == '1') {
+            // The 'display' parameter should only affect the initial loading
+            param_display = '0';
+            // Display the preselected view
+            spawn();
+        }
         return;
 
     } else if (res['status'] == 'error') {
