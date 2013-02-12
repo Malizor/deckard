@@ -21,12 +21,12 @@ var keep_alive_loop;
 var stored_po = {};
 var upload_button = document.getElementById('upload_button');
 var upload_spinner = document.getElementById('upload_spinner');
-var po_selector = document.getElementById('po_file')
+var po_picker = document.getElementById('po_file')
 var module_selector = document.getElementById('module_selector');
 var current_ui_selector = document.getElementById('ui_selector_' + module_selector.value);
 
-var langs = document.getElementById('language_selector');
-var language_count = langs.length;
+var locale_selector = document.getElementById('language_selector');
+var language_count = locale_selector.length;
 
 switch_ui_selector(); // initialize the file selector
 
@@ -45,9 +45,9 @@ if (!param_locale) {
     }
 }
 
-for (var i = 0; i < langs.length; i++) {
-    if (langs[i].label.indexOf(param_locale) == 0) {
-        langs.selectedIndex = i;
+for (var i = 0; i < locale_selector.length; i++) {
+    if (locale_selector[i].label.indexOf(param_locale) == 0) {
+        locale_selector.selectedIndex = i;
         break;
     }
 }
@@ -110,13 +110,13 @@ function getParameterByName(name) {
 
 function get_url_for_this_view() {
     var url = 'http://'+document.domain+'/?module='+module_selector.value+'&ui='+current_ui_selector.value;
-    var i = langs.value.indexOf('\u2003');
+    var i = locale_selector.value.indexOf('\u2003');
     if (i == -1) {
-        if (langs.value == param_file) {
-            url += '&file='+langs.value;  // PO from l10n.gnome.org
+        if (locale_selector.value == param_file) {
+            url += '&file='+locale_selector.value;  // PO from l10n.gnome.org
         } // else, this is a PO uploaded from the user. It is useless for other users.
     } else {
-        url += '&locale='+langs.value.substr(0, i);
+        url += '&locale='+locale_selector.value.substr(0, i);
     }
     document.getElementById('url_view').innerHTML = url;
 }
@@ -130,25 +130,25 @@ function switch_ui_selector() {
 
 function refresh_lang_list() {
     // rebuild the language list
-    langs.length = language_count;
+    locale_selector.length = language_count;
     if (stored_po[module_selector.value]) {
         for (var i = 0; i < stored_po[module_selector.value].length; i++) {
             var option = document.createElement('option');
             option.text = stored_po[module_selector.value][i];
-            langs.add(option);
+            locale_selector.add(option);
         }
     }
 }
 
 function check_file() {
-    str = po_selector.value.toUpperCase();
+    str = po_picker.value.toUpperCase();
     if (str == '') {
     return -1
     }
     suffix = '.PO';
     if(str.indexOf(suffix, str.length - suffix.length) == -1) {
         alert('File type not allowed.\nExpected a *.po file.');
-        po_selector.value = '';
+        po_picker.value = '';
     upload_button.disabled = true;
     return -1;
     }
@@ -172,8 +172,8 @@ function upload_po(file_name_on_l10ngnome) {
     if (file_name_on_l10ngnome) {
         data.append('po_name', file_name_on_l10ngnome);
     } else {
-        data.append('po_name', po_selector.value);
-        data.append('po_file', po_selector.files[0]);
+        data.append('po_name', po_picker.value);
+        data.append('po_file', po_picker.files[0]);
     }
     data.append('po_module', module_selector.value);
 
@@ -185,7 +185,7 @@ function upload_po(file_name_on_l10ngnome) {
 
     upload_spinner.style.display = 'block';
     upload_button.disabled = true;
-    po_selector.disabled = true;
+    po_picker.disabled = true;
     xml_http_post('#', data, upload_po_return);
 }
 
@@ -193,7 +193,7 @@ function upload_po_return(req) {
 
     upload_spinner.style.display = 'none';
     upload_button.disabled = false;
-    po_selector.disabled = false;
+    po_picker.disabled = false;
 
     if (req.status == 413 || req.status == 0) {
         alert('This file exceed the maximum size.');
@@ -207,7 +207,7 @@ function upload_po_return(req) {
         stored_po = res['custom_files'];
         refresh_lang_list();
         if (stored_po[module_selector.value]) {
-            langs.selectedIndex = langs.length - 1;  // focus the last item
+            locale_selector.selectedIndex = locale_selector.length - 1;  // focus the last item
         }
 
         keep_alive_loop = setInterval(keep_alive, 2000);
@@ -231,11 +231,11 @@ function upload_po_return(req) {
 
 function spawn() {
     var data = 'action=spawn&module='+module_selector.value+'&file='+current_ui_selector.value;
-    var i = langs.value.indexOf('\u2003');
+    var i = locale_selector.value.indexOf('\u2003');
     if (i == -1) {
-        data += '&lang='+langs.value;  // custom PO
+        data += '&lang='+locale_selector.value;  // custom PO
     } else {
-        data += '&lang='+langs.value.substr(0, i);
+        data += '&lang='+locale_selector.value.substr(0, i);
     }
     if (session != '') {
         // Attach to the current session
@@ -297,7 +297,7 @@ function keep_alive_return(req) {
 function abort_session() {
     session = '';
     process_running = false;
-    langs.length = language_count;
+    locale_selector.length = language_count;
     document.getElementById('user_count').innerHTML = 'disconnected';
     stored_po = {};
 }
