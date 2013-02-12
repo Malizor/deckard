@@ -69,6 +69,7 @@ locale_language_mapping = {
     'nb_NO': 'Bokmål',
     'nl_NL': 'Nederlands',
     'nn_NO': 'Nynorsk',
+    'or_IN': 'ଓଡ଼ିଆ',
     'pa_IN': 'ਪੰਜਾਬੀ',
     'pl_PL': 'Język polski',
     'pt_BR': 'Português (Brasil)',

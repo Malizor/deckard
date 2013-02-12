@@ -61,6 +61,7 @@ locales=(af_ZA \
          nb_NO \
          nn_NO \
          nl_NL \
+         or_IN \
          pa_IN \
          pl_PL \
          pt_BR \
