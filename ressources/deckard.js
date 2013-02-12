@@ -186,6 +186,9 @@ function upload_po(file_name_on_l10ngnome) {
     upload_spinner.style.display = 'block';
     upload_button.disabled = true;
     po_picker.disabled = true;
+    current_ui_selector.disabled = true;
+    module_selector.disabled = true;
+    locale_selector.disabled = true;
     xml_http_post('#', data, upload_po_return);
 }
 
@@ -194,6 +197,9 @@ function upload_po_return(req) {
     upload_spinner.style.display = 'none';
     upload_button.disabled = false;
     po_picker.disabled = false;
+    current_ui_selector.disabled = false;
+    module_selector.disabled = false;
+    locale_selector.disabled = false;
 
     if (req.status == 413 || req.status == 0) {
         alert('This file exceed the maximum size.');
