@@ -6,7 +6,7 @@ DEPENDENCIES
 
 You will need the following packages:
 
-libgtk-3-bin
+libgtk-3-bin (with the Broadway backend enabled)
 python3-gi
 python3-jinja2
 libapache2-mod-wsgi-py3
@@ -80,6 +80,7 @@ HAproxy properly redirect to the right backend).
 - Install the haproxy package
 - Edit /etc/apache2/ports.conf and replace "80" by "8080" everywhere
 - Copy conf/haproxy/haproxy.cfg to /etc/haproxy/haproxy.cfg
+  (in the file, replace deckard.malizor.org by localhost or your domain name)
 - In /etc/default/haproxy, set ENABLED to 1
 - restart apache and start HAproxy
 sudo service apache2 restart && sudo service haproxy start
@@ -108,10 +109,11 @@ content/
             └── module2.mo
 
 The LANGS tree should not surprise you if you are familiar with Gettext.
-The organisation of files in modules folders is up to you.
+The organization of files in modules folders is up to you.
 
 "build-content.sh" is the script that is used on deckard.malizor.org to
-automatically generate the content folder. You may want to reuse or to adapt it.
+automatically generate the content folder from Gnome git.
+You may want to reuse or to adapt it.
 
 
 FAQ
@@ -142,6 +144,14 @@ On Ubuntu systems, you need to add your locale in
 /var/lib/locales/supported.d/local
 Then you have to run:
 sudo dpkg-reconfigure locales
+
+UI are not reversed in RTL locales!
+-----------------------------------
+
+You have to install Gtk translations for the specified locale.
+For example, for Arabian on Ubuntu:
+sudo apt-get install language-pack-gnome-ar-base --no-install-recommends
+
 
 I found a bug/I have an idea!
 -----------------------------
