@@ -58,9 +58,6 @@ class GladeRunner:
             t.daemon = True
             t.start()
 
-        if 'LANGUAGE' in os.environ:
-            # Useful when running from command-line
-            del os.environ['LANGUAGE']
         locale.setlocale(locale.LC_ALL, language)
 
     def nde(self):

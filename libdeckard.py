@@ -157,6 +157,7 @@ class Session:
                 language = '%s.UTF-8' % language
             lang_root = os.path.join(self.content_root, 'LANGS')
 
+        env['LANG'] = language
         self.process = Popen([self.gladerunner,
                               '--suicidal',
                               os.path.join(self.content_root,
