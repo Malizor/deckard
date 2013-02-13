@@ -2,6 +2,13 @@
 
 - Support locales with an '@'
 
+- Do not consider all uploaded PO files as English.
+   Currently, it is not possible to specify for which locale is an
+   uploaded PO file and English is used by default. This means UI are
+   not reverted when they should (RTL locales) and Gtk buttons appear
+   in English. An uploaded PO file should be "attached" to the
+   currently selected locale. 
+
 - Web design improvements (eg. selectors should not take so much
    vertical space)
 
