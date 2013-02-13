@@ -145,6 +145,9 @@ On Ubuntu systems, you need to add your locale in
 Then you have to run:
 sudo dpkg-reconfigure locales
 
+A simpler way, if you use Ubuntu, would be run this command:
+sudo apt-get install language-pack-gnome-* --no-install-recommends
+
 UI are not reversed in RTL locales!
 -----------------------------------
 
