@@ -9,14 +9,18 @@
    problems like "no scrolling possible when the pointer is on the
    iframe". And it would also be cool to change the window placement
    algorithm to provide a kind of tilling view (some previews like Zenity
-   open many windows which are currently one on top of the other)
+   open many windows which are currently one on top of the
+   other). This could lead to upstreamable (Gtk+) patches.
 
 - Provide a configuration file to easily change things like the content
-   folder location, the max sessions number, PO urls...
+   folder location, the max sessions number, PO urls... This would
+   allow Deckard to be more flexible (no one want to edit the source
+   code to change the default configuration).
 
 - Split the "locale_language_mapping" dict from libdeckard into a
    dedicated Python file/module
 
-- rewrite "build-content.sh" in Python
+- rewrite "build-content.sh" in Python, make it more flexible and
+   useful for other projects than Gnome.
 
 - Make Deckard translatable
