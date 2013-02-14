@@ -46,6 +46,7 @@ locales=(af_ZA \
          fur_IT \
          fr_FR \
          gl_ES \
+         gu_IN \
          he_IL \
          hi_IN \
          hr_HR \
@@ -59,8 +60,10 @@ locales=(af_ZA \
          ko_KR \
          lt_LT \
          nb_NO \
-         nn_NO \
          nl_NL \
+         nn_NO \
+         nso_ZA \
+         oc_FR \
          or_IN \
          pa_IN \
          pl_PL \
@@ -68,6 +71,8 @@ locales=(af_ZA \
          pt_PT \
          ro_RO \
          ru_RU \
+         rw_RW \
+         si_LK \
          sk_SK \
          sl_SI \
          sq_AL \
