@@ -55,7 +55,7 @@
     <form id="po_uploader">
       <table>
         <tr>
-          <td>Custom PO file for this UI:</td>
+          <td>Custom PO file for the selected module:</td>
           <td><input type="file" id="po_file" onchange="check_file();"></td>
         </tr>
       </table>
