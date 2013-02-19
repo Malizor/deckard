@@ -59,7 +59,12 @@ locales=(af_ZA \
          kn_IN \
          ko_KR \
          lt_LT \
+         mr_IN \
+         ms_MY \
+         my_MM \
          nb_NO \
+         nds_NL \
+         ne_NP \
          nl_NL \
          nn_NO \
          nso_ZA \
