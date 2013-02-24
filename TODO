@@ -24,8 +24,9 @@
    allow Deckard to be more flexible (no one want to edit the source
    code to change the default configuration).
 
-- Split the "locale_language_mapping" dict from libdeckard into a
-   dedicated Python file/module
+- Remove the "locale_language_mapping" dict from libdeckard and use
+   the "pyicu" module instead. The list of supported locales in Deckard should
+   just be "all locales supported by the system".
 
 - rewrite "build-content.sh" in Python, make it more flexible and
    useful for other projects than Gnome.
