@@ -23,6 +23,7 @@ from urllib.parse import parse_qsl
 from jinja2 import Environment, FileSystemLoader
 
 import libdeckard
+from languages import locale_language_mapping
 
 jinja_env = None
 deckard_root = None
@@ -140,8 +141,8 @@ def get_content():
                'MODULES': {}}
 
     for lang in os.listdir(os.path.join(content_root, 'LANGS')):
-        if lang in libdeckard.locale_language_mapping:
-            content['LANGS'][lang] = libdeckard.locale_language_mapping[lang]
+        if lang in locale_language_mapping:
+            content['LANGS'][lang] = locale_language_mapping[lang]
     for directory in os.listdir(content_root):
         if directory != 'LANGS':
             content['MODULES'][directory] = []
