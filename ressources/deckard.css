@@ -32,13 +32,16 @@ a:hover {
 
 #get_code {
     float: right;
+    margin: 0px;
 }
 
 #get_url {
     float: left;
+    margin: 0px;
 }
 
 #url_view {
+    clear: both;
     color: #383838;
     font-style: italic;
 }
