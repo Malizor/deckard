@@ -12,11 +12,9 @@
 - Web design improvements (eg. selectors should not take so much
    vertical space)
 
-- Dynamically patch the Broadway Javascript code to solve
-   problems like "no scrolling possible when the pointer is on the
-   iframe". And it would also be cool to change the window placement
-   algorithm to provide a kind of tilling view (some previews like Zenity
-   open many windows which are currently one on top of the
+- Dynamically patch the Broadway Javascript code to change the window placement
+   algorithm in order to provide a kind of tilling view (some previews
+   like Zenity open many windows which are currently one on top of the
    other). This could lead to upstreamable (Gtk+) patches.
 
 - Provide a configuration file to easily change things like the content
