@@ -260,6 +260,14 @@ function spawn_return(req) {
         function update_iframe() {
             // change the '/' before the port by a ':' if you did not configure a proxy to redirect runner ports on port 80
             iframe.src = 'http://'+document.domain+'/'+res['port']+'/';
+            iframe.onload = function() {
+                // Hot-patch the broadway javascript to avoid transmitting mouse wheel events
+                // This allows scrolling in the iframe but prevents, for example, manipulating a GtkScale with the mouse wheel (which is not really important for Deckard)
+                var doc = iframe.contentDocument;
+                var win = iframe.contentWindow;
+                doc.removeEventListener('DOMMouseScroll', win.onMouseWheel, false);
+                doc.removeEventListener('mousewheel', win.onMouseWheel, false);
+            }
         }
         // Wait for the remote process to be fully started
         iframe.src = 'ressources/waiting.html';
