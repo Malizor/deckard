@@ -25,7 +25,7 @@ Here is how to set up the Deckard site.
 
 These are tested examples.
 Deckard should not depend on any specific infrastructure, so feel free to use
-whatever suit you best.
+whatever suit you best and to contribute back relevant configuration files ;-).
 
 Common part
 -----------
@@ -43,7 +43,7 @@ sudo useradd deckard --create-home
 - Copy conf/apache2/deckard in /etc/apaches/sites-available
   (you probably want to change ServerAdmin and ServerName before)
   
-- enable the the site and restart Apache
+- enable the site and restart Apache
 sudo a2ensite deckard && sudo service apache2 restart
 
 Don't forget to generate the content that will be displayed!
@@ -145,7 +145,7 @@ On Ubuntu systems, you need to add your locale in
 Then you have to run:
 sudo dpkg-reconfigure locales
 
-A simpler way, if you use Ubuntu, would be run this command:
+A simpler way, if you use Ubuntu, is to run this command:
 sudo apt-get install language-pack-gnome-* --no-install-recommends
 
 UI are not reversed in RTL locales!
