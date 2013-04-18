@@ -19,10 +19,13 @@
 
 - Provide a configuration file to easily change things like the content
    folder location, the max sessions number, PO urls... This would
-   allow Deckard to be more flexible (no one want to edit the source
-   code to change the default configuration).
+   allow Deckard to be more flexible and less bound to Gnome (no one
+   want to edit the source code to change the default configuration).
 
-- rewrite "build-content.sh" in Python, make it more flexible and
-   useful for other projects than Gnome.
+- Rewrite "build-content.sh" in Python, make it more flexible and
+   useful for other projects than Gnome (eg. LibreOffice).
+
+- Propose gladerunner.py for upstreaming in the Glade project (to
+   replace or to extend glade-previewer)
 
 - Make Deckard translatable
