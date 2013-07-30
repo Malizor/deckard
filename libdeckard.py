@@ -132,7 +132,7 @@ class Session:
 
             if response is None:
                 # Most likely a '404: not found' error
-                raise DeckardException('Enable to retrieving the file', error)
+                raise DeckardException('Enable to retrieve the file', error)
 
             res_len = response.length
             if res_len > self.max_file_download:
