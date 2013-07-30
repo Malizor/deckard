@@ -112,7 +112,7 @@ content/
 The LANGS tree should not surprise you if you are familiar with Gettext.
 The organization of files in modules folders is up to you.
 
-"build-content.sh" is the script that is used on deckard.malizor.org to
+"build-gnome-content.sh" is the script that is used on deckard.malizor.org to
 automatically generate the content folder from Gnome git.
 You may want to reuse or to adapt it.
 
