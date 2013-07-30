@@ -1,3 +1,5 @@
+- Port to GTK+ >= 3.8 (broadwayd)
+
 - Add more locales! (there are 177 on http://l10n.gnome.org/languages)
 
 - Support locales with an '@'
