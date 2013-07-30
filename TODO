@@ -22,8 +22,8 @@
    allow Deckard to be more flexible and less bound to Gnome (no one
    want to edit the source code to change the default configuration).
 
-- Rewrite "build-content.sh" in Python, make it more flexible and
-   useful for other projects than Gnome (eg. LibreOffice).
+- Rewrite "build-gnome-content.sh" in Python, make it more flexible
+   and useful for other projects than Gnome (eg. LibreOffice).
 
 - Propose gladerunner.py for upstreaming in the Glade project (to
    replace or to extend glade-previewer)
