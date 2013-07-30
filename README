@@ -1,4 +1,4 @@
-Tested on Ubuntu 12.04 and 12.10.
+Tested on Ubuntu 12.04, 12.10 and 13.04.
 
 
 DEPENDENCIES
@@ -11,7 +11,8 @@ python3-gi
 python3-jinja2
 libapache2-mod-wsgi-py3
 
-On Ubuntu 12.04 or 12.10 you can get a Broadway enabled GTK+ with this PPA:
+On Ubuntu 12.04, 12.10 or 13.04, you can get a Broadway enabled GTK+ through
+the following PPA:
 https://launchpad.net/~malizor/+archive/gtk-broadway
 
 You may want to use the latest version of GTK+ if your interfaces depend on new
