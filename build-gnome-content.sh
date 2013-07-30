@@ -16,6 +16,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+
+command -v xmllint >/dev/null 2>&1 || { echo >&2 "This script requires the xmllint command. Aborting."; exit 1; }
+
 export GDK_BACKEND=broadway  # necessary for X-less servers
 export BROADWAY_DISPLAY=9999  # The default port is 8080, but it is occupied by apache on deckard.malizor.org
 
