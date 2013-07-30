@@ -8,7 +8,8 @@
 	SetEnv DECKARD_ROOT /home/deckard
 	SetEnv DECKARD_MAX_USERS 10
 
-	LimitRequestBody 409600  # Reject too large uploads
+	# Reject too large uploads
+	LimitRequestBody 409600
 
 	<Directory /home/deckard/wsgi>
 		WSGIProcessGroup deckard_qh
