@@ -191,6 +191,7 @@ class Session:
         is no process)."""
         if self.process is not None and self.process.poll() is None:
             self.process.stdin.write(b'Please stay alive!')
+            self.process.stdin.flush()
             return True
         return False
 
