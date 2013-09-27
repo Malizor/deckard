@@ -17,6 +17,9 @@
    allow Deckard to be more flexible and less bound to Gnome (no one
    want to edit the source code to change the default configuration).
 
+- Provide a user documentation in the Web interface
+   advertise, for example, the use of http parameters
+
 - Rewrite "build-gnome-content.sh" in Python, make it more flexible
    and useful for other projects than Gnome (eg. LibreOffice).
 
