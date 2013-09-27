@@ -17,6 +17,8 @@
 """Sessions handling and utilities for the deckard project"""
 
 import os
+import re
+import locale
 import shutil
 import tempfile
 import urllib.request
@@ -44,7 +46,7 @@ class Session:
         self.port = 0
         self.uuid = uuid  # unique id to avoid session spoofing
         self.process = None
-        self.custom_po = OrderedDict()  # {po_name: (module, root_path)}
+        self.custom_po = OrderedDict()  # {po_name: (module, root_path, lang)}
         self.removable = False  # can the manager delete this Session?
         self.gladerunner = gladerunner
         self.content_root = content_root
@@ -78,7 +80,7 @@ class Session:
                                        '%s module.' % module)
             lang_root = os.path.join(self.custom_po[language][1], 'LANGS')
             # This locale has to be available on your system
-            language = 'en_US.UTF-8'
+            language = '%s.UTF-8' % self.custom_po[language][2]
         else:
             if language != 'POSIX':
                 language = '%s.UTF-8' % language
@@ -149,8 +151,31 @@ class Session:
             response.close()
             po.close()
 
+        # Try to guess the language of this PO file, default is 'en_US'
+        # This is good to know to later set proper environment variables and so
+        # load the right GTK translation and reverse the interface if necessary
+        po_lang = 'en_US'
+        with open(po_path, encoding='utf8') as po:
+            # Give up if we find nothing in the 50 first lines
+            for _ in range(50):
+                line = po.readline()
+                match = re.match(r'^"Language: (.+)\\n"$', line)
+                if match:
+                    po_lang = match.group(1)
+                    # The encoding is often wrong, so strip it
+                    po_lang = locale.normalize(po_lang).rsplit('.')[0]
+                    # Test if the detected locale is available on the system
+                    try:
+                        locale.setlocale(locale.LC_ALL, '%s.UTF-8' % po_lang)
+                    except:
+                        # Fallback to a known locale
+                        po_lang = 'en_US'
+                    finally:
+                        locale.resetlocale()
+                    break
+
         # create necessary directories
-        mo_path = os.path.join(lang_root, 'LANGS', 'en', 'LC_MESSAGES')
+        mo_path = os.path.join(lang_root, 'LANGS', po_lang, 'LC_MESSAGES')
         os.makedirs(mo_path)
 
         try:
@@ -174,7 +199,7 @@ class Session:
             # delete the oldest
             shutil.rmtree(self.custom_po.popitem(last=False)[1][1])
 
-        self.custom_po[name] = (module, lang_root)
+        self.custom_po[name] = (module, lang_root, po_lang)
 
         res = {}
         for item in self.custom_po:
