@@ -41,7 +41,7 @@ sudo useradd deckard --create-home
   On deckard.malizor.org, /home/deckard is actually a bzr repository, which ease
   deployment of updates.
   
-- Copy conf/apache2/deckard in /etc/apache2/sites-available
+- Copy conf/apache2/<version>/deckard.conf in /etc/apache2/sites-available
   (you probably want to change ServerAdmin and ServerName before)
   
 - enable the site and restart Apache
@@ -53,7 +53,8 @@ Don't forget to generate the content that will be displayed!
 Simple way, with just Apache
 ----------------------------
 
-- Edit /etc/apache2/sites-available/deckard and replace the "8080" port by "80"
+- Edit /etc/apache2/sites-available/deckard.conf and replace the "8080" port by
+  "80"
 - Restart apache
 sudo service apache2 restart
 - Edit ressources/deckard.js and replace the '/' by a ':' in the spawn_return
