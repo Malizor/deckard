@@ -164,7 +164,9 @@ class GladeRunner:
 def parse():
     """Argument parsing"""
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--suicidal', action='store_true')
+    parser.add_argument('-s', '--suicidal', action='store_true',
+                        help="Try to read from STDIN each 5 seconds. "
+                        "If there is nothing to read, exit.")
     parser.add_argument('glade_file_path')
     parser.add_argument('gettext_domain', default='foobar', nargs='?')
     parser.add_argument('language', default='POSIX', nargs='?')
