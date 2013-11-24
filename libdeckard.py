@@ -66,8 +66,7 @@ class Session:
         env = {
             'GDK_BACKEND': 'broadway',
             'UBUNTU_MENUPROXY': '',
-            'LIBOVERLAY_SCROLLBAR': '0',
-            'BROADWAY_DISPLAY': str(port)
+            'LIBOVERLAY_SCROLLBAR': '0'
             }
 
         if self.process is not None and self.process.poll() is None:
@@ -89,6 +88,8 @@ class Session:
         env['LANG'] = language
         self.process = Popen([self.gladerunner,
                               '--suicidal',
+                              '--with-broadwayd',
+                              str(port),
                               os.path.join(self.content_root,
                                            module,
                                            module_file),
