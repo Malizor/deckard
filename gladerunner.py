@@ -18,14 +18,15 @@
 
 """Module to load a Glade file and display its windows"""
 
-from gi.repository import Gtk, GObject
-
 import os
 import sys
 import fcntl
 import locale
+import signal
+import ctypes
 import argparse
 from threading import Timer
+from subprocess import Popen
 
 placeholder_widget = """
 class %(name)s(Gtk.Label):
@@ -161,12 +162,27 @@ class GladeRunner:
             Gtk.main_quit()
 
 
+def start_broadwayd(port):
+    """Start a broadwayd daemon on the specified port"""
+    display = ':%d' % port
+    libc = ctypes.CDLL('libc.so.6')
+    # Send a SIGTERM to the child when its parent die
+    set_pdeathsig = lambda: libc.prctl(1, signal.SIGTERM)
+    Popen(['broadwayd', '--port', str(port), display],
+          preexec_fn=set_pdeathsig)
+    os.putenv('BROADWAY_DISPLAY', display)
+
+
 def parse():
     """Argument parsing"""
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--suicidal', action='store_true',
                         help="Try to read from STDIN each 5 seconds. "
                         "If there is nothing to read, exit.")
+    parser.add_argument('-b', '--with-broadwayd', type=int,
+                        help="Start a broadwayd daemon on the specified port "
+                        "and display through it. "
+                        "This option is required for GTK+ >= 3.8.")
     parser.add_argument('glade_file_path')
     parser.add_argument('gettext_domain', default='foobar', nargs='?')
     parser.add_argument('language', default='POSIX', nargs='?')
@@ -175,6 +191,12 @@ def parse():
 
 if __name__ == '__main__':
     args = parse()
+    if args.with_broadwayd is not None:
+        start_broadwayd(args.with_broadwayd)
+
+    # Late import because of environment tweaking in start_broadwayd
+    from gi.repository import Gtk, GObject
+
     gr = GladeRunner(args.glade_file_path,
                      args.gettext_domain,
                      args.lang_path,
