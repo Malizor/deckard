@@ -258,23 +258,21 @@ function spawn_return(req) {
         session = res['session'];
         keep_alive_loop = setInterval(keep_alive, 2000);
         function update_iframe() {
-            // change the '/' before the port by a ':' if you did not configure a proxy to redirect runner ports on port 80
-            iframe.src = 'http://'+document.domain+'/'+res['port']+'/';
             iframe.onload = function() {
-                // Hot-patch the broadway javascript to avoid transmitting mouse wheel events
-                // This allows scrolling in the iframe but prevents, for example, manipulating a GtkScale with the mouse wheel (which is not really important for Deckard)
-                var doc = iframe.contentDocument;
-                var win = iframe.contentWindow;
-                doc.removeEventListener('DOMMouseScroll', win.onMouseWheel, false);
-                doc.removeEventListener('mousewheel', win.onMouseWheel, false);
+                // Allow scrolling with the mouse wheel in the iframe by hot-patching the broadwayd JS
+                // The drawback is that it blocks interactions between the mouse wheel and some GTK widgets.
+                // Convenient scrolling is more important in the Deckard use case.
+                iframe.contentWindow.onMouseWheel = function(ev) {return true;}
             }
+            iframe.src = 'http://'+document.domain+'/'+res['port']+'/';
         }
-        // Wait for the remote process to be fully started
+        // change the '/' before the port by a ':' if you did not configure a proxy to redirect runner ports on port 80
         iframe.src = 'ressources/waiting.html';
+        // Wait for the remote process to be fully started
         if (process_running) {
             setTimeout(update_iframe, 700);
         } else {
-            // Wait a bit more if we don't replace a running process
+            // Wait a bit more if we don't replace a running process (cold start)
             setTimeout(update_iframe, 1700);
         }
         process_running = true;
