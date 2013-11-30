@@ -203,7 +203,7 @@ function upload_po_return(req) {
     locale_selector.disabled = false;
 
     if (req.status == 413 || req.status == 0) {
-        alert('This file exceed the maximum size.');
+        alert('This file exceeds the maximum size.');
         abort_session();
         return;
     }
