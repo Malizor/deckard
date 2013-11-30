@@ -8,9 +8,11 @@ You will need the following packages:
 
 broadwayd
 libgtk-3-bin >= 3.8 (with the Broadway backend enabled)
+python3
 python3-gi
 python3-jinja2
-libapache2-mod-wsgi-py3
+A Web server which provides the WSGI API for Python3
+(we assume apache2 and libapache2-mod-wsgi-py3 in this document)
 
 On Ubuntu 13.10, you can get a Broadway enabled GTK+ and broadwayd through
 the following PPA:
@@ -26,8 +28,9 @@ INSTALLATION
 Here is how to set up the Deckard site.
 
 These are tested examples.
-Deckard should not depend on any specific infrastructure, so feel free to use
-whatever suit you best and to contribute back relevant configuration files ;-).
+Deckard should not depend on any specific infrastructure (eg. it should also
+work with Nginx), so feel free to use whatever suit you best and to contribute
+back relevant configuration files ;-).
 
 Common part
 -----------
