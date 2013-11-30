@@ -18,6 +18,7 @@
 
 
 command -v xmllint >/dev/null 2>&1 || { echo >&2 "This script requires the xmllint command. Aborting."; exit 1; }
+command -v git >/dev/null 2>&1 || { echo >&2 "This script requires the git command. Aborting."; exit 1; }
 
 export GDK_BACKEND=broadway  # necessary for X-less servers
 export BROADWAY_DISPLAY=9999  # The default port is 8080, but it is occupied by apache on deckard.malizor.org
