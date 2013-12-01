@@ -1,4 +1,4 @@
-Tested on Ubuntu 13.10.
+Tested on Ubuntu 12.04 and 13.10.
 
 
 DEPENDENCIES
@@ -14,12 +14,16 @@ python3-jinja2
 A Web server which provides the WSGI API for Python3
 (we assume apache2 and libapache2-mod-wsgi-py3 in this document)
 
+You may want to use the latest version of GTK+ if your interfaces depend on new
+widgets.
+
 On Ubuntu 13.10, you can get a Broadway enabled GTK+ and broadwayd through
 the following PPA:
 https://launchpad.net/~malizor/+archive/gtk-broadway
 
-You may want to use the latest version of GTK+ if your interfaces depend on new
-widgets.
+If you know APT and are not afraid, you can also use this PPA (for saucy) with
+older Ubuntu releases. For example, this is the case on the deckard.malizor.org
+server (Ubuntu 12.04 + PPA + 13.10 repo + APT configuration).
 
 
 INSTALLATION
