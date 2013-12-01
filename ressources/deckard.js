@@ -259,10 +259,12 @@ function spawn_return(req) {
         keep_alive_loop = setInterval(keep_alive, 2000);
         function update_iframe() {
             iframe.onload = function() {
-                // Allow scrolling with the mouse wheel in the iframe by hot-patching the broadwayd JS
+                // Allow scrolling with the mouse wheel in the iframe by hot-patching the broadwayd JS.
                 // The drawback is that it blocks interactions between the mouse wheel and some GTK widgets.
                 // Convenient scrolling is more important in the Deckard use case.
                 iframe.contentWindow.onMouseWheel = function(ev) {return true;}
+                // Inhibit the annoying alert on closing (strangely, it only seemed to affect Chromium)
+                iframe.contentWindow.alert = function(msg) {};
             }
             iframe.src = 'http://'+document.domain+'/'+res['port']+'/';
         }
