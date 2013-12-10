@@ -45,6 +45,11 @@ class GladeRunner:
     def __init__(self, glade_file_path, gettext_domain='foobar',
                  lang_path=None, language='POSIX', suicidal=False):
         """Create the GladeRunner instance"""
+
+        # Late import because of potential environment tweaking outside of
+        # the class (start_broadwayd)
+        from gi.repository import Gtk, GObject
+
         self.glade_file_path = glade_file_path
         self.lang_path = lang_path
         self.gettext_domain = gettext_domain
@@ -193,9 +198,6 @@ if __name__ == '__main__':
     args = parse()
     if args.with_broadwayd is not None:
         start_broadwayd(args.with_broadwayd)
-
-    # Late import because of environment tweaking in start_broadwayd
-    from gi.repository import Gtk, GObject
 
     gr = GladeRunner(args.glade_file_path,
                      args.gettext_domain,
