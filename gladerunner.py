@@ -24,7 +24,9 @@ import fcntl
 import locale
 import signal
 import ctypes
+import builtins
 import argparse
+import importlib
 from threading import Timer
 from subprocess import Popen
 
@@ -48,7 +50,8 @@ class GladeRunner:
 
         # Late import because of potential environment tweaking outside of
         # the class (start_broadwayd)
-        from gi.repository import Gtk, GObject
+        builtins.Gtk = importlib.import_module('gi.repository.Gtk')
+        builtins.GObject = importlib.import_module('gi.repository.GObject')
 
         self.glade_file_path = glade_file_path
         self.lang_path = lang_path
