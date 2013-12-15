@@ -20,8 +20,15 @@
 command -v xmllint >/dev/null 2>&1 || { echo >&2 "This script requires the xmllint command. Aborting."; exit 1; }
 command -v git >/dev/null 2>&1 || { echo >&2 "This script requires the git command. Aborting."; exit 1; }
 
-export GDK_BACKEND=broadway  # necessary for X-less servers
-export BROADWAY_DISPLAY=9999  # The default port is 8080, but it is occupied by apache on deckard.malizor.org
+# The following is necessary for X-less servers
+export GDK_BACKEND=broadway
+broadwayd :99 & # Ensure we do not conflict with the Deckard instance
+bPID=$! # broadwayd is killed at the end of the script
+trap "kill -9 $bPID; exit" SIGHUP SIGINT SIGTERM # ensure it is killed even if the script is aborted
+export BROADWAY_DISPLAY=:99
+# The following is only useful on the (default) Ubuntu desktop
+export UBUNTU_MENUPROXY=
+export LIBOVERLAY_SCROLLBAR=0
 
 # Supported locales
 locales=(af_ZA \
@@ -252,6 +259,8 @@ get_module transmageddon
 get_module vinagre
 get_module vino
 get_module zenity
+
+kill -9 $bPID
 
 # We are done, now replace the old content folder (if any)
 cd ..
