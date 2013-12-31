@@ -23,7 +23,6 @@ from urllib.parse import parse_qsl
 from jinja2 import Environment, FileSystemLoader
 
 import libdeckard
-from languages import locale_language_mapping
 
 jinja_env = None
 deckard_root = None
@@ -125,7 +124,7 @@ def application(environ, start_response):
 
     else:
         try:
-            content = get_content()
+            content = sessions_manager.get_displayable_content()
             template = jinja_env.get_template('deckard.tpl')
             res = template.render(content=content)
         except Exception as e:
@@ -133,28 +132,3 @@ def application(environ, start_response):
         start_response('200 OK', [('Content-Type',
                                    'text/html; charset=utf-8')])
         return [res.encode('utf-8')]
-
-
-def get_content():
-    """Retrieve available content"""
-    content = {'LANGS': {},
-               'MODULES': {}}
-
-    for lang in os.listdir(os.path.join(content_root, 'LANGS')):
-        if lang in locale_language_mapping:
-            content['LANGS'][lang] = locale_language_mapping[lang]
-    for directory in os.listdir(content_root):
-        if directory != 'LANGS':
-            content['MODULES'][directory] = []
-
-    for module in content['MODULES']:
-        mod_root = os.path.join(content_root, module)
-        for root, _, files in os.walk(mod_root):
-            for file_ in files:
-                _, ext = os.path.splitext(file_)
-                ext = ext.lower()
-                if ext == '.ui' or ext == '.xml' or ext == '.glade':
-                    rel_path = os.path.join(root, file_).split(mod_root)[1]
-                    rel_path = rel_path[1:]  # strip the leading '/'
-                    content['MODULES'][module].append(rel_path)
-    return content

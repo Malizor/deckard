@@ -27,6 +27,8 @@ from threading import Lock, Timer
 from collections import OrderedDict
 from subprocess import Popen, PIPE, STDOUT, check_output, CalledProcessError
 
+from languages import locale_language_mapping
+
 
 class DeckardException(Exception):
     """Standard exception"""
@@ -390,3 +392,35 @@ class SessionsManager:
         finally:
             if not init:
                 self._lock.release()
+
+    def get_displayable_content(self):
+        """Build the content structure by exploring self.content_root
+
+        The returned structure is as below:
+        {'LANG': {'locale1_code': 'locale1_name_in_the_relative_locale',
+                  'locale2_code': 'locale2_name_in_the_relative_locale'},
+         'MODULES': {'module1': ['file1.ui', 'file2.glade'],
+                     'module2': ['file1.xml', 'path/in/module/file2.ui']}
+        }
+        """
+        content = {'LANGS': {},
+                   'MODULES': {}}
+
+        for lang in os.listdir(os.path.join(self.content_root, 'LANGS')):
+            if lang in locale_language_mapping:
+                content['LANGS'][lang] = locale_language_mapping[lang]
+        for directory in os.listdir(self.content_root):
+            if directory != 'LANGS':
+                content['MODULES'][directory] = []
+
+        for module in content['MODULES']:
+            mod_root = os.path.join(self.content_root, module)
+            for root, _, files in os.walk(mod_root):
+                for file_ in files:
+                    _, ext = os.path.splitext(file_)
+                    ext = ext.lower()
+                    if ext == '.ui' or ext == '.xml' or ext == '.glade':
+                        rel_path = os.path.join(root, file_).split(mod_root)[1]
+                        rel_path = rel_path[1:]  # strip the leading '/'
+                        content['MODULES'][module].append(rel_path)
+        return content
