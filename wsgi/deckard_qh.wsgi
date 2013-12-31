@@ -34,7 +34,7 @@ gladerunner = None
 def init(environ):
     """Initialise global variables (at startup)"""
     global deckard_root
-    deckard_root = environ['DECKARD_ROOT']
+    deckard_root = environ.get('DECKARD_ROOT', '/home/deckard')
 
     global content_root
     content_root = os.path.join(deckard_root, 'content')
