@@ -18,8 +18,7 @@
 - Provide a user documentation in the Web interface
    advertise, for example, the use of http parameters
 
-- Rewrite "build-gnome-content.sh" in Python, make it more flexible
-   and useful for other projects than Gnome (eg. LibreOffice).
+- Cache the result of the get_diplayable_content() function
 
 - Propose gladerunner.py for upstreaming in the Glade project (to
    replace or to extend glade-previewer)
