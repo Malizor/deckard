@@ -249,11 +249,11 @@ class Session:
 class SessionsManager:
     """Helper to manage all Deckard sessions."""
 
-    def __init__(self, gladerunner, content_root):
+    def __init__(self, gladerunner, content_root, max_users):
         self.content_root = content_root
         self.gladerunner = gladerunner
         self.first_port = 2019
-        self.max_users = 10
+        self.max_users = max_users
         self.sessions = {}  # Sessions, by UUID
         self._lock = Lock()  # allows to only manipulate one session at a time
 

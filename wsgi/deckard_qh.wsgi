@@ -31,7 +31,8 @@ config = None
 
 default_config = {'content_dir_path': '/home/deckard/content',
                   'gladerunner_path': '/home/deckard/gladerunner.py',
-                  'template_dir_path': '/home/deckard/ressources'}
+                  'template_dir_path': '/home/deckard/ressources',
+                  'max_users': '10'}
 
 def init(environ):
     """Initialise global variables (at startup)"""
@@ -53,8 +54,8 @@ def init(environ):
         config['template_dir_path']))
     global sessions_manager
     sessions_manager = libdeckard.SessionsManager(config['gladerunner_path'],
-                                                  config['content_dir_path'])
-    sessions_manager.max_users = int(environ['DECKARD_MAX_USERS'])
+                                                  config['content_dir_path'],
+                                                  int(config['max_users']))
 
 
 def application(environ, start_response):
