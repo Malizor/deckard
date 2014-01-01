@@ -1,5 +1,5 @@
 # Deckard, a Web based Glade Runner
-# Copyright (C) 2013  Nicolas Delvaux <contact@nicolas-delvaux.org>
+# Copyright (C) 2013, 2014  Nicolas Delvaux <contact@nicolas-delvaux.org>
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -18,6 +18,7 @@
 
 import os
 import json
+import configparser
 from cgi import FieldStorage
 from urllib.parse import parse_qsl
 from jinja2 import Environment, FileSystemLoader
@@ -25,34 +26,40 @@ from jinja2 import Environment, FileSystemLoader
 import libdeckard
 
 jinja_env = None
-deckard_root = None
-content_root = None
 sessions_manager = None
-gladerunner = None
+config = None
 
+default_config = {'content_dir_path': '/home/deckard/content',
+                  'gladerunner_path': '/home/deckard/gladerunner.py',
+                  'template_dir_path': '/home/deckard/ressources'}
 
 def init(environ):
     """Initialise global variables (at startup)"""
-    global deckard_root
-    deckard_root = environ.get('DECKARD_ROOT', '/home/deckard')
 
-    global content_root
-    content_root = os.path.join(deckard_root, 'content')
+    conf_file = environ.get('DECKARD_CONF_FILE', './deckard.conf')
+    if not os.path.isfile(conf_file):
+        raise Exception('%s not found' % conf_file)
+        
+    global config
+    config = configparser.ConfigParser(interpolation=None,
+                                       inline_comment_prefixes=('#', ';'),
+                                       defaults=default_config)
+    config.read(conf_file)
+    config = config['deckard']
 
-    global gladerunner
-    gladerunner = os.path.join(deckard_root, 'gladerunner.py')
 
     global jinja_env
     jinja_env = Environment(loader=FileSystemLoader(
-            os.path.join(deckard_root, 'ressources')))
+        config['template_dir_path']))
     global sessions_manager
-    sessions_manager = libdeckard.SessionsManager(gladerunner, content_root)
+    sessions_manager = libdeckard.SessionsManager(config['gladerunner_path'],
+                                                  config['content_dir_path'])
     sessions_manager.max_users = int(environ['DECKARD_MAX_USERS'])
 
 
 def application(environ, start_response):
     """Main WSGI entry point"""
-    if deckard_root is None:
+    if config is None:
         init(environ)
     if environ['REQUEST_METHOD'] == 'POST':
         try:
