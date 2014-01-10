@@ -213,6 +213,7 @@ get_module five-or-more
 get_module f-spot
 get_module gbrainy
 get_module gcalctool
+get_module geary
 get_module gedit
 get_module gedit-latex
 get_module gedit-plugins
