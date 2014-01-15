@@ -252,6 +252,7 @@ get_module pitivi
 get_module rhythmbox
 get_module rygel
 get_module sabayon
+get_module shotwell
 get_module sound-juicer
 get_module swell-foop
 get_module totem
