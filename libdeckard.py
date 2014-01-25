@@ -124,7 +124,7 @@ class Session:
                 po.write(line)
             po.close()
             fd.close()
-        else:
+        elif len(self.po_urls) > 0:
             # Let's try to download 'name'
             response = None
             error = None
@@ -153,6 +153,10 @@ class Session:
             po.write(response.read(res_len))
             response.close()
             po.close()
+        else:
+            raise DeckardException('Operation not supported',
+                                   'The PO download feature is not configured '
+                                   'on this instance.')
 
         # Try to guess the language of this PO file, default is 'en_US'
         # This is good to know to later set proper environment variables and so
