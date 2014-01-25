@@ -249,7 +249,9 @@ class Session:
 class SessionsManager:
     """Helper to manage all Deckard sessions."""
 
-    def __init__(self, gladerunner, content_root, max_users, first_port,
+    def __init__(self, gladerunner, content_root,
+                 max_users=10,
+                 first_port=2019,
                  max_custom_po_per_session=4,
                  max_po_download_size=1500000,
                  po_urls=[]):
