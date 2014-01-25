@@ -34,6 +34,7 @@ default_config = {'content_dir_path': '/home/deckard/content',
                   'template_dir_path': '/home/deckard/ressources',
                   'max_users': '10',
                   'first_port': '2019',
+                  'max_po_download_size': '1500000',
                   'max_custom_po_per_session': '4',
                   'po_urls': ''}
 
@@ -61,6 +62,7 @@ def init(environ):
                                                   int(config['max_users']),
                                                   int(config['first_port']),
                                                   int(config['max_custom_po_per_session']),
+                                                  int(config['max_po_download_size']),
                                                   config['po_urls'].split())
 
 

@@ -44,7 +44,8 @@ class Session:
     Everything is cleaned-up when the session is deleted.
     """
 
-    def __init__(self, uuid, gladerunner, content_root, max_custom_po, po_urls):
+    def __init__(self, uuid, gladerunner, content_root,
+                 max_custom_po, max_po_download_size, po_urls):
         self.port = 0
         self.uuid = uuid  # unique id to avoid session spoofing
         self.process = None
@@ -53,7 +54,7 @@ class Session:
         self.gladerunner = gladerunner
         self.content_root = content_root
         self.max_custom_po = max_custom_po
-        self.max_file_download = 1500000  # 1.5 MB
+        self.max_po_download_size = max_po_download_size
         # URL sorted by priority
         # If one URL does not work, the next one will be tried
         self.po_urls = po_urls
@@ -139,14 +140,14 @@ class Session:
                 raise DeckardException('Enable to retrieve the file', error)
 
             res_len = response.length
-            if res_len > self.max_file_download:
+            if res_len > self.max_po_download_size:
                 response.close()
                 raise DeckardException('File too big',
                                        'The "%s" file is %d long and this app '
                                        'will not retrieve a file bigger than '
                                        '%d bytes.' % (name,
                                                       res_len,
-                                                      self.max_file_download))
+                                                      self.max_po_download_size))
 
             # Let's finally download this file!
             po.write(response.read(res_len))
@@ -249,16 +250,18 @@ class SessionsManager:
     """Helper to manage all Deckard sessions."""
 
     def __init__(self, gladerunner, content_root, max_users, first_port,
-                 max_custom_po_per_session=4, po_urls=[]):
+                 max_custom_po_per_session=4,
+                 max_po_download_size=1500000,
+                 po_urls=[]):
         self.gladerunner = gladerunner
         self.content_root = content_root
         self.max_users = max_users
         self.first_port = first_port
         self.max_custom_po_per_session = max_custom_po_per_session
+        self.max_po_download_size = max_po_download_size
         self.po_urls = po_urls
         self.sessions = {}  # Sessions, by UUID
         self._lock = Lock()  # allows to only manipulate one session at a time
-
         self._cleanup_loop_running = False
 
     def _get_session(self, uuid):
@@ -287,6 +290,7 @@ class SessionsManager:
                                       self.gladerunner,
                                       self.content_root,
                                       self.max_custom_po_per_session,
+                                      self.max_po_download_size,
                                       self.po_urls)
         if not self._cleanup_loop_running:
             self._cleanup_loop(init=True)  # Restart the cleanup loop
