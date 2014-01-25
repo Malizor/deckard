@@ -44,7 +44,7 @@ class Session:
     Everything is cleaned-up when the session is deleted.
     """
 
-    def __init__(self, uuid, gladerunner, content_root, max_custom_po):
+    def __init__(self, uuid, gladerunner, content_root, max_custom_po, po_urls):
         self.port = 0
         self.uuid = uuid  # unique id to avoid session spoofing
         self.process = None
@@ -56,8 +56,7 @@ class Session:
         self.max_file_download = 1500000  # 1.5 MB
         # URL sorted by priority
         # If one URL does not work, the next one will be tried
-        self.po_urls = ['http://l10n.gnome.org/media/upload/%s',
-                        'http://l10n.gnome.org/media/upload-backup/%s']
+        self.po_urls = po_urls
 
     def spawn_runner(self, module, module_file, language, port):
         """Launch a gladerunner instance.
@@ -250,12 +249,13 @@ class SessionsManager:
     """Helper to manage all Deckard sessions."""
 
     def __init__(self, gladerunner, content_root, max_users, first_port,
-                 max_custom_po_per_session=4):
+                 max_custom_po_per_session=4, po_urls=[]):
         self.gladerunner = gladerunner
         self.content_root = content_root
         self.max_users = max_users
         self.first_port = first_port
         self.max_custom_po_per_session = max_custom_po_per_session
+        self.po_urls = po_urls
         self.sessions = {}  # Sessions, by UUID
         self._lock = Lock()  # allows to only manipulate one session at a time
 
@@ -286,7 +286,8 @@ class SessionsManager:
         self.sessions[uuid] = Session(uuid,
                                       self.gladerunner,
                                       self.content_root,
-                                      self.max_custom_po_per_session)
+                                      self.max_custom_po_per_session,
+                                      self.po_urls)
         if not self._cleanup_loop_running:
             self._cleanup_loop(init=True)  # Restart the cleanup loop
             self._cleanup_loop_running = True

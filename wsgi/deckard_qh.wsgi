@@ -34,7 +34,8 @@ default_config = {'content_dir_path': '/home/deckard/content',
                   'template_dir_path': '/home/deckard/ressources',
                   'max_users': '10',
                   'first_port': '2019',
-                  'max_custom_po_per_session': '4'}
+                  'max_custom_po_per_session': '4',
+                  'po_urls': ''}
 
 def init(environ):
     """Initialise global variables (at startup)"""
@@ -59,7 +60,8 @@ def init(environ):
                                                   config['content_dir_path'],
                                                   int(config['max_users']),
                                                   int(config['first_port']),
-                                                  int(config['max_custom_po_per_session']))
+                                                  int(config['max_custom_po_per_session']),
+                                                  config['po_urls'].split())
 
 
 def application(environ, start_response):
