@@ -44,7 +44,7 @@ class Session:
     Everything is cleaned-up when the session is deleted.
     """
 
-    def __init__(self, uuid, gladerunner, content_root):
+    def __init__(self, uuid, gladerunner, content_root, max_custom_po):
         self.port = 0
         self.uuid = uuid  # unique id to avoid session spoofing
         self.process = None
@@ -52,7 +52,7 @@ class Session:
         self.removable = False  # can the manager delete this Session?
         self.gladerunner = gladerunner
         self.content_root = content_root
-        self.max_custom_po = 4
+        self.max_custom_po = max_custom_po
         # URL sorted by priority
         # If one URL does not work, the next one will be tried
         self.po_urls = ['http://l10n.gnome.org/media/upload/%s',
@@ -248,11 +248,13 @@ class Session:
 class SessionsManager:
     """Helper to manage all Deckard sessions."""
 
-    def __init__(self, gladerunner, content_root, max_users, first_port):
-        self.content_root = content_root
+    def __init__(self, gladerunner, content_root, max_users, first_port,
+                 max_custom_po_per_session=4):
         self.gladerunner = gladerunner
-        self.first_port = first_port
+        self.content_root = content_root
         self.max_users = max_users
+        self.first_port = first_port
+        self.max_custom_po_per_session = max_custom_po_per_session
         self.sessions = {}  # Sessions, by UUID
         self._lock = Lock()  # allows to only manipulate one session at a time
 
@@ -282,7 +284,8 @@ class SessionsManager:
         uuid = str(uuid4())
         self.sessions[uuid] = Session(uuid,
                                       self.gladerunner,
-                                      self.content_root)
+                                      self.content_root,
+                                      self.max_custom_po_per_session)
         if not self._cleanup_loop_running:
             self._cleanup_loop(init=True)  # Restart the cleanup loop
             self._cleanup_loop_running = True
