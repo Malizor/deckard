@@ -10,11 +10,6 @@
    like Zenity open many windows which are currently one on top of the
    other). This could lead to upstreamable (Gtk+) patches.
 
-- Provide a configuration file to easily change things like the content
-   folder location, the max sessions number, PO urls... This would
-   allow Deckard to be more flexible and less bound to Gnome (no one
-   want to edit the source code to change the default configuration).
-
 - Provide a user documentation in the Web interface
    advertise, for example, the use of http parameters
 
