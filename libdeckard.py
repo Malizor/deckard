@@ -53,6 +53,7 @@ class Session:
         self.gladerunner = gladerunner
         self.content_root = content_root
         self.max_custom_po = max_custom_po
+        self.max_file_download = 1500000  # 1.5 MB
         # URL sorted by priority
         # If one URL does not work, the next one will be tried
         self.po_urls = ['http://l10n.gnome.org/media/upload/%s',
