@@ -85,7 +85,7 @@ if (param_file) {
     if (!valid_param_module) {
         alert('You must specify a valid module via the "module" parameter.');
     } else {
-        // Ask the server to get this file from l10n.gnome.org
+        // Ask the server to download this file (if supported on this instance)
         upload_po(param_file);
     }
 } else if (param_display == '1') {
@@ -113,7 +113,7 @@ function get_url_for_this_view() {
     var i = locale_selector.value.indexOf('\u2003');
     if (i == -1) {
         if (locale_selector.value == param_file) {
-            url += '&file='+locale_selector.value+'&display=1';  // PO from l10n.gnome.org
+            url += '&file='+locale_selector.value+'&display=1';  // remote PO
         } // else, this is a PO uploaded from the user. It can't be transmited via simple parameters.
           // No automatic display in this case.
     } else {
@@ -168,10 +168,10 @@ function xml_http_post(url, data, callback) {
     xhr.send(data);
 }
 
-function upload_po(file_name_on_l10ngnome) {
+function upload_po(remote_file_name) {
     var data = new FormData();
-    if (file_name_on_l10ngnome) {
-        data.append('po_name', file_name_on_l10ngnome);
+    if (remote_file_name) {
+        data.append('po_name', remote_file_name);
     } else {
         data.append('po_name', po_picker.value);
         data.append('po_file', po_picker.files[0]);
