@@ -165,8 +165,3 @@ You have to install Gtk translations for the specified locale.
 For example, for Arabian on Ubuntu:
 sudo apt-get install language-pack-gnome-ar-base --no-install-recommends
 
-
-I found a bug/I have an idea!
------------------------------
-
-Please report it on https://bugs.launchpad.net/deckard
