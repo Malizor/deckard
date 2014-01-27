@@ -70,7 +70,7 @@
     <iframe id="iframe" src="about:blank"></iframe>
     <p id="get_url"><a title="Display a link to this particular view" href="#url_view" onclick="get_url_for_this_view();">Get URL for this view</a>
     </p>
-    <p id="get_code"><a title="Launchpad project" href="https://launchpad.net/deckard">Get the code!</a></p>
+    <p id="get_code"><a title="Deckard on GitHub" href="https://github.com/Malizor/deckard">Get the code!</a></p>
     <p id="url_view"></p>
     <script type="text/javascript" src="ressources/deckard.js"></script>
   </body>

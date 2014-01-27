@@ -105,7 +105,7 @@ Patches even more!
 ### Bugs/Ideas
 
 Please report them on
-[https://bugs.launchpad.net/deckard](https://bugs.launchpad.net/deckard)
+[https://github.com/Malizor/deckard/issue](https://github.com/Malizor/deckard/issues)
 
 
 ### Licence
