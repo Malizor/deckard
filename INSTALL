@@ -46,7 +46,7 @@ sudo useradd deckard --create-home
 
 - Copy the source folder content in /home/deckard
   Of course, all files should belong to the 'deckard' user.
-  On deckard.malizor.org, /home/deckard is actually a bzr repository, which ease
+  On deckard.malizor.org, /home/deckard is actually a git repository, which ease
   deployment of updates.
   
 - Copy conf/apache2/<version>/deckard.conf in /etc/apache2/sites-available
