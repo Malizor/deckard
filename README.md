@@ -48,8 +48,8 @@ prevent them to run. We don't want that either.
 This is why Deckard uses its own program to load and run Glade files securely.
 (see **gladerunner.py**) 
 
-Also, dealing with Glade files allows to display them directly
-when they may not be easily accessible in the true application.
+Also, dealing with Glade files allows to display them directly, even if they
+may not be easily accessible in the true application.
 
 #### How does it work?
 
@@ -84,7 +84,7 @@ UI file in the right module with the right locale.
 These are:
 
   * **module=name**  The module to pre-select
-  * **ui=name**  The module to pre-select
+  * **ui=name**  The Glade file to pre-select
   * **locale=name**  The locale to pre-select
   * **display=1**  If the display should be launched automatically
   * **file=file.po**  Remote PO file to download automatically
