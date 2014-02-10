@@ -65,7 +65,7 @@ Simple way, with just Apache
   "80"
 - Restart apache
 sudo service apache2 restart
-- Edit ressources/deckard.js and replace the '/' by a ':' in the spawn_return
+- Edit resources/deckard.js and replace the '/' by a ':' in the spawn_return
   function (there is a comment just before the right line).
 
 And that's it.

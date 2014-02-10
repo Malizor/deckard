@@ -269,7 +269,7 @@ function spawn_return(req) {
             iframe.src = 'http://'+document.domain+'/'+res['port']+'/';
         }
         // change the '/' before the port by a ':' if you did not configure a proxy to redirect runner ports on port 80
-        iframe.src = 'ressources/waiting.html';
+        iframe.src = 'resources/waiting.html';
         // Wait for the remote process to be fully started
         if (process_running) {
             setTimeout(update_iframe, 700);

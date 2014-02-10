@@ -68,7 +68,7 @@ file leak).
   * **wsgi/deckard.wsgi** is the main Deckard entry point. All it does is wiring
 between Web requests and libdeckard.py.
 
-  * **ressources/** contains all the Web files (JavaScript, HTML template, CSS...)
+  * **resources/** contains all the Web files (JavaScript, HTML template, CSS...)
 
 Please refer to individual files for further documentation.
 

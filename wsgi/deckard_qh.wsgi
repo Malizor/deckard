@@ -31,7 +31,7 @@ config = None
 
 default_config = {'content_dir_path': '/home/deckard/content',
                   'gladerunner_path': '/home/deckard/gladerunner.py',
-                  'template_dir_path': '/home/deckard/ressources',
+                  'template_dir_path': '/home/deckard/resources',
                   'max_users': '10',
                   'first_port': '2019',
                   'max_po_download_size': '1500000',

@@ -4,7 +4,7 @@
   <head>
     <title>Deckard: a Web based Glade Runner</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <link href="/ressources/deckard.css" rel="stylesheet" type="text/css" media="all" />
+    <link href="/resources/deckard.css" rel="stylesheet" type="text/css" media="all" />
   </head>
   <body>
     <h1>Deckard: a Web based Glade Runner</h1>
@@ -62,7 +62,7 @@
       <table>
         <tr>
           <td><input id="upload_button" type="button" value="Upload" onclick="upload_po();" disabled="disabled"></td>
-          <td><img id="upload_spinner" src="ressources/spinner_tiny.gif" alt="Uploading..." title="Uploading..."/></td>
+          <td><img id="upload_spinner" src="resources/spinner_tiny.gif" alt="Uploading..." title="Uploading..."/></td>
         </tr>
       </table>
     </form>
@@ -72,6 +72,6 @@
     </p>
     <p id="get_code"><a title="Deckard on GitHub" href="https://github.com/Malizor/deckard">Get the code!</a></p>
     <p id="url_view"></p>
-    <script type="text/javascript" src="ressources/deckard.js"></script>
+    <script type="text/javascript" src="resources/deckard.js"></script>
   </body>
 </html>
