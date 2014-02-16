@@ -141,14 +141,31 @@ class GladeRunner:
         try:
             self.builder.add_from_string(ui_string)
         except Exception as e:
-            # Try to detect if we miss a custom widget
             message = str(e)
+            # Try to detect if we miss a custom widget
             if message.startswith('Invalid object type `'):
                 try:
                     # This will fail if this placeholder was already defined
                     exec(placeholder_widget % {'name': message[21:-1]})
                     self._load(ui_string)
                 except:
+                    sys.exit(message)
+            # Any unknown internal child?
+            elif message.startswith('Unknown internal child: '):
+                # Just try to delete it.
+                # Not sure if something better can be done, but this allows the
+                # display of some more UI (like in Epiphany)
+                deleted = False
+                tree = ET.fromstring(ui_string)
+                for obj in tree.findall('object'):
+                    for child in obj.findall('child'):
+                        if child.get('internal-child') == message[24:]:
+                            deleted = True
+                            obj.remove(child)
+                if deleted:
+                    self._load(ET.tostring(tree).decode())
+                else:
+                    # No infinite loop please
                     sys.exit(message)
             else:
                 sys.exit(message)
