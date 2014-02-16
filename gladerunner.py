@@ -138,7 +138,7 @@ class GladeRunner:
             message = str(e)
             if message.startswith('Invalid object type `'):
                 try:
-                    # This will fails if this placeholder was already defined
+                    # This will fail if this placeholder was already defined
                     exec(placeholder_widget % {'name': message[21:-1]})
                     self._load()
                 except:
