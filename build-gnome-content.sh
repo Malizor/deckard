@@ -168,7 +168,7 @@ function get_module {
     find $module -not -iregex ".*\.\(ui\|xml\|glade\|png\|jpg\|jpeg\|svg\)" | xargs rm 2> /dev/null
 
     # Basic check to remove non-glade files
-    find $module -iregex ".*\.\(ui\|xml\|glade\)" -exec sh -c 'xmllint --xpath /interface/object {} 2> /dev/null > /dev/null || (echo {} is not valid, removing it... && rm -f {})' \;
+    find $module -iregex ".*\.\(ui\|xml\|glade\)" -exec sh -c 'xmllint --xpath /interface {} 2> /dev/null > /dev/null || (echo {} is not valid, removing it... && rm -f {})' \;
 
     # We don't support odd glade files with type-func attributes (evolution, I'm looking at you)
     rm -f $(grep -lr "type-func" .)
