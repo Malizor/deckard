@@ -93,7 +93,7 @@ class GladeRunner:
 
         # Read the UI file
         ui_string = ''
-        with open(self.glade_file_path) as f:
+        with open(self.glade_file_path, encoding='UTF-8') as f:
             ui_string = f.read()
 
         ui_string = substitute_templates(ui_string)
