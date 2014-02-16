@@ -192,7 +192,11 @@ if len(gr.windows) == 0:
     cd content_tmp
 
     # Remove empty folders
-    find $module -type d -empty -exec rmdir 2> /dev/null {} \;
+    find $module -type d -empty -exec rmdir -p 2> /dev/null {} \;
+    if [ ! -d "${module}" ]
+    then
+	echo "There is nothing displayable in $module."
+    fi
 }
 
 cd content_tmp
