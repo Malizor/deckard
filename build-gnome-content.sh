@@ -240,7 +240,6 @@ get_module goffice
 get_module gpointing-device-settings
 get_module gthumb
 get_module gtranslator
-get_module iagno
 get_module libgnome-media-profiles
 get_module meld
 get_module monkey-bubble
