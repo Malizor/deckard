@@ -90,7 +90,12 @@ class GladeRunner:
         locale.bindtextdomain(self.gettext_domain, self.lang_path)
         locale.textdomain(self.gettext_domain)
 
-        self._load()
+        # Read the UI file
+        ui_string = ''
+        with open(self.glade_file_path) as f:
+            ui_string = f.read()
+
+        self._load(ui_string)
 
         for obj in self.builder.get_objects():
             # disable FileChooser (it can be a security issue)
@@ -126,13 +131,13 @@ class GladeRunner:
                 window.add(obj)
                 self.windows[name] = window
 
-    def _load(self):
-        """Try to load a glade file.
+    def _load(self, ui_string):
+        """Try to load a Glade file from a string.
 
         If an unknown widget is found, try to use a placeholder instead.
         """
         try:
-            self.builder.add_from_file(self.glade_file_path)
+            self.builder.add_from_string(ui_string)
         except Exception as e:
             # Try to detect if we miss a custom widget
             message = str(e)
@@ -140,7 +145,7 @@ class GladeRunner:
                 try:
                     # This will fail if this placeholder was already defined
                     exec(placeholder_widget % {'name': message[21:-1]})
-                    self._load()
+                    self._load(ui_string)
                 except:
                     sys.exit(message)
             else:
