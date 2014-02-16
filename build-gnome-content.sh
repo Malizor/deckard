@@ -263,7 +263,6 @@ get_module totem
 get_module tracker
 get_module transmageddon
 get_module vinagre
-get_module vino
 get_module zenity
 
 kill -9 $bPID
