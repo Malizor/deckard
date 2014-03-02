@@ -135,7 +135,7 @@ class GladeRunner:
                 self.windows[name] = obj
 
         if len(self.windows) == 0:
-            # Try to get higher level widgets and put them in windows
+            # Try to get highest level widgets and put them in windows
             toplevel = set()
             for obj in self.builder.get_objects():
                 if hasattr(obj, 'get_toplevel'):
@@ -174,7 +174,7 @@ class GladeRunner:
             # Any unknown internal child?
             elif message.startswith('Unknown internal child: '):
                 # Just try to delete it.
-                # Not sure if something better can be done, but this allows the
+                # Not sure if this is the best thing to do, but it allows the
                 # display of some more UI (like in Epiphany)
                 deleted = False
                 for obj in tree.findall('.//object'):
