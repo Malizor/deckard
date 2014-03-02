@@ -267,7 +267,7 @@ def parse():
     parser.add_argument('-c', '--catalog-path',
                         type=lambda p: is_file(parser, p),
                         help="Load the specified Glade catalog.")
-    parser.add_argument('glade_file_path')
+    parser.add_argument('glade_file_path', type=lambda p: is_file(parser, p))
     parser.add_argument('gettext_domain', default='foobar', nargs='?')
     parser.add_argument('language', default='POSIX', nargs='?')
     parser.add_argument('lang_path', default=None, nargs='?')
