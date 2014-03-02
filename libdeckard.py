@@ -45,7 +45,7 @@ class Session:
     """
 
     def __init__(self, uuid, gladerunner, content_root,
-                 max_custom_po, max_po_download_size, po_urls):
+                 max_custom_po, max_po_download_size, glade_catalog, po_urls):
         self.port = 0
         self.uuid = uuid  # unique id to avoid session spoofing
         self.process = None
@@ -55,6 +55,7 @@ class Session:
         self.content_root = content_root
         self.max_custom_po = max_custom_po
         self.max_po_download_size = max_po_download_size
+        self.glade_catalog = glade_catalog
         # URL sorted by priority
         # If one URL does not work, the next one will be tried
         self.po_urls = po_urls
@@ -88,18 +89,23 @@ class Session:
             lang_root = os.path.join(self.content_root, 'LANGS')
 
         env['LANG'] = language
-        self.process = Popen([self.gladerunner,
-                              '--suicidal',
-                              '--with-broadwayd',
-                              str(port),
-                              os.path.join(self.content_root,
-                                           module,
-                                           module_file),
-                              module,
-                              language,
-                              lang_root],
-                             stdin=PIPE,
-                             env=env)
+
+        # Build the gladerunner command line
+        args = [self.gladerunner,
+                '--suicidal',
+                '--with-broadwayd',
+                str(port),
+                os.path.join(self.content_root, module, module_file),
+                module,
+                language,
+                lang_root]
+
+        # Should we use a Glade catalog?
+        if os.path.isfile(self.glade_catalog):
+            args.extend(('--catalog-path', self.glade_catalog))
+
+        # Launch it!
+        self.process = Popen(args, stdin=PIPE, env=env)
 
     def store_po(self, name, module, fd=None):
         """Store a custom PO file
@@ -258,6 +264,7 @@ class SessionsManager:
                  first_port=2019,
                  max_custom_po_per_session=4,
                  max_po_download_size=1500000,
+                 glade_catalog='',
                  po_urls=[]):
         self.gladerunner = gladerunner
         self.content_root = content_root
@@ -265,6 +272,7 @@ class SessionsManager:
         self.first_port = first_port
         self.max_custom_po_per_session = max_custom_po_per_session
         self.max_po_download_size = max_po_download_size
+        self.glade_catalog = glade_catalog
         self.po_urls = po_urls
         self.sessions = {}  # Sessions, by UUID
         self._lock = Lock()  # allows to only manipulate one session at a time
@@ -297,6 +305,7 @@ class SessionsManager:
                                       self.content_root,
                                       self.max_custom_po_per_session,
                                       self.max_po_download_size,
+                                      self.glade_catalog,
                                       self.po_urls)
         if not self._cleanup_loop_running:
             self._cleanup_loop(init=True)  # Restart the cleanup loop

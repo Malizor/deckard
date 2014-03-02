@@ -36,6 +36,7 @@ default_config = {'content_dir_path': '/home/deckard/content',
                   'first_port': '2019',
                   'max_po_download_size': '1500000',
                   'max_custom_po_per_session': '4',
+                  'glade_catalog_path': '',
                   'po_urls': ''}
 
 def init(environ):
@@ -63,6 +64,7 @@ def init(environ):
                                                   int(config['first_port']),
                                                   int(config['max_custom_po_per_session']),
                                                   int(config['max_po_download_size']),
+                                                  config['glade_catalog_path'],
                                                   config['po_urls'].split())
 
 
