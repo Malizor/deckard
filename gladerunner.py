@@ -45,8 +45,13 @@ class %(name)s(Gtk.Label):
 class GladeRunner:
     """Module to load a Glade file and display all windows in it"""
 
-    def __init__(self, glade_file_path, gettext_domain='foobar',
-                 lang_path=None, language='POSIX', suicidal=False):
+    def __init__(self,
+                 glade_file_path,
+                 gettext_domain='foobar',
+                 lang_path=None,
+                 language='POSIX',
+                 suicidal=False,
+                 catalog_path=None):
         """Create the GladeRunner instance"""
 
         # Late import because of potential environment tweaking outside of
@@ -58,7 +63,14 @@ class GladeRunner:
         self.lang_path = lang_path
         self.gettext_domain = gettext_domain
         self.builder = Gtk.Builder()
+        self.mapping = dict()  # inheritances parsed from the catalog
         self.windows = {}
+
+        if catalog_path is not None:
+            tree = ET.parse(catalog_path)
+            for gclass in tree.findall('.//glade-widget-class'):
+                if gclass.get('parent'):
+                    self.mapping[gclass.get('name')] = gclass.get('parent')
 
         if suicidal:
             # Set STDIN to be non-blocking
@@ -90,6 +102,7 @@ class GladeRunner:
         """Process and load the provided glade file
 
         The file content is processed by:
+         - handling catalogs
          - taking care of templates
          - deleting unknown internal children
          - replacing unknown widgets by placeholders
@@ -113,6 +126,12 @@ class GladeRunner:
             template.set('id', template.get('class'))
             template.set('class', template.get('parent'))
             del template.attrib['parent']
+
+        # Apply the mapping
+        if len(self.mapping) > 0:
+            for obj in tree.findall('.//object'):
+                if obj.get('class') in self.mapping:
+                    obj.set('class', self.mapping[obj.get('class')])
 
         # The locale has to be set before GTK loads the file
         locale.bindtextdomain(self.gettext_domain, self.lang_path)
@@ -229,6 +248,14 @@ def start_broadwayd(port):
 
 def parse():
     """Argument parsing"""
+
+    def is_file(parser, path):
+        """Additional type checker for argparse"""
+        if not os.path.isfile(path):
+            parser.error('%s: no such file.' % path)
+        else:
+            return path
+
     parser = argparse.ArgumentParser()
     parser.add_argument('-s', '--suicidal', action='store_true',
                         help="Try to read from STDIN each 5 seconds. "
@@ -237,6 +264,9 @@ def parse():
                         help="Start a broadwayd daemon on the specified port "
                         "and display through it. "
                         "This option is required for GTK+ >= 3.8.")
+    parser.add_argument('-c', '--catalog-path',
+                        type=lambda p: is_file(parser, p),
+                        help="Load the specified Glade catalog.")
     parser.add_argument('glade_file_path')
     parser.add_argument('gettext_domain', default='foobar', nargs='?')
     parser.add_argument('language', default='POSIX', nargs='?')
@@ -248,11 +278,11 @@ if __name__ == '__main__':
     args = parse()
     if args.with_broadwayd is not None:
         start_broadwayd(args.with_broadwayd)
-
     gr = GladeRunner(args.glade_file_path,
                      args.gettext_domain,
                      args.lang_path,
                      args.language,
-                     args.suicidal)
+                     args.suicidal,
+                     args.catalog_path)
     gr.load()
     gr.display()
