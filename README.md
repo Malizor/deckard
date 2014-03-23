@@ -108,7 +108,7 @@ Please report them on
 [https://github.com/Malizor/deckard/issue](https://github.com/Malizor/deckard/issues)
 
 
-### Licence
+### License
 
 GNU Affero General Public License (AGPL) version 3  
 Please refer to the **COPYING** file.
