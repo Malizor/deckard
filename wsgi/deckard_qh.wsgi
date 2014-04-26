@@ -29,9 +29,9 @@ jinja_env = None
 sessions_manager = None
 config = None
 
-default_config = {'content_dir_path': '/home/deckard/content',
-                  'gladerunner_path': '/home/deckard/gladerunner.py',
-                  'template_dir_path': '/home/deckard/resources',
+default_config = {'content_dir_path': '/home/deckard/deckard-app/content',
+                  'gladerunner_path': '/home/deckard/deckard-app/gladerunner.py',
+                  'template_dir_path': '/home/deckard/deckard-app/resources',
                   'max_users': '10',
                   'first_port': '2019',
                   'max_po_download_size': '1500000',

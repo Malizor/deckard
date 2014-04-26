@@ -42,12 +42,10 @@ Common part
 Deckard will be ran as a specific user to secure things a bit.
 
 - Create a user named 'deckard' and it's home directory
-sudo useradd deckard --create-home
+sudo useradd deckard --create-home -s /usr/sbin/nologin -g www-data
 
-- Copy the source folder content in /home/deckard
+- Copy the source folder content in /home/deckard/deckard-app
   Of course, all files should belong to the 'deckard' user.
-  On deckard.malizor.org, /home/deckard is actually a git repository, which ease
-  deployment of updates.
   
 - Copy conf/apache2/<version>/deckard.conf in /etc/apache2/sites-available
   (you probably want to change ServerAdmin and ServerName before)
