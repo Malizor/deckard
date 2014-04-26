@@ -42,17 +42,18 @@ default_config = {'content_dir_path': '/home/deckard/deckard-app/content',
 def init(environ):
     """Initialise global variables (at startup)"""
 
-    conf_file = environ.get('DECKARD_CONF_FILE', './deckard.conf')
-    if not os.path.isfile(conf_file):
-        raise Exception('%s not found' % conf_file)
-        
     global config
-    config = configparser.ConfigParser(interpolation=None,
-                                       inline_comment_prefixes=('#', ';'),
-                                       defaults=default_config)
-    config.read(conf_file)
-    config = config['deckard']
-
+    conf_file = environ.get('DECKARD_CONF_FILE', './deckard.conf')
+    if os.path.isfile(conf_file):
+        # Parse the configuration file
+        config = configparser.ConfigParser(interpolation=None,
+                                           inline_comment_prefixes=('#', ';'),
+                                           defaults=default_config)
+        config.read(conf_file)
+        config = config['deckard']
+    else:
+        # Just use default settings
+        config = default_config
 
     global jinja_env
     jinja_env = Environment(loader=FileSystemLoader(
