@@ -40,10 +40,13 @@ default_config = {'content_dir_path': '/home/deckard/deckard-app/content',
                   'po_urls': ''}
 
 def init(environ):
-    """Initialise global variables (at startup)"""
+    """Load configuration and initialize global variables"""
 
     global config
-    conf_file = environ.get('DECKARD_CONF_FILE', './deckard.conf')
+    # Some servers (eg. Apache/mod_python) put environment variables in environ
+    # but others (eg. uWSGI) put them in os.environ...
+    conf_file = environ.get('DECKARD_CONF_FILE',
+                            os.environ.get('DECKARD_CONF_FILE', './deckard.conf'))
     if os.path.isfile(conf_file):
         # Parse the configuration file
         config = configparser.ConfigParser(interpolation=None,
