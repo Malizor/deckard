@@ -17,6 +17,13 @@ RUN apt-get upgrade -y
 RUN apt-get install -y nginx broadwayd gir1.2-gtk-3.0 python3-gi python3-jinja2
 RUN apt-get install --no-install-recommends -y uwsgi uwsgi-plugin-python3 git ca-certificates gettext libxml2-utils gnome-themes-standard language-pack-gnome-*
 
+# Install some fonts to cover most languages
+RUN apt-get install -y ttf-ubuntu-font-family ttf-indic-fonts-core ttf-punjabi-fonts fonts-droid fonts-dejavu-extra fonts-khmeros-core fonts-lklug-sinhala fonts-sil-padauk fonts-nanum
+
+# Make sure that all locales are generated
+RUN dpkg-reconfigure locales
+
+
 # Create a dedicated user
 RUN useradd deckard --create-home -s /usr/sbin/nologin -g www-data
 
@@ -43,10 +50,18 @@ RUN service nginx restart
 
 
 # Deckard itself is installed now, we only miss data from gnome.org
-RUN sudo -u deckard ~deckard/deckard-app/build-gnome-content.sh
+RUN cd ~deckard && export PYTHONPATH=~deckard/deckard-app && sudo -u deckard ~deckard/deckard-app/build-gnome-content.sh
 
 # Auto-update the content folder once a day
-RUN echo "0 2 * * * ~deckard/deckard-app/build-gnome-content.sh" | sudo -u deckard crontab -
+RUN echo "0 2 * * * PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-gnome-content.sh" | sudo -u deckard crontab -
+
+# Configure Deckard to use our content folder
+RUN sudo -u deckard cp ~deckard/deckard-app/deckard.conf ~deckard/deckard-app/deckard.conf
+RUN echo -e "[deckard]\ncontent_dir_path = /home/deckard/content" | sudo -u deckard tee ~deckard/deckard-app/deckard.conf > /dev/null
+
+# Point uWSGI to our configuration file
+RUN echo "env = DECKARD_CONF_FILE=/home/deckard/deckard.conf" >> /etc/uwsgi/apps-enabled/deckard.ini
+RUN service uwsgi restart
 
 
 # Expose nginx
