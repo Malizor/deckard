@@ -109,7 +109,7 @@ function getParameterByName(name) {
 }
 
 function get_url_for_this_view() {
-    var url = 'http://'+document.domain+'/?module='+module_selector.value+'&ui='+current_ui_selector.value;
+    var url = window.location.origin+'/?module='+module_selector.value+'&ui='+current_ui_selector.value;
     var i = locale_selector.value.indexOf('\u2003');
     if (i == -1) {
         if (locale_selector.value == param_file) {
@@ -266,9 +266,9 @@ function spawn_return(req) {
                 // Inhibit the annoying alert on closing (strangely, it only seemed to affect Chromium)
                 iframe.contentWindow.alert = function(msg) {};
             }
-            iframe.src = 'http://'+document.domain+'/'+res['port']+'/';
+            // change the '/' before the port by a ':' if you did not configure a proxy to redirect runner ports on port 80
+            iframe.src = window.location.origin+'/'+res['port']+'/';
         }
-        // change the '/' before the port by a ':' if you did not configure a proxy to redirect runner ports on port 80
         iframe.src = 'resources/waiting.html';
         // Wait for the remote process to be fully started
         if (process_running) {
