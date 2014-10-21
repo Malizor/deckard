@@ -1,11 +1,11 @@
 # This Dockerfile is experimental: it is not production ready.
 # However, it may also be seen as a step-by-step tutorial for a manual installation.
 
-FROM ubuntu:14.04
+FROM ubuntu:14.10
 MAINTAINER Nicolas Delvaux, contact@nicolas-delvaux.org
 
 # Add my PPA for an HTML5 enabled GTK+
-RUN echo "deb http://ppa.launchpad.net/malizor/gtk-broadway/ubuntu trusty main" > /etc/apt/sources.list.d/malizor-gtk-broadway-trusty.list
+RUN echo "deb http://ppa.launchpad.net/malizor/gtk-broadway/ubuntu utopic main" > /etc/apt/sources.list.d/malizor-gtk-broadway-utopic.list
 # Add the key
 RUN apt-key adv --recv-keys --keyserver keyserver.ubuntu.com F829E15318015CCF
 
@@ -57,7 +57,7 @@ RUN echo "0 2 * * * PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-g
 
 # Configure Deckard to use our content folder
 RUN sudo -u deckard cp ~deckard/deckard-app/deckard.conf ~deckard/deckard-app/deckard.conf
-RUN echo -e "[deckard]\ncontent_dir_path = /home/deckard/content" | sudo -u deckard tee ~deckard/deckard-app/deckard.conf > /dev/null
+RUN echo -e "[deckard]\ncontent_dir_path = /home/deckard/content" | sudo -u deckard tee ~deckard/deckard.conf > /dev/null
 
 # Point uWSGI to our configuration file
 RUN echo "env = DECKARD_CONF_FILE=/home/deckard/deckard.conf" >> /etc/uwsgi/apps-enabled/deckard.ini
