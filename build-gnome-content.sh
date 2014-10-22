@@ -245,6 +245,7 @@ get_module meld
 get_module monkey-bubble
 get_module mousetweaks 
 get_module nanny
+get_module nautilus
 get_module nemiver
 get_module network-manager-applet
 get_module network-manager-openvpn
