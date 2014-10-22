@@ -287,6 +287,9 @@ get_module zenity
 
 kill -9 $bPID
 
+# Remember when this was done
+date -Is > timestamp
+
 # We are done, now replace the old content folder (if any)
 cd ..
 rm -rf content
