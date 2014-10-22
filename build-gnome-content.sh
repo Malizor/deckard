@@ -125,9 +125,28 @@ done
 
 function get_module {
     module=$1
-    echo "Getting $module..."
     mkdir -p $module
-    git clone --depth 1 git://git.gnome.org/$module tmp_clone
+
+    # Repositories are cached locally
+    if [ -d "../cache/$module/.git" ]; then
+	echo "Updating the cached $module repository..."
+	cd ../cache/$module
+	git fetch origin
+	git reset --hard origin/master
+	git gc --prune=now  # Minimize disk space
+	cd -
+    else
+	echo "Getting $module (as it was not found in the cache)..."
+	mkdir -p ../cache
+	cd ../cache
+	git clone git://git.gnome.org/$module
+	cd -
+	echo "$module was downloaded and cached."
+    fi
+
+    # Copy the module to a work directory
+    rm -rf workdir
+    rsync -rq --exclude=.git ../cache/$module/ workdir
 
     # Build locals
     for lang in ${locales[@]}
@@ -138,31 +157,31 @@ function get_module {
         for i in $lang; do lstring+=($i); done
         unset IFS
 
-        if [ -f tmp_clone/po/$lang.po ]
+        if [ -f workdir/po/$lang.po ]
         then
-            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo tmp_clone/po/$lang.po
-        elif [ -f tmp_clone/po/${lstring[0]}_${lstring[1]}.po ]
+            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo workdir/po/$lang.po
+        elif [ -f workdir/po/${lstring[0]}_${lstring[1]}.po ]
         then
-            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo tmp_clone/po/${lstring[0]}_${lstring[1]}.po
-        elif [ -f tmp_clone/po/${lstring[0]}.po ]
+            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo workdir/po/${lstring[0]}_${lstring[1]}.po
+        elif [ -f workdir/po/${lstring[0]}.po ]
         then
-            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo tmp_clone/po/${lstring[0]}.po
+            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo workdir/po/${lstring[0]}.po
         else
             echo "No PO file found for $lang in $module!"
         fi
     done
 
     # Detect and keep relevant folders
-    folders=(`find tmp_clone -iregex ".*\.\(ui\|xml\|glade\)" -printf '%h\n' | sort -u`)
+    folders=(`find workdir -iregex ".*\.\(ui\|xml\|glade\)" -printf '%h\n' | sort -u`)
     for folder in ${folders[@]}
     do
 	cp --parents -r $folder $module
     done
     # Move all the tree up
-    mv $module/tmp_clone/* $module
-    rm -rf $module/tmp_clone
+    mv $module/workdir/* $module
+    rm -rf $module/workdir
     # We don't need the clone anymore
-    rm -rf tmp_clone
+    rm -rf workdir
 
     # Remove unwanted files
     find $module -not -iregex ".*\.\(ui\|xml\|glade\|png\|jpg\|jpeg\|svg\)" | xargs rm 2> /dev/null
@@ -243,7 +262,7 @@ get_module gtranslator
 get_module libgnome-media-profiles
 get_module meld
 get_module monkey-bubble
-get_module mousetweaks 
+get_module mousetweaks
 get_module nanny
 get_module nautilus
 get_module nemiver
