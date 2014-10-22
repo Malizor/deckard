@@ -19,6 +19,7 @@
 
 command -v xmllint >/dev/null 2>&1 || { echo >&2 "This script requires the xmllint command. Aborting."; exit 1; }
 command -v git >/dev/null 2>&1 || { echo >&2 "This script requires the git command. Aborting."; exit 1; }
+command -v rsync >/dev/null 2>&1 || { echo >&2 "This script requires the rsync command. Aborting."; exit 1; }
 
 # The following is necessary for X-less servers
 export GDK_BACKEND=broadway
