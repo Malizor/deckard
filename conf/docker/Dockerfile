@@ -15,7 +15,7 @@ RUN apt-get upgrade -y
 
 # Install dependencies
 RUN apt-get install -y nginx broadwayd gir1.2-gtk-3.0 python3-gi python3-jinja2
-RUN apt-get install --no-install-recommends -y uwsgi uwsgi-plugin-python3 git ca-certificates gettext libxml2-utils gnome-themes-standard language-pack-gnome-*
+RUN apt-get install --no-install-recommends -y uwsgi uwsgi-plugin-python3 git ca-certificates gettext libxml2-utils rsync gnome-themes-standard language-pack-gnome-*
 
 # Install some fonts to cover most languages
 RUN apt-get install -y ttf-ubuntu-font-family ttf-indic-fonts-core ttf-punjabi-fonts fonts-droid fonts-dejavu-extra fonts-khmeros-core fonts-lklug-sinhala fonts-sil-padauk fonts-nanum
