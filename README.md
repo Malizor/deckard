@@ -29,7 +29,7 @@ For Gnome projects:
 
 #### How can I install it?
 
-Please refer to the **INSTALL** file.
+Please refer to the **INSTALL** folder.
 
 #### Why GTK? Why not $toolkit?
 

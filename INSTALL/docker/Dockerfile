@@ -38,12 +38,12 @@ RUN echo -e "[Settings]\ngtk-theme-name = Adwaita\ngtk-fallback-icon-theme = gno
 RUN cd ~deckard && sudo -u deckard git clone http://github.com/Malizor/deckard.git ~deckard/deckard-app
 
 # Setup uWSGI
-RUN cp ~deckard/deckard-app/conf/nginx+uwsgi/uwsgi/deckard.ini /etc/uwsgi/apps-available/deckard.ini
+RUN cp ~deckard/deckard-app/INSTALL/nginx+uwsgi/uwsgi/deckard.ini /etc/uwsgi/apps-available/deckard.ini
 RUN ln -s /etc/uwsgi/apps-available/deckard.ini /etc/uwsgi/apps-enabled/deckard.ini
 RUN service uwsgi restart
 
 # Setup nginx
-RUN cp ~deckard/deckard-app/conf/nginx+uwsgi/nginx/deckard.conf /etc/nginx/sites-available/deckard.conf
+RUN cp ~deckard/deckard-app/INSTALL/nginx+uwsgi/nginx/deckard.conf /etc/nginx/sites-available/deckard.conf
 RUN ln -s /etc/nginx/sites-available/deckard.conf /etc/nginx/sites-enabled/deckard.conf
 RUN rm /etc/nginx/sites-enabled/default
 RUN service nginx restart
