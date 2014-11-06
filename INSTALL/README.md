@@ -6,12 +6,12 @@ DEPENDENCIES
 
 You will need the following packages:
 
-broadwayd
-libgtk-3-bin >= 3.8 (with the Broadway backend enabled)
-python3
-python3-gi
-python3-jinja2
-A Web server which provides the WSGI API for Python3
+* broadwayd
+* libgtk-3-bin >= 3.8 (with the Broadway backend enabled)
+* python3
+* python3-gi
+* python3-jinja2
+* A Web server which provides the WSGI API for Python3
 (we assume apache2 and libapache2-mod-wsgi-py3 in this document)
 
 You may want to use the latest version of GTK+ if your interfaces depend on new
@@ -101,6 +101,7 @@ CONTENT
 The Deckard app will look for a "content" folder in it's root.
 It must have a specific layout. Here is a sample tree of it:
 
+```
 content/
 ├── module1
 │   └── ....
@@ -115,6 +116,7 @@ content/
         └── LC_MESSAGES
             ├── module1.mo
             └── module2.mo
+```
 
 The LANGS tree should not surprise you if you are familiar with Gettext.
 The organization of files in modules folders is up to you.
@@ -134,12 +136,14 @@ You may want to install this package:
 gnome-themes-standard
 
 If still no theme is applied to your windows, you can edit
-~/.config/gtk-3.0/settings.ini
+`~/.config/gtk-3.0/settings.ini`
 and add the following lines:
 
+```ini
 [Settings]
 gtk-theme-name = Adwaita
 gtk-fallback-icon-theme = gnome
+```
 
 Some locales don't work!
 ------------------------
@@ -149,17 +153,17 @@ locale -a
 
 If your locale is not in the list, then you need to enable it.
 On Ubuntu systems, you need to add your locale in
-/var/lib/locales/supported.d/local
+`/var/lib/locales/supported.d/local`
 Then you have to run:
-sudo dpkg-reconfigure locales
+`sudo dpkg-reconfigure locales`
 
 A simpler way, if you use Ubuntu, is to run this command:
-sudo apt-get install language-pack-gnome-* --no-install-recommends
+`sudo apt-get install language-pack-gnome-* --no-install-recommends`
 
 UI are not reversed in RTL locales!
 -----------------------------------
 
 You have to install Gtk translations for the specified locale.
 For example, for Arabian on Ubuntu:
-sudo apt-get install language-pack-gnome-ar-base --no-install-recommends
+`sudo apt-get install language-pack-gnome-ar-base --no-install-recommends`
 
