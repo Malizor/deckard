@@ -1,104 +1,66 @@
-Tested on Ubuntu 12.04 and 13.10.
+Deckard installation How-To
+===========================
+
+In the following procedure we will assume you use at least Ubuntu 16.04.
+Other distributions should work fine too, but Deckard was mainly developped
+and tested on Ubuntu.
+
+The recommended setup for Deckard is throught uWSGI and Nginx.  
+Other setups should work to, but are not tested.
+Example configuration files for Apache (libapache2-mod-wsgi-py3) and HAProxy are
+provided for information in the `INSTALL/apache+haproxy` folder.
+
+Dependencies
+------------
+
+You will need the following packages on Ubuntu/Debian:
 
 
-DEPENDENCIES
-============
-
-You will need the following packages:
-
-* broadwayd
-* libgtk-3-bin >= 3.8 (with the Broadway backend enabled)
+* gir1.2-gtk-3.0
 * python3
 * python3-gi
 * python3-jinja2
-* A Web server which provides the WSGI API for Python3
-(we assume apache2 and libapache2-mod-wsgi-py3 in this document)
+* uwsgi and uwsgi-plugin-python3
+* nginx
 
-You may want to use the latest version of GTK+ if your interfaces depend on new
-widgets.
-
-On Ubuntu 13.10, you can get a Broadway enabled GTK+ and broadwayd through
-the following PPA:
-https://launchpad.net/~malizor/+archive/gtk-broadway
-
-If you know APT and are not afraid, you can also use this PPA (for saucy) with
-older Ubuntu releases. For example, this is the case on the deckard.malizor.org
-server (Ubuntu 12.04 + PPA + 13.10 repo + APT configuration).
+You will want to use the latest version of GTK+ if your interfaces depend on
+newly introduced widgets. For doing so, you should have to use the latest
+release of your distribution.  
+For example, on https://deckard.malizor.org, Deckard is hosted in a LXD container
+with the latest Ubuntu version, the host being an Ubuntu LTS.
 
 
-INSTALLATION
-============
+Installation
+------------
 
-Here is how to set up the Deckard site.
+Deckard will be ran as a dedicated user to secure things a bit.
 
-These are tested examples.
-Deckard should not depend on any specific infrastructure (eg. it should also
-work with Nginx), so feel free to use whatever suit you best and to contribute
-back relevant configuration files ;-).
+- Create a user named `deckard` and its home directory  
+`sudo useradd deckard --create-home -s /usr/sbin/nologin -g www-data`
 
-Common part
------------
+- Copy the source folder content in `/home/deckard/deckard-app`  
+  Of course, all files should belong to the `deckard` user.
 
-Deckard will be ran as a specific user to secure things a bit.
+- Copy `INSTALL/nginx+uwsgi/uwsgi/deckard.ini` to `/etc/uwsgi/apps-available/deckard.ini`  
+  You may want to edit this file, mainly to make it point to your own `deckard.conf` file.
 
-- Create a user named 'deckard' and it's home directory
-sudo useradd deckard --create-home -s /usr/sbin/nologin -g www-data
+- Enable the Deckard application in uWSGI  
+`ln -s /etc/uwsgi/apps-available/deckard.ini /etc/uwsgi/apps-enabled/deckard.ini`
 
-- Copy the source folder content in /home/deckard/deckard-app
-  Of course, all files should belong to the 'deckard' user.
-  
-- Copy conf/apache2/<version>/deckard.conf in /etc/apache2/sites-available
-  (you probably want to change ServerAdmin and ServerName before)
-  
-- enable the site and restart Apache
-sudo a2ensite deckard && sudo service apache2 restart
+- Copy `INSTALL/nginx+uwsgi/nginx/deckard.conf` to `/etc/nginx/sites-available/deckard.conf`
 
-Don't forget to generate the content that will be displayed!
-(please see the CONTENT part below)
+- Enable the Deckard site in Nginx  
+`ln -s /etc/nginx/sites-available/deckard.conf /etc/nginx/sites-enabled/deckard.conf`
 
-Simple way, with just Apache
-----------------------------
+Now that Deckard itself is installed, you will have to generate the content that will be displayed!
+(please see the `Content` part below)
 
-- Edit /etc/apache2/sites-available/deckard.conf and replace the "8080" port by
-  "80"
-- Restart apache
-sudo service apache2 restart
-- Edit resources/deckard.js and replace the '/' by a ':' in the spawn_return
-  function (there is a comment just before the right line).
 
-And that's it.
 
-Proxy everything on port 80 with HAproxy
-----------------------------------------
+Content
+-------
 
-This is the current setting on deckard.malizor.org.
-
-With the former setting, previews are launched on ports 2019..2028, which can
-be a problem for people out-there who use proxies.
-Here we will proxy DOMAIN/PORT to DOMAIN:PORT internally, so that the only port
-that will be needed by users is the 80 port.
-Apache itself is still not able to proxy websockets, so we have to use another
-program. It turns out HAproxy does the job quite well, so we will use that.
-
-Please note that HAproxy will be listening on port 80 and that we will move
-Apache to port 8080. If you host other sites, you will need to adapt your
-settings accordingly (ie. editing virtualhosts to change the port and ensuring
-HAproxy properly redirect to the right backend).
-
-- Install the haproxy package
-- Edit /etc/apache2/ports.conf and replace "80" by "8080" everywhere
-- Copy conf/haproxy/haproxy.cfg to /etc/haproxy/haproxy.cfg
-  (in the file, replace deckard.malizor.org by localhost or your domain name)
-- In /etc/default/haproxy, set ENABLED to 1
-- restart apache and start HAproxy
-sudo service apache2 restart && sudo service haproxy start
-
-And that should be it.
-
-CONTENT
-=======
-
-The Deckard app will look for a "content" folder in it's root.
+The Deckard app will look for a `content` folder in it's root.
 It must have a specific layout. Here is a sample tree of it:
 
 ```
@@ -118,22 +80,23 @@ content/
             └── module2.mo
 ```
 
-The LANGS tree should not surprise you if you are familiar with Gettext.
+The `LANGS` tree should not surprise you if you are familiar with Gettext.
 The organization of files in modules folders is up to you.
 
-"build-gnome-content.sh" is the script that is used on deckard.malizor.org to
-automatically generate the content folder from Gnome git.
-You may want to reuse or to adapt it.
+`build-gnome-content.sh` is the script that is used on https://deckard.malizor.org to
+automatically generate the content folder from Gnome git. A Cron job is used to
+run it once a day, in order to remain up-to-date.  
+You may want to reuse or to adapt this script for your particular project.
 
 
 FAQ
-===
+---
 
-My windows are ugly!
---------------------
+### My windows are ugly!
+
 
 You may want to install this package:
-gnome-themes-standard
+`gnome-themes-standard`
 
 If still no theme is applied to your windows, you can edit
 `~/.config/gtk-3.0/settings.ini`
@@ -145,25 +108,27 @@ gtk-theme-name = Adwaita
 gtk-fallback-icon-theme = gnome
 ```
 
-Some locales don't work!
-------------------------
+### Some locales do not work!
 
 Please run:
-locale -a
+`locale -a`
 
-If your locale is not in the list, then you need to enable it.
+If your locale is not in the list, then you need to enable it.  
 On Ubuntu systems, you need to add your locale in
 `/var/lib/locales/supported.d/local`
-Then you have to run:
+Then you have to run:  
 `sudo dpkg-reconfigure locales`
 
-A simpler way, if you use Ubuntu, is to run this command:
-`sudo apt-get install language-pack-gnome-* --no-install-recommends`
+A simpler way, if you use Ubuntu, is to run this command:  
+`sudo apt install language-pack-gnome-* --no-install-recommends`
 
-UI are not reversed in RTL locales!
------------------------------------
+### UI are not reversed in RTL locales!
 
 You have to install Gtk translations for the specified locale.
-For example, for Arabian on Ubuntu:
-`sudo apt-get install language-pack-gnome-ar-base --no-install-recommends`
+For example, for Arabian on Ubuntu:  
+`sudo apt install language-pack-gnome-ar-base --no-install-recommends`
 
+### Chars are not displayed properly!
+
+On Ubuntu, installing the following packages should cover most fonts you may need:  
+`sudo apt install ttf-ubuntu-font-family fonts-lohit-guru fonts-guru-extra fonts-guru fonts-droid-fallback fonts-dejavu-extra fonts-khmeros-core fonts-lklug-sinhala fonts-sil-padauk fonts-nanum`
