@@ -432,9 +432,11 @@ class SessionsManager:
         for lang in os.listdir(os.path.join(self.content_root, 'LANGS')):
             if lang in locale_language_mapping:
                 content['LANGS'][lang] = locale_language_mapping[lang]
-        for directory in os.listdir(self.content_root):
-            if directory != 'LANGS':
-                content['MODULES'][directory] = []
+        for item in os.listdir(self.content_root):
+            if (not os.path.isdir(os.path.join(self.content_root, item)) or
+                item == 'LANGS'):
+                continue
+            content['MODULES'][item] = []
 
         for module in content['MODULES']:
             mod_root = os.path.join(self.content_root, module)
