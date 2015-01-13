@@ -438,14 +438,25 @@ class SessionsManager:
                 continue
             content['MODULES'][item] = []
 
+        modules_to_ignore = set()
         for module in content['MODULES']:
             mod_root = os.path.join(self.content_root, module)
+            ui_found = False
             for root, _, files in os.walk(mod_root):
                 for file_ in files:
                     _, ext = os.path.splitext(file_)
                     ext = ext.lower()
                     if ext == '.ui' or ext == '.xml' or ext == '.glade':
+                        ui_found = True
                         rel_path = os.path.join(root, file_).split(mod_root)[1]
                         rel_path = rel_path[1:]  # strip the leading '/'
                         content['MODULES'][module].append(rel_path)
+            if not ui_found:
+                # Nothing is displayable in this folder, ignore it
+                modules_to_ignore.add(module)
+
+        # Finally, filter empty modules
+        for module in modules_to_ignore:
+            del content['MODULES'][module]
+
         return content
