@@ -209,13 +209,17 @@ if len(gr.windows) == 0:
     print('Nothing is displayable in {}, removing it...')
     os.remove('{}')
 " \; 2> /dev/null
+
     cd content_tmp
 
     # Remove empty folders
     find $module -type d -empty -exec rmdir -p 2> /dev/null {} \;
-    if [ ! -d "${module}" ]
+
+    # Is there anything left?
+    if [ -n $(find $module -iregex ".*\.\(ui\|xml\|glade\)") ]
     then
-	echo "There is nothing displayable in $module."
+	echo "Nothing is displayable in the $module module!"
+	rm -rf $module
     fi
 }
 
