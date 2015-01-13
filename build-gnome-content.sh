@@ -216,7 +216,7 @@ if len(gr.windows) == 0:
     find $module -type d -empty -exec rmdir -p 2> /dev/null {} \;
 
     # Is there anything left?
-    if [ -n $(find $module -iregex ".*\.\(ui\|xml\|glade\)") ]
+    if [[ -z $(find $module -iregex ".*\.\(ui\|xml\|glade\)") ]]
     then
 	echo "Nothing is displayable in the $module module!"
 	rm -rf $module
