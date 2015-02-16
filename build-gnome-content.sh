@@ -268,6 +268,7 @@ get_module gnome-system-monitor
 get_module gnome-terminal
 get_module gnumeric
 get_module goffice
+get_module goobox
 get_module gpointing-device-settings
 get_module gthumb
 get_module gtranslator
