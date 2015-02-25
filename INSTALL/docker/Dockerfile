@@ -56,7 +56,6 @@ RUN cd ~deckard && export PYTHONPATH=~deckard/deckard-app && sudo -u deckard ~de
 RUN echo "0 2 * * * PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-gnome-content.sh" | sudo -u deckard crontab -
 
 # Configure Deckard to use our content folder
-RUN sudo -u deckard cp ~deckard/deckard-app/deckard.conf ~deckard/deckard-app/deckard.conf
 RUN echo -e "[deckard]\ncontent_dir_path = /home/deckard/content" | sudo -u deckard tee ~deckard/deckard.conf > /dev/null
 
 # Point uWSGI to our configuration file
