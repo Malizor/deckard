@@ -232,6 +232,7 @@ get_module anjuta-extras
 get_module california
 get_module cheese
 get_module dasher
+get_module dconf-editor
 get_module empathy
 get_module eog
 get_module eog-plugins
