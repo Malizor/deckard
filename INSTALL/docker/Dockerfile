@@ -11,13 +11,13 @@ RUN apt-get upgrade -y
 
 # Install dependencies
 RUN apt-get install -y nginx  gir1.2-gtk-3.0 python3-gi python3-jinja2
-RUN apt-get install --no-install-recommends -y uwsgi uwsgi-plugin-python3 git ca-certificates gettext libxml2-utils rsync gnome-themes-standard language-pack-gnome-*
+RUN apt-get install --no-install-recommends -y sudo uwsgi uwsgi-plugin-python3 git ca-certificates gettext libxml2-utils rsync gnome-themes-standard language-pack-gnome-*
 
 # Install some fonts to cover most languages
 RUN apt-get install -y ttf-ubuntu-font-family fonts-lohit-guru fonts-guru-extra fonts-guru fonts-droid-fallback fonts-dejavu-extra fonts-khmeros-core fonts-lklug-sinhala fonts-sil-padauk fonts-nanum
 
 # Make sure that all locales are generated
-RUN dpkg-reconfigure locales
+RUN dpkg-reconfigure locales -fnoninteractive
 
 
 # Create a dedicated user
@@ -36,13 +36,12 @@ RUN cd ~deckard && sudo -u deckard git clone http://github.com/Malizor/deckard.g
 # Setup uWSGI
 RUN cp ~deckard/deckard-app/INSTALL/nginx+uwsgi/uwsgi/deckard.ini /etc/uwsgi/apps-available/deckard.ini
 RUN ln -s /etc/uwsgi/apps-available/deckard.ini /etc/uwsgi/apps-enabled/deckard.ini
-RUN service uwsgi restart
 
 # Setup nginx
 RUN cp ~deckard/deckard-app/INSTALL/nginx+uwsgi/nginx/deckard.conf /etc/nginx/sites-available/deckard.conf
 RUN ln -s /etc/nginx/sites-available/deckard.conf /etc/nginx/sites-enabled/deckard.conf
 RUN rm /etc/nginx/sites-enabled/default
-RUN service nginx restart
+#RUN systemctl restart nginx
 
 
 # Deckard itself is installed now, we only miss data from gnome.org
@@ -56,7 +55,7 @@ RUN echo -e "[deckard]\ncontent_dir_path = /home/deckard/content" | sudo -u deck
 
 # Point uWSGI to our configuration file
 RUN echo "env = DECKARD_CONF_FILE=/home/deckard/deckard.conf" >> /etc/uwsgi/apps-enabled/deckard.ini
-RUN service uwsgi restart
+#RUN systemctl restart uwsgi
 
 
 # Expose nginx
