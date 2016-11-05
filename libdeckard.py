@@ -192,7 +192,7 @@ class Session:
         os.makedirs(mo_path)
 
         try:
-            check_output(['msgfmt',
+            check_output(['/usr/bin/msgfmt',
                           '--check',
                           '--output-file',
                           os.path.join(mo_path, module) + '.mo',
