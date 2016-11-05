@@ -59,8 +59,10 @@ def init(environ):
         config = default_config
 
     global jinja_env
-    jinja_env = Environment(loader=FileSystemLoader(
-        config['template_dir_path']))
+    jinja_env = Environment(
+        loader=FileSystemLoader(config['template_dir_path']),
+        autoescape=True
+    )
     global sessions_manager
     sessions_manager = libdeckard.SessionsManager(config['gladerunner_path'],
                                                   config['content_dir_path'],
