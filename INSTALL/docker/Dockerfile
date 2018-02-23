@@ -1,7 +1,7 @@
 # This Dockerfile is experimental: it is not production ready.
 # However, it may also be seen as a step-by-step tutorial for a manual installation.
 
-FROM ubuntu:16.10
+FROM ubuntu:17.10
 MAINTAINER Nicolas Delvaux, contact@nicolas-delvaux.org
 
 
