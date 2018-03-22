@@ -21,7 +21,7 @@ PO files in order to test their work as they translate.
 ### Instance example
 
 For Gnome projects:  
-[http://deckard.malizor.org](http://deckard.malizor.org)  
+[https://deckard.malizor.org](https://deckard.malizor.org)  
 (all UI and translations files are updated from master once a day)
 
 
