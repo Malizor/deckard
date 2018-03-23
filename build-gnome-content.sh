@@ -258,6 +258,7 @@ get_module gnome-color-manager
 get_module gnome-control-center
 get_module gnome-dictionary
 get_module gnome-disk-utility
+get_module gnome-documents
 get_module gnome-logs
 get_module gnome-music
 get_module gnome-nettool
