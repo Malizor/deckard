@@ -260,6 +260,7 @@ get_module gnome-dictionary
 get_module gnome-disk-utility
 get_module gnome-documents
 get_module gnome-logs
+get_module gnome-mines
 get_module gnome-music
 get_module gnome-nettool
 get_module gnome-panel
