@@ -54,6 +54,7 @@ locale_language_mapping = {
     'fi_FI': 'Suomi',
     'fr_FR': 'Français',
     'fur_IT': 'Furlan',
+    'gd_GB': 'Gàidhlig',
     'gl_ES': 'Galego',
     'gu_IN': 'ગુજરાતી',
     'he_IL': 'עִבְרִית',
