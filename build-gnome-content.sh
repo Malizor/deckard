@@ -57,6 +57,7 @@ locales=(af_ZA \
          fi_FI \
          fur_IT \
          fr_FR \
+         gd_GB \
          gl_ES \
          gu_IN \
          he_IL \
