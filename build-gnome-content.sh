@@ -46,6 +46,7 @@ locales=(af_ZA \
          bs_BA \
          ca_ES \
          cs_CZ \
+	 cy_GB \
          da_DK \
          de_DE \
          el_GR \
