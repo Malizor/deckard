@@ -42,6 +42,7 @@ locale_language_mapping = {
     'bs_BA': 'Bosanski',
     'ca_ES': 'Català',
     'cs_CZ': 'Čeština',
+    'cy_GB': 'Cymraeg',
     'da_DK': 'Dansk',
     'de_DE': 'Deutsch',
     'el_GR': 'ελληνικά',
