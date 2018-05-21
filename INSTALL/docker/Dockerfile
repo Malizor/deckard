@@ -1,20 +1,20 @@
 # This Dockerfile is experimental: it is not production ready.
 # However, it may also be seen as a step-by-step tutorial for a manual installation.
 
-FROM ubuntu:17.10
+FROM ubuntu:18.04
 MAINTAINER Nicolas Delvaux, contact@nicolas-delvaux.org
 
 
-RUN apt-get update
-RUN apt-get upgrade -y
+RUN apt update
+RUN apt upgrade -y
 
 
 # Install dependencies
-RUN apt-get install -y nginx  gir1.2-gtk-3.0 python3-gi python3-jinja2
-RUN apt-get install --no-install-recommends -y sudo uwsgi uwsgi-plugin-python3 git ca-certificates gettext libxml2-utils rsync gnome-themes-standard language-pack-gnome-*
+RUN apt install -y nginx  gir1.2-gtk-3.0 python3-gi python3-jinja2
+RUN apt install --no-install-recommends -y sudo uwsgi uwsgi-plugin-python3 git ca-certificates gettext libxml2-utils rsync gnome-themes-standard language-pack-gnome-*
 
 # Install some fonts to cover most languages
-RUN apt-get install -y ttf-ubuntu-font-family fonts-lohit-guru fonts-guru-extra fonts-guru fonts-droid-fallback fonts-dejavu-extra fonts-khmeros-core fonts-lklug-sinhala fonts-sil-padauk fonts-nanum fonts-telu fonts-samyak fonts-knda fonts-beng fonts-sil-abyssinica fonts-thai-tlwg-ttf
+RUN apt install -y ttf-ubuntu-font-family fonts-lohit-guru fonts-guru-extra fonts-guru fonts-droid-fallback fonts-dejavu-extra fonts-khmeros-core fonts-lklug-sinhala fonts-sil-padauk fonts-nanum fonts-telu fonts-samyak fonts-knda fonts-beng fonts-sil-abyssinica fonts-thai-tlwg-ttf
 
 # Make sure that all locales are generated
 RUN dpkg-reconfigure locales -fnoninteractive
