@@ -1,6 +1,8 @@
 Deckard: a Web based Glade Runner
 =================================
 
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
 Translators should always test their translations in context but that is not
 always convenient and even possible.  
 Some UI need particular conditions to be displayed. Think of error messages or

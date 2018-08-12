@@ -32,8 +32,9 @@ from languages import locale_language_mapping
 
 class DeckardException(Exception):
     """Standard exception"""
+
     def __init__(self, short, log):
-        Exception.__init__(self, '%s\n\n%s' % (short, log))
+        Exception.__init__(self, "%s\n\n%s" % (short, log))
 
 
 class Session:
@@ -44,8 +45,16 @@ class Session:
     Everything is cleaned-up when the session is deleted.
     """
 
-    def __init__(self, uuid, gladerunner, content_root,
-                 max_custom_po, max_po_download_size, glade_catalog, po_urls):
+    def __init__(
+        self,
+        uuid,
+        gladerunner,
+        content_root,
+        max_custom_po,
+        max_po_download_size,
+        glade_catalog,
+        po_urls,
+    ):
         self.port = 0
         self.uuid = uuid  # unique id to avoid session spoofing
         self.process = None
@@ -67,42 +76,45 @@ class Session:
         """
         self.port = port
         env = {
-            'GDK_BACKEND': 'broadway',
-            'UBUNTU_MENUPROXY': '',
-            'LIBOVERLAY_SCROLLBAR': '0'
-            }
+            "GDK_BACKEND": "broadway",
+            "UBUNTU_MENUPROXY": "",
+            "LIBOVERLAY_SCROLLBAR": "0",
+        }
 
         if self.process is not None and self.process.poll() is None:
             self.process.kill()
 
         if language in self.custom_po:
             if self.custom_po[language][0] != module:
-                raise DeckardException('"%s" does not exist' % language,
-                                       'No such file was registered for the '
-                                       '%s module.' % module)
-            lang_root = os.path.join(self.custom_po[language][1], 'LANGS')
+                raise DeckardException(
+                    '"%s" does not exist' % language,
+                    "No such file was registered for the " "%s module." % module,
+                )
+            lang_root = os.path.join(self.custom_po[language][1], "LANGS")
             # This locale has to be available on your system
-            language = '%s.UTF-8' % self.custom_po[language][2]
+            language = "%s.UTF-8" % self.custom_po[language][2]
         else:
-            if language != 'POSIX':
-                language = '%s.UTF-8' % language
-            lang_root = os.path.join(self.content_root, 'LANGS')
+            if language != "POSIX":
+                language = "%s.UTF-8" % language
+            lang_root = os.path.join(self.content_root, "LANGS")
 
-        env['LANG'] = language
+        env["LANG"] = language
 
         # Build the gladerunner command line
-        args = [self.gladerunner,
-                '--suicidal',
-                '--with-broadwayd',
-                str(port),
-                os.path.join(self.content_root, module, module_file),
-                module,
-                language,
-                lang_root]
+        args = [
+            self.gladerunner,
+            "--suicidal",
+            "--with-broadwayd",
+            str(port),
+            os.path.join(self.content_root, module, module_file),
+            module,
+            language,
+            lang_root,
+        ]
 
         # Should we use a Glade catalog?
         if os.path.isfile(self.glade_catalog):
-            args.extend(('--catalog-path', self.glade_catalog))
+            args.extend(("--catalog-path", self.glade_catalog))
 
         # Launch it!
         self.process = Popen(args, stdin=PIPE, env=env)
@@ -118,12 +130,13 @@ class Session:
         stored PO files for it on this session, from the oldest to the newest.
         """
         # Very basic check, msgfmt will crash anyway if the file is not valid
-        if not name.lower().endswith('.po'):
-            raise DeckardException('This is not a PO file',
-                                   '%s is not a PO file.' % name)
-        lang_root = tempfile.mkdtemp(prefix='deckard_')
-        po_path = os.path.join(lang_root, 'file.po')
-        po = open(po_path, 'bw')
+        if not name.lower().endswith(".po"):
+            raise DeckardException(
+                "This is not a PO file", "%s is not a PO file." % name
+            )
+        lang_root = tempfile.mkdtemp(prefix="deckard_")
+        po_path = os.path.join(lang_root, "file.po")
+        po = open(po_path, "bw")
         if fd is not None:
             # The file was sent by the user
             for line in fd:
@@ -143,32 +156,33 @@ class Session:
 
             if response is None:
                 # Most likely a '404: not found' error
-                raise DeckardException('Enable to retrieve the file', error)
+                raise DeckardException("Enable to retrieve the file", error)
 
             res_len = response.length
             if res_len > self.max_po_download_size:
                 response.close()
-                raise DeckardException('File too big',
-                                       'The "%s" file is %d long and this app '
-                                       'will not retrieve a file bigger than '
-                                       '%d bytes.' % (name,
-                                                      res_len,
-                                                      self.max_po_download_size))
+                raise DeckardException(
+                    "File too big",
+                    'The "%s" file is %d long and this app '
+                    "will not retrieve a file bigger than "
+                    "%d bytes." % (name, res_len, self.max_po_download_size),
+                )
 
             # Let's finally download this file!
             po.write(response.read(res_len))
             response.close()
             po.close()
         else:
-            raise DeckardException('Operation not supported',
-                                   'The PO download feature is not configured '
-                                   'on this instance.')
+            raise DeckardException(
+                "Operation not supported",
+                "The PO download feature is not configured " "on this instance.",
+            )
 
         # Try to guess the language of this PO file, default is 'en_US'
         # This is good to know to later set proper environment variables and so
         # load the right GTK translation and reverse the interface if necessary
-        po_lang = 'en_US'
-        with open(po_path, encoding='utf8') as po:
+        po_lang = "en_US"
+        with open(po_path, encoding="utf8") as po:
             # Give up if we find nothing in the 50 first lines
             for _ in range(50):
                 line = po.readline()
@@ -176,34 +190,37 @@ class Session:
                 if match:
                     po_lang = match.group(1)
                     # The encoding is often wrong, so strip it
-                    po_lang = locale.normalize(po_lang).rsplit('.')[0]
+                    po_lang = locale.normalize(po_lang).rsplit(".")[0]
                     # Test if the detected locale is available on the system
                     try:
-                        locale.setlocale(locale.LC_ALL, '%s.UTF-8' % po_lang)
+                        locale.setlocale(locale.LC_ALL, "%s.UTF-8" % po_lang)
                     except:
                         # Fallback to a known locale
-                        po_lang = 'en_US'
+                        po_lang = "en_US"
                     finally:
                         locale.resetlocale()
                     break
 
         # create necessary directories
-        mo_path = os.path.join(lang_root, 'LANGS', po_lang, 'LC_MESSAGES')
+        mo_path = os.path.join(lang_root, "LANGS", po_lang, "LC_MESSAGES")
         os.makedirs(mo_path)
 
         try:
-            check_output(['/usr/bin/msgfmt',
-                          '--check',
-                          '--output-file',
-                          os.path.join(mo_path, module) + '.mo',
-                          po_path],
-                         stderr=STDOUT)
+            check_output(
+                [
+                    "/usr/bin/msgfmt",
+                    "--check",
+                    "--output-file",
+                    os.path.join(mo_path, module) + ".mo",
+                    po_path,
+                ],
+                stderr=STDOUT,
+            )
         except CalledProcessError as e:
             shutil.rmtree(lang_root)
             # We don't need to expose the file name in the error message
-            log = e.output.decode('unicode_escape').replace('%s:' % po_path,
-                                                            '')
-            raise DeckardException('Error while building the .mo', log)
+            log = e.output.decode("unicode_escape").replace("%s:" % po_path, "")
+            raise DeckardException("Error while building the .mo", log)
 
         if name in self.custom_po:
             shutil.rmtree(self.custom_po[name][1])
@@ -228,7 +245,7 @@ class Session:
         Returns True if the message was sent, False if it wasn't (eg. if there
         is no process)."""
         if self.process is not None and self.process.poll() is None:
-            self.process.stdin.write(b'Please stay alive!')
+            self.process.stdin.write(b"Please stay alive!")
             self.process.stdin.flush()
             return True
         return False
@@ -259,13 +276,17 @@ class Session:
 class SessionsManager:
     """Helper to manage all Deckard sessions."""
 
-    def __init__(self, gladerunner, content_root,
-                 max_users=10,
-                 first_port=2019,
-                 max_custom_po_per_session=4,
-                 max_po_download_size=1500000,
-                 glade_catalog='',
-                 po_urls=[]):
+    def __init__(
+        self,
+        gladerunner,
+        content_root,
+        max_users=10,
+        first_port=2019,
+        max_custom_po_per_session=4,
+        max_po_download_size=1500000,
+        glade_catalog="",
+        po_urls=[],
+    ):
         self.gladerunner = gladerunner
         self.content_root = content_root
         self.max_users = max_users
@@ -293,20 +314,23 @@ class SessionsManager:
         Raise an exception if we don't have room for one more session.
         """
         if len(self.sessions) >= self.max_users:
-            raise DeckardException('Too many users!',
-                                   'For performance purposes, this '
-                                   'application is currently limited to %d '
-                                   'simultaneous sessions.\n'
-                                   'You may want to retry in a few minutes.'
-                                   % self.max_users)
+            raise DeckardException(
+                "Too many users!",
+                "For performance purposes, this "
+                "application is currently limited to %d "
+                "simultaneous sessions.\n"
+                "You may want to retry in a few minutes." % self.max_users,
+            )
         uuid = str(uuid4())
-        self.sessions[uuid] = Session(uuid,
-                                      self.gladerunner,
-                                      self.content_root,
-                                      self.max_custom_po_per_session,
-                                      self.max_po_download_size,
-                                      self.glade_catalog,
-                                      self.po_urls)
+        self.sessions[uuid] = Session(
+            uuid,
+            self.gladerunner,
+            self.content_root,
+            self.max_custom_po_per_session,
+            self.max_po_download_size,
+            self.glade_catalog,
+            self.po_urls,
+        )
         if not self._cleanup_loop_running:
             self._cleanup_loop(init=True)  # Restart the cleanup loop
             self._cleanup_loop_running = True
@@ -317,8 +341,7 @@ class SessionsManager:
 
         Checked ports are between first_port and (first_port + max_users - 1).
         """
-        for port in range(self.first_port,
-                          self.first_port + self.max_users):
+        for port in range(self.first_port, self.first_port + self.max_users):
             try_next = False
             for uuid in self.sessions:
                 if self.sessions[uuid].port == port:
@@ -329,9 +352,10 @@ class SessionsManager:
 
         # No free port!
         # This should never if you managed to create a session
-        raise DeckardException('Could not find a free port.',
-                               'This should never happen.\n'
-                               'Please report this bug.')
+        raise DeckardException(
+            "Could not find a free port.",
+            "This should never happen.\n" "Please report this bug.",
+        )
 
     def spawn_runner(self, uuid, module, module_file, language):
         """Ask a session to launch a gladerunner instance.
@@ -426,37 +450,38 @@ class SessionsManager:
                      'module2': ['file1.xml', 'path/in/module/file2.ui']}
         }
         """
-        content = {'LANGS': {},
-                   'MODULES': {}}
+        content = {"LANGS": {}, "MODULES": {}}
 
-        for lang in os.listdir(os.path.join(self.content_root, 'LANGS')):
+        for lang in os.listdir(os.path.join(self.content_root, "LANGS")):
             if lang in locale_language_mapping:
-                content['LANGS'][lang] = locale_language_mapping[lang]
+                content["LANGS"][lang] = locale_language_mapping[lang]
         for item in os.listdir(self.content_root):
-            if (not os.path.isdir(os.path.join(self.content_root, item)) or
-                item == 'LANGS'):
+            if (
+                not os.path.isdir(os.path.join(self.content_root, item))
+                or item == "LANGS"
+            ):
                 continue
-            content['MODULES'][item] = []
+            content["MODULES"][item] = []
 
         modules_to_ignore = set()
-        for module in content['MODULES']:
+        for module in content["MODULES"]:
             mod_root = os.path.join(self.content_root, module)
             ui_found = False
             for root, _, files in os.walk(mod_root):
                 for file_ in files:
                     _, ext = os.path.splitext(file_)
                     ext = ext.lower()
-                    if ext == '.ui' or ext == '.xml' or ext == '.glade':
+                    if ext == ".ui" or ext == ".xml" or ext == ".glade":
                         ui_found = True
                         rel_path = os.path.join(root, file_).split(mod_root)[1]
                         rel_path = rel_path[1:]  # strip the leading '/'
-                        content['MODULES'][module].append(rel_path)
+                        content["MODULES"][module].append(rel_path)
             if not ui_found:
                 # Nothing is displayable in this folder, ignore it
                 modules_to_ignore.add(module)
 
         # Finally, filter empty modules
         for module in modules_to_ignore:
-            del content['MODULES'][module]
+            del content["MODULES"][module]
 
         return content

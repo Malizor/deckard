@@ -45,19 +45,21 @@ class %(name)s(Gtk.Label):
 class GladeRunner:
     """Module to load a Glade file and display all windows in it"""
 
-    def __init__(self,
-                 glade_file_path,
-                 gettext_domain='foobar',
-                 lang_path=None,
-                 language='POSIX',
-                 suicidal=False,
-                 catalog_path=None):
+    def __init__(
+        self,
+        glade_file_path,
+        gettext_domain="foobar",
+        lang_path=None,
+        language="POSIX",
+        suicidal=False,
+        catalog_path=None,
+    ):
         """Create the GladeRunner instance"""
 
         # Late import because of potential environment tweaking outside of
         # the class (start_broadwayd)
-        builtins.Gtk = importlib.import_module('gi.repository.Gtk')
-        builtins.GObject = importlib.import_module('gi.repository.GObject')
+        builtins.Gtk = importlib.import_module("gi.repository.Gtk")
+        builtins.GObject = importlib.import_module("gi.repository.GObject")
 
         self.glade_file_path = glade_file_path
         self.lang_path = lang_path
@@ -68,9 +70,9 @@ class GladeRunner:
 
         if catalog_path is not None:
             tree = ET.parse(catalog_path)
-            for gclass in tree.findall('.//glade-widget-class'):
-                if gclass.get('parent'):
-                    self.mapping[gclass.get('name')] = gclass.get('parent')
+            for gclass in tree.findall(".//glade-widget-class"):
+                if gclass.get("parent"):
+                    self.mapping[gclass.get("name")] = gclass.get("parent")
 
         if suicidal:
             # Set STDIN to be non-blocking
@@ -118,20 +120,20 @@ class GladeRunner:
         # true consumers, so we use the 'parent' attribute to substitute them.
         # This attribute is an annotation used by the Glade program for the
         # same purpose, so this is not as hackish as it seems.
-        for template in tree.findall('.//template'):
-            if 'parent' not in template.keys():
+        for template in tree.findall(".//template"):
+            if "parent" not in template.keys():
                 # We can't substitute this template (no annotation)
                 continue
-            template.tag = 'object'
-            template.set('id', template.get('class'))
-            template.set('class', template.get('parent'))
-            del template.attrib['parent']
+            template.tag = "object"
+            template.set("id", template.get("class"))
+            template.set("class", template.get("parent"))
+            del template.attrib["parent"]
 
         # Apply the mapping
         if len(self.mapping) > 0:
-            for obj in tree.findall('.//object'):
-                if obj.get('class') in self.mapping:
-                    obj.set('class', self.mapping[obj.get('class')])
+            for obj in tree.findall(".//object"):
+                if obj.get("class") in self.mapping:
+                    obj.set("class", self.mapping[obj.get("class")])
 
         # The locale has to be set before GTK loads the file
         locale.bindtextdomain(self.gettext_domain, self.lang_path)
@@ -145,29 +147,29 @@ class GladeRunner:
                 obj.set_sensitive(False)
                 continue
             # remove links
-            if hasattr(obj, 'do_activate_link'):
-                obj.connect('activate-link', self.ignore_link)
-            if hasattr(obj, 'is_toplevel') and obj.is_toplevel():
+            if hasattr(obj, "do_activate_link"):
+                obj.connect("activate-link", self.ignore_link)
+            if hasattr(obj, "is_toplevel") and obj.is_toplevel():
                 name = Gtk.Buildable.get_name(obj)
                 if name is None:
-                    name = 'gladerunner%d' % len(self.windows)
+                    name = "gladerunner%d" % len(self.windows)
                 self.windows[name] = obj
 
         if len(self.windows) == 0:
             # Try to get highest level widgets and put them in windows
             toplevel = set()
             for obj in self.builder.get_objects():
-                if hasattr(obj, 'get_toplevel'):
+                if hasattr(obj, "get_toplevel"):
                     toplevel.add(obj.get_toplevel())
             for obj in toplevel:
-                if hasattr(obj, 'is_toplevel') and obj.is_toplevel():
+                if hasattr(obj, "is_toplevel") and obj.is_toplevel():
                     # This is most likely a menu. It is probably embeded
                     # in another window, so we can ignore it
                     continue
                 window = Gtk.Window()
                 name = Gtk.Buildable.get_name(obj)
                 if name is None:
-                    name = 'gladerunner%d' % len(self.windows)
+                    name = "gladerunner%d" % len(self.windows)
                 Gtk.Buildable.set_name(window, name)
                 window.set_title(name)
                 window.add(obj)
@@ -183,24 +185,24 @@ class GladeRunner:
         except Exception as e:
             message = str(e)
             # Try to detect if we miss a custom widget
-            if message.startswith('Invalid object type `'):
+            if message.startswith("Invalid object type `"):
                 try:
                     # This will fail if this placeholder was already defined
-                    exec(placeholder_widget % {'name': message[21:-1]})
+                    exec(placeholder_widget % {"name": message[21:-1]})
                     self._load(tree)
                 except:
                     sys.exit(message)
             # Any unknown internal child?
-            elif message.startswith('Unknown internal child: '):
+            elif message.startswith("Unknown internal child: "):
                 # Just try to delete it.
                 # Not sure if this is the best thing to do, but it allows the
                 # display of some more UI (like in Epiphany)
                 deleted = False
-                for obj in tree.findall('.//object'):
+                for obj in tree.findall(".//object"):
                     # we can't "findall child" directly because we need
                     # to remove from the parent
-                    for child in obj.findall('child'):
-                        if child.get('internal-child') == message[24:]:
+                    for child in obj.findall("child"):
+                        if child.get("internal-child") == message[24:]:
                             deleted = True
                             obj.remove(child)
                 if deleted:
@@ -214,10 +216,10 @@ class GladeRunner:
     def display(self):
         """Display all windows"""
         if len(self.windows) == 0:
-            sys.exit('Nothing to display. Did you load the file first?')
+            sys.exit("Nothing to display. Did you load the file first?")
         else:
             for name in self.windows:
-                self.windows[name].connect('delete-event', self.close_window)
+                self.windows[name].connect("delete-event", self.close_window)
                 self.windows[name].show_all()
             GObject.threads_init()
             Gtk.main()
@@ -237,13 +239,12 @@ class GladeRunner:
 
 def start_broadwayd(port):
     """Start a broadwayd daemon on the specified port"""
-    display = ':%d' % port
-    libc = ctypes.CDLL('libc.so.6')
+    display = ":%d" % port
+    libc = ctypes.CDLL("libc.so.6")
     # Send a SIGTERM to the child when its parent die
     set_pdeathsig = lambda: libc.prctl(1, signal.SIGTERM)
-    Popen(['broadwayd', '--port', str(port), display],
-          preexec_fn=set_pdeathsig)
-    os.putenv('BROADWAY_DISPLAY', display)
+    Popen(["broadwayd", "--port", str(port), display], preexec_fn=set_pdeathsig)
+    os.putenv("BROADWAY_DISPLAY", display)
 
 
 def parse():
@@ -252,37 +253,50 @@ def parse():
     def is_file(parser, path):
         """Additional type checker for argparse"""
         if not os.path.isfile(path):
-            parser.error('%s: no such file.' % path)
+            parser.error("%s: no such file." % path)
         else:
             return path
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-s', '--suicidal', action='store_true',
-                        help="Try to read from STDIN each 5 seconds. "
-                        "If there is nothing to read, exit.")
-    parser.add_argument('-b', '--with-broadwayd', type=int,
-                        help="Start a broadwayd daemon on the specified port "
-                        "and display through it. "
-                        "This option is required for GTK+ >= 3.8.")
-    parser.add_argument('-c', '--catalog-path',
-                        type=lambda p: is_file(parser, p),
-                        help="Load the specified Glade catalog.")
-    parser.add_argument('glade_file_path', type=lambda p: is_file(parser, p))
-    parser.add_argument('gettext_domain', default='foobar', nargs='?')
-    parser.add_argument('language', default='POSIX', nargs='?')
-    parser.add_argument('lang_path', default=None, nargs='?')
+    parser.add_argument(
+        "-s",
+        "--suicidal",
+        action="store_true",
+        help="Try to read from STDIN each 5 seconds. "
+        "If there is nothing to read, exit.",
+    )
+    parser.add_argument(
+        "-b",
+        "--with-broadwayd",
+        type=int,
+        help="Start a broadwayd daemon on the specified port "
+        "and display through it. "
+        "This option is required for GTK+ >= 3.8.",
+    )
+    parser.add_argument(
+        "-c",
+        "--catalog-path",
+        type=lambda p: is_file(parser, p),
+        help="Load the specified Glade catalog.",
+    )
+    parser.add_argument("glade_file_path", type=lambda p: is_file(parser, p))
+    parser.add_argument("gettext_domain", default="foobar", nargs="?")
+    parser.add_argument("language", default="POSIX", nargs="?")
+    parser.add_argument("lang_path", default=None, nargs="?")
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     args = parse()
     if args.with_broadwayd is not None:
         start_broadwayd(args.with_broadwayd)
-    gr = GladeRunner(args.glade_file_path,
-                     args.gettext_domain,
-                     args.lang_path,
-                     args.language,
-                     args.suicidal,
-                     args.catalog_path)
+    gr = GladeRunner(
+        args.glade_file_path,
+        args.gettext_domain,
+        args.lang_path,
+        args.language,
+        args.suicidal,
+        args.catalog_path,
+    )
     gr.load()
     gr.display()
