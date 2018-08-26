@@ -248,6 +248,7 @@ get_module gedit
 get_module gedit-latex
 get_module gedit-plugins
 get_module gevice
+get_module gimp
 get_module gitg
 get_module glade
 get_module gnome-applets
