@@ -142,7 +142,7 @@ function get_module {
 	echo "Getting $module (as it was not found in the cache)..."
 	mkdir -p ../cache
 	cd ../cache
-	git clone git://git.gnome.org/$module
+	git clone https://gitlab.gnome.org/GNOME/$module.git
 	cd -
 	echo "$module was downloaded and cached."
     fi
