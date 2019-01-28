@@ -118,78 +118,74 @@ do
     mkdir -p "content_tmp/LANGS/$lang/LC_MESSAGES"
 done
 
+# Get a single module
 function get_module {
-    module=$1
-    mkdir -p $module
+    module_name=$1
+    mkdir -p $module_name
 
     # Repositories are cached locally
-    if [ -d "../cache/$module/.git" ]; then
-	echo "Updating the cached $module repository..."
-	cd ../cache/$module
+    if [ -d "../cache/$module_name/.git" ]; then
+	echo "Updating the cached $module_name repository..."
+	cd ../cache/$module_name
 	git fetch origin
 	git reset --hard origin/master
 	git gc --prune=now  # Minimize disk space
 	cd -
     else
-	echo "Getting $module (as it was not found in the cache)..."
+	echo "Getting $module_name (as it was not found in the cache)..."
 	mkdir -p ../cache
 	cd ../cache
-	git clone https://gitlab.gnome.org/GNOME/$module.git
+	git clone https://gitlab.gnome.org/GNOME/$module_name.git
 	cd -
-	echo "$module was downloaded and cached."
+	echo "$module_name was downloaded and cached."
     fi
 
     # Copy the module to a work directory
     rm -rf workdir
-    rsync -rq --exclude=.git ../cache/$module/ workdir
+    rsync -rq --exclude=.git ../cache/$module_name/ workdir
 
     # Build locals
-    for lang in ${locales[@]}
-    do
+    for lang in ${locales[@]}; do
         # Try to figure out the PO name from the locale name
         IFS="_."
         unset lstring
         for i in $lang; do lstring+=($i); done
         unset IFS
 
-        if [ -f workdir/po/$lang.po ]
-        then
-            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo workdir/po/$lang.po
-        elif [ -f workdir/po/${lstring[0]}_${lstring[1]}.po ]
-        then
-            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo workdir/po/${lstring[0]}_${lstring[1]}.po
-        elif [ -f workdir/po/${lstring[0]}.po ]
-        then
-            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module.mo workdir/po/${lstring[0]}.po
+        if [ -f workdir/po/$lang.po ]; then
+            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module_name.mo workdir/po/$lang.po
+        elif [ -f workdir/po/${lstring[0]}_${lstring[1]}.po ]; then
+            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module_name.mo workdir/po/${lstring[0]}_${lstring[1]}.po
+        elif [ -f workdir/po/${lstring[0]}.po ]; then
+            msgfmt --output-file LANGS/$lang/LC_MESSAGES/$module_name.mo workdir/po/${lstring[0]}.po
         else
-            echo "No PO file found for $lang in $module!"
+            echo "No PO file found for $lang in $module_name!"
         fi
     done
 
     # Detect and keep relevant folders
     folders=(`find workdir -iregex ".*\.\(ui\|xml\|glade\)" -printf '%h\n' | sort -u`)
-    for folder in ${folders[@]}
-    do
-	cp --parents -r $folder $module
+    for folder in ${folders[@]}; do
+	cp --parents -r $folder $module_name
     done
     # Move all the tree up
-    mv $module/workdir/* $module
-    rm -rf $module/workdir
+    mv $module_name/workdir/* $module_name
+    rm -rf $module_name/workdir
     # We don't need the clone anymore
     rm -rf workdir
 
     # Remove unwanted files
-    find $module -not -iregex ".*\.\(ui\|xml\|glade\|png\|jpg\|jpeg\|svg\)" | xargs rm 2> /dev/null
+    find $module_name -not -iregex ".*\.\(ui\|xml\|glade\|png\|jpg\|jpeg\|svg\)" | xargs rm 2> /dev/null
 
     # Basic check to remove non-glade files
-    find $module -iregex ".*\.\(ui\|xml\|glade\)" -exec sh -c 'xmllint --xpath /interface {} 2> /dev/null > /dev/null || (echo {} is not valid, removing it... && rm -f {})' \;
+    find $module_name -iregex ".*\.\(ui\|xml\|glade\)" -exec sh -c 'xmllint --xpath /interface {} 2> /dev/null > /dev/null || (echo {} is not valid, removing it... && rm -f {})' \;
 
     # We don't support odd glade files with type-func attributes (evolution, I'm looking at you)
     rm -f $(grep -lr "type-func" .)
 
     # Some glade files do not contain anything displayable (eg: cheese, data/cheese-actions.ui)
     cd ..
-    find content_tmp/$module -iregex ".*\.\(ui\|xml\|glade\)" -exec python3 -c "
+    find content_tmp/$module_name -iregex ".*\.\(ui\|xml\|glade\)" -exec python3 -c "
 import os, sys
 from gladerunner import GladeRunner
 gr = GladeRunner('{}')
@@ -207,13 +203,12 @@ if len(gr.windows) == 0:
     cd content_tmp
 
     # Remove empty folders
-    find $module -type d -empty -exec rmdir -p 2> /dev/null {} \;
+    find $module_name -type d -empty -exec rmdir -p 2> /dev/null {} \;
 
     # Is there anything left?
-    if [[ -z $(find $module -iregex ".*\.\(ui\|xml\|glade\)") ]]
-    then
-	echo "Nothing is displayable in the $module module!"
-	rm -rf $module
+    if [[ -z $(find $module_name -iregex ".*\.\(ui\|xml\|glade\)") ]]; then
+	echo "Nothing is displayable in the $module_name module!"
+	rm -rf $module_name
     fi
 }
 
