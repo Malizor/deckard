@@ -20,6 +20,8 @@
 command -v xmllint >/dev/null 2>&1 || { echo >&2 "This script requires the xmllint command. Aborting."; exit 1; }
 command -v git >/dev/null 2>&1 || { echo >&2 "This script requires the git command. Aborting."; exit 1; }
 command -v rsync >/dev/null 2>&1 || { echo >&2 "This script requires the rsync command. Aborting."; exit 1; }
+command -v curl >/dev/null 2>&1 || { echo >&2 "This script requires the curl command. Aborting."; exit 1; }
+command -v jq >/dev/null 2>&1 || { echo >&2 "This script requires the jq command. Aborting."; exit 1; }
 
 # Supported locales
 locales=(af_ZA \
