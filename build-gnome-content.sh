@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Deckard, a Web based Glade Runner
-# Copyright (C) 2013  Nicolas Delvaux <contact@nicolas-delvaux.org>
+# Copyright (C) 2013-2019  Nicolas Delvaux <contact@nicolas-delvaux.org>
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as published by
@@ -20,16 +20,6 @@
 command -v xmllint >/dev/null 2>&1 || { echo >&2 "This script requires the xmllint command. Aborting."; exit 1; }
 command -v git >/dev/null 2>&1 || { echo >&2 "This script requires the git command. Aborting."; exit 1; }
 command -v rsync >/dev/null 2>&1 || { echo >&2 "This script requires the rsync command. Aborting."; exit 1; }
-
-# The following is necessary for X-less servers
-export GDK_BACKEND=broadway
-broadwayd :99 & # Ensure we do not conflict with the Deckard instance
-bPID=$! # broadwayd is killed at the end of the script
-trap "kill -9 $bPID; exit" SIGHUP SIGINT SIGTERM # ensure it is killed even if the script is aborted
-export BROADWAY_DISPLAY=:99
-# The following is only useful on the (default) Ubuntu desktop
-export UBUNTU_MENUPROXY=
-export LIBOVERLAY_SCROLLBAR=0
 
 # Supported locales
 locales=(af_ZA \
@@ -298,8 +288,6 @@ get_module tracker
 get_module transmageddon
 get_module vinagre
 get_module zenity
-
-kill -9 $bPID
 
 # Remember when this was done
 date -Is > timestamp
