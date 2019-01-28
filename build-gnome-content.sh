@@ -112,6 +112,125 @@ locales=(af_ZA \
          zu_ZA)
 
 
+# Project blacklist
+# List of modules known to contain nothing displayable by Deckard
+# This list avoid us to clone these projects for nothing.
+modules_blacklist=(adwaita-icon-theme \
+                   amtk \
+                   at-spi2-core \
+                   atk \
+                   atomato \
+                   cantarell-fonts \
+                   caribou \
+                   chrome-gnome-shell \
+                   clutter \
+                   clutter-gtk \
+                   cogl \
+                   damned-lies \
+                   dconf \
+                   desktop-icons \
+                   ekiga \
+                   evolution-activesync \
+                   evolution-ews \
+                   evolution-mapi \
+                   extensions-web \
+                   flatpak \
+                   folks \
+                   gcab \
+                   gdk-pixbuf \
+                   gdl \
+                   gdm \
+                   gegl \
+                   genius \
+                   ghex \
+                   gimp-gap \
+                   gimp-help \
+                   gimp-tiny-fu \
+                   glib \
+                   glib-networking \
+                   glib-openssl \
+                   gnome-backgrounds \
+                   gnome-commander \
+                   gnome-directory-thumbnailer \
+                   gnome-dvb-daemon \
+                   gnome-font-viewer \
+                   gnome-getting-started-docs \
+                   gnome-hello \
+                   gnome-internet-radio-locator \
+                   gnome-keyring \
+                   gnome-latex \
+                   gnome-menus \
+                   gnome-notes \
+                   gnome-online-accounts \
+                   gnome-settings-daemon \
+                   gnome-shell \
+                   gnome-shell-extensions \
+                   gnome-sound-recorder \
+                   gnome-themes-extra \
+                   gnome-tweaks \
+                   gnome-user-docs \
+                   gnome-user-share \
+                   gnome-video-effects \
+                   gnomemm-website \
+                   goocanvas \
+                   gparted \
+                   grilo \
+                   grilo-plugins \
+                   gsettings-desktop-schemas \
+                   gtk \
+                   gtk-doc \
+                   gtk-mac-integration \
+                   gtk-vnc \
+                   gucharmap \
+                   gvfs \
+                   gxml \
+                   jhbuild \
+                   json-glib \
+                   lasem \
+                   libgdata \
+                   libgnome-games-support \
+                   libgovirt \
+                   libgsf \
+                   libgtop \
+                   libgweather \
+                   libpeas \
+                   library-web \
+                   libsecret \
+                   libsoup \
+                   libwnck \
+                   ModemManager \
+                   msitools \
+                   mutter \
+                   nautilus-sendto \
+                   NetworkManager \
+                   notification-daemon \
+                   pan \
+                   phodav \
+                   polkit \
+                   PulseAudio \
+                   quadrapassel \
+                   release-notes \
+                   sushi \
+                   template-glib \
+                   tepl \
+                   totem-pl-parser \
+                   tracker-miner-chatlog \
+                   tracker-miners \
+                   video-subtitles \
+                   vino \
+                   webkit \
+                   xdg-desktop-portal \
+                   xdg-user-dirs-gtk \
+                   yelp \
+                   yelp-xsl)
+
+isBlacklisted () {
+    for item in "${modules_blacklist[@]}"; do
+        [[ "$item" == "$1" ]] && return 0
+    done
+    return 1
+}
+
 
 # Get a single module
 function get_module {
@@ -231,6 +350,10 @@ for module in $modules; do
     # Others most likely have no use of Deckard anyway.
     if [[ $ext_platform ]]; then
         continue
+    fi
+    if isBlacklisted $name; then
+       echo "Ignoring $name, as it is blacklisted."
+       continue
     fi
 
     # Actually retrieve the module
