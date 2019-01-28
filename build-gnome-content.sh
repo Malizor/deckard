@@ -111,16 +111,12 @@ locales=(af_ZA \
          zh_TW \
          zu_ZA)
 
-rm -rf content_tmp
 
-for lang in "${locales[@]}"
-do
-    mkdir -p "content_tmp/LANGS/$lang/LC_MESSAGES"
-done
 
 # Get a single module
 function get_module {
     module_name=$1
+    module_url=$2
     mkdir -p $module_name
 
     # Repositories are cached locally
@@ -135,7 +131,7 @@ function get_module {
 	echo "Getting $module_name (as it was not found in the cache)..."
 	mkdir -p ../cache
 	cd ../cache
-	git clone https://gitlab.gnome.org/GNOME/$module_name.git
+	git clone $module_url
 	cd -
 	echo "$module_name was downloaded and cached."
     fi
@@ -212,79 +208,35 @@ if len(gr.windows) == 0:
     fi
 }
 
+
+# The script starts here
+rm -rf content_tmp
+
+for lang in "${locales[@]}"; do
+    mkdir -p "content_tmp/LANGS/$lang/LC_MESSAGES"
+done
+
 cd content_tmp
 
-# Get relevant modules
-get_module alacarte
-get_module anjuta
-get_module anjuta-extras
-get_module california
-get_module cheese
-get_module dasher
-get_module dconf-editor
-get_module empathy
-get_module eog
-get_module eog-plugins
-get_module epiphany
-get_module evolution
-get_module file-roller
-get_module five-or-more
-get_module gbrainy
-get_module geary
-get_module gedit
-get_module gedit-latex
-get_module gedit-plugins
-get_module gevice
-get_module gimp
-get_module gitg
-get_module glade
-get_module gnome-applets
-get_module gnome-bluetooth
-get_module gnome-boxes
-get_module gnome-chess
-get_module gnome-calculator
-get_module gnome-color-manager
-get_module gnome-control-center
-get_module gnome-dictionary
-get_module gnome-disk-utility
-get_module gnome-documents
-get_module gnome-logs
-get_module gnome-mines
-get_module gnome-music
-get_module gnome-nettool
-get_module gnome-panel
-get_module gnome-session
-get_module gnome-sudoku
-get_module gnome-system-log
-get_module gnome-system-monitor
-get_module gnome-terminal
-get_module gnumeric
-get_module goffice
-get_module goobox
-get_module gthumb
-get_module gtranslator
-get_module libgnome-media-profiles
-get_module meld
-get_module mousetweaks
-get_module nautilus
-get_module nemiver
-get_module network-manager-applet
-get_module network-manager-openvpn
-get_module network-manager-pptp
-get_module office-runner
-get_module orca
-get_module pitivi
-get_module regexxer
-get_module rhythmbox
-get_module rygel
-get_module shotwell
-get_module sound-juicer
-get_module swell-foop
-get_module totem
-get_module tracker
-get_module transmageddon
-get_module vinagre
-get_module zenity
+
+# Get all translatable projects from Damned-Lies
+modules=$(curl --silent https://l10n.gnome.org/api/v1/modules/ | jq -r .[].href)
+for module in $modules; do
+    module=$(curl --silent https://l10n.gnome.org$module)
+    name=$(echo $module | jq -j .name)
+    web_url=$(echo $module | jq -j .vcs_web)
+    ext_platform=$(echo $module | jq -j .ext_platform)
+    clone_url=${web_url%/}.git
+    # We only want projects translated on Damned-Lies.
+    # Others most likely have no use of Deckard anyway.
+    if [[ $ext_platform ]]; then
+        continue
+    fi
+
+    # Actually retrieve the module
+    get_module $name $clone_url
+done
+
 
 # Remember when this was done
 date -Is > timestamp
