@@ -25,7 +25,7 @@ RUN useradd deckard --create-home -s /usr/sbin/nologin -g www-data
 
 # Configure GTK decorations
 RUN sudo -u deckard mkdir -p ~deckard/.config/gtk-3.0
-RUN echo -e "[Settings]\ngtk-theme-name = Adwaita\ngtk-fallback-icon-theme = gnome\n" | sudo -u deckard tee ~deckard/.config/gtk-3.0/settings.ini > /dev/null
+RUN /bin/echo -e "[Settings]\ngtk-theme-name = Adwaita\ngtk-fallback-icon-theme = gnome\n" | sudo -u deckard tee ~deckard/.config/gtk-3.0/settings.ini > /dev/null
 
 
 # Now install deckard itself!
@@ -48,13 +48,13 @@ RUN rm /etc/nginx/sites-enabled/default
 RUN cd ~deckard && export PYTHONPATH=~deckard/deckard-app && sudo -u deckard ~deckard/deckard-app/build-gnome-content.sh
 
 # Auto-update the content folder once a day
-RUN echo "0 2 * * * PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-gnome-content.sh > ~deckard/build-gnome-content.log" | sudo -u deckard crontab -
+RUN /bin/echo "0 2 * * * PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-gnome-content.sh > ~deckard/build-gnome-content.log" | sudo -u deckard crontab -
 
 # Configure Deckard to use our content folder
-RUN echo -e "[deckard]\ncontent_dir_path = /home/deckard/content" | sudo -u deckard tee ~deckard/deckard.conf > /dev/null
+RUN /bin/echo -e "[deckard]\ncontent_dir_path = /home/deckard/content" | sudo -u deckard tee ~deckard/deckard.conf > /dev/null
 
 # Point uWSGI to our configuration file
-RUN echo "env = DECKARD_CONF_FILE=/home/deckard/deckard.conf" >> /etc/uwsgi/apps-enabled/deckard.ini
+RUN /bin/echo "env = DECKARD_CONF_FILE=/home/deckard/deckard.conf" >> /etc/uwsgi/apps-enabled/deckard.ini
 #RUN systemctl restart uwsgi
 
 
@@ -63,6 +63,6 @@ EXPOSE 80
 
 # Create the startup script
 # The trailing "cat" is actually a hack to keep the container alive...
-RUN echo -e "#!/usr/bin/env sh\nservice nginx start; service uwsgi start; cat" > start_script.sh
+RUN /bin/echo -e "#!/usr/bin/env sh\nservice nginx restart; service uwsgi restart; tail -f /var/log/uwsgi/app/deckard.log" > start_script.sh
 
 CMD start_script.sh
