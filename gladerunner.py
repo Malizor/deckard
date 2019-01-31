@@ -19,6 +19,7 @@
 """Module to load a Glade file and display its windows"""
 
 import os
+import re
 import sys
 import fcntl
 import locale
@@ -189,10 +190,13 @@ class GladeRunner:
         except Exception as e:
             message = str(e)
             # Try to detect if we miss a custom widget
-            if message.startswith("Invalid object type `"):
+            if "Invalid object type" in message:
                 try:
+                    custom_name = re.search(
+                        ".*Invalid object type '(.*)'.*", message
+                    ).group(1)
                     # This will fail if this placeholder was already defined
-                    exec(placeholder_widget % {"name": message[21:-1]})
+                    exec(placeholder_widget % {"name": custom_name})
                     self._load(tree)
                 except:
                     raise GladeRunnerException(message)
