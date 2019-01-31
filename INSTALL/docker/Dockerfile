@@ -1,6 +1,12 @@
 # This Dockerfile is experimental: it is not production ready.
 # However, it may also be seen as a step-by-step tutorial for a manual installation.
 
+# You may build the image using:
+## docker build . -t local/deckard
+
+# Then run via:
+## docker run -v /path/to/local/content/folder:/home/deckard/content -it local/deckard /bin/bash
+
 FROM ubuntu:18.10
 MAINTAINER Nicolas Delvaux, contact@nicolas-delvaux.org
 
@@ -45,10 +51,10 @@ RUN rm /etc/nginx/sites-enabled/default
 
 
 # Deckard itself is installed now, we only miss data from gnome.org
-RUN cd ~deckard && export PYTHONPATH=~deckard/deckard-app && sudo -u deckard ~deckard/deckard-app/build-gnome-content.sh
+#RUN cd ~deckard && export PYTHONPATH=~deckard/deckard-app && sudo -u deckard ~deckard/deckard-app/build-gnome-content.sh
 
 # Auto-update the content folder once a day
-RUN /bin/echo "0 2 * * * PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-gnome-content.sh > ~deckard/build-gnome-content.log" | sudo -u deckard crontab -
+#RUN /bin/echo "0 2 * * * PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-gnome-content.sh > ~deckard/build-gnome-content.log" | sudo -u deckard crontab -
 
 # Configure Deckard to use our content folder
 RUN /bin/echo -e "[deckard]\ncontent_dir_path = /home/deckard/content" | sudo -u deckard tee ~deckard/deckard.conf > /dev/null
@@ -65,4 +71,4 @@ EXPOSE 80
 # The trailing "cat" is actually a hack to keep the container alive...
 RUN /bin/echo -e "#!/usr/bin/env sh\nservice nginx restart; service uwsgi restart; tail -f /var/log/uwsgi/app/deckard.log" > start_script.sh
 
-CMD start_script.sh
+CMD sh /start_script.sh
