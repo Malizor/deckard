@@ -42,6 +42,10 @@ class %(name)s(Gtk.Label):
 """
 
 
+class GladeRunnerException(Exception):
+    pass
+
+
 class GladeRunner:
     """Module to load a Glade file and display all windows in it"""
 
@@ -191,7 +195,7 @@ class GladeRunner:
                     exec(placeholder_widget % {"name": message[21:-1]})
                     self._load(tree)
                 except:
-                    sys.exit(message)
+                    raise GladeRunnerException(message)
             # Any unknown internal child?
             elif message.startswith("Unknown internal child: "):
                 # Just try to delete it.
@@ -209,14 +213,16 @@ class GladeRunner:
                     self._load(tree)
                 else:
                     # No infinite loop please
-                    sys.exit(message)
+                    raise GladeRunnerException(message)
             else:
-                sys.exit(message)
+                raise GladeRunnerException(message)
 
     def display(self):
         """Display all windows"""
         if len(self.windows) == 0:
-            sys.exit("Nothing to display. Did you load the file first?")
+            raise GladeRunnerException(
+                "Nothing to display. Did you load the file first?"
+            )
         else:
             for name in self.windows:
                 self.windows[name].connect("delete-event", self.close_window)
@@ -298,5 +304,9 @@ if __name__ == "__main__":
         args.suicidal,
         args.catalog_path,
     )
-    gr.load()
-    gr.display()
+
+    try:
+        gr.load()
+        gr.display()
+    except GladeRunnerException as exp:
+        sys.exit(exp)

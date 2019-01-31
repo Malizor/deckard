@@ -306,8 +306,8 @@ from gladerunner import GladeRunner
 gr = GladeRunner('{}')
 try:
     gr.load()
-except:
-    print('{} is not loadable, removing it...')
+except Exception as exp:
+    print('{} is not loadable (%s), removing it...' % exp)
     os.remove('{}')
     sys.exit()
 if len(gr.windows) == 0:
