@@ -22,6 +22,15 @@ command -v git >/dev/null 2>&1 || { echo >&2 "This script requires the git comma
 command -v rsync >/dev/null 2>&1 || { echo >&2 "This script requires the rsync command. Aborting."; exit 1; }
 command -v curl >/dev/null 2>&1 || { echo >&2 "This script requires the curl command. Aborting."; exit 1; }
 command -v jq >/dev/null 2>&1 || { echo >&2 "This script requires the jq command. Aborting."; exit 1; }
+command -v broadwayd >/dev/null 2>&1 || { echo >&2 "This script requires the broadwayd command. Aborting."; exit 1; }
+
+# The following is necessary for X-less servers
+export GDK_BACKEND=broadway
+broadwayd :99 & # Ensure we do not conflict with the Deckard instance
+bPID=$! # broadwayd is killed at the end of the script
+trap "kill -9 $bPID; exit" SIGHUP SIGINT SIGTERM # ensure it is killed even if the script is aborted
+export BROADWAY_DISPLAY=:99
+
 
 # Supported locales
 locales=(af_ZA \
@@ -363,6 +372,8 @@ done
 
 # Remember when this was done
 date -Is > timestamp
+
+kill -9 $bPID
 
 # We are done, now replace the old content folder (if any)
 cd ..
