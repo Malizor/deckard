@@ -61,6 +61,10 @@ RUN /bin/echo -e "[deckard]\ncontent_dir_path = /home/deckard/content" | sudo -u
 
 # Point uWSGI to our configuration file
 RUN /bin/echo "env = DECKARD_CONF_FILE=/home/deckard/deckard.conf" >> /etc/uwsgi/apps-enabled/deckard.ini
+
+# Enable the Python auto-reload feature if requested (handy for development)
+ARG auto_reload_on_code_change=true
+RUN if [ "$auto_reload_on_code_change" = "true" ] ; then /bin/echo "py-autoreload = 1" >> /etc/uwsgi/apps-enabled/deckard.ini ; fi
 #RUN systemctl restart uwsgi
 
 
