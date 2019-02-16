@@ -68,6 +68,6 @@ RUN /bin/echo "env = DECKARD_CONF_FILE=/home/deckard/deckard.conf" >> /etc/uwsgi
 EXPOSE 80
 
 # Create the startup script
-RUN /bin/echo -e '#!/usr/bin/env sh\nservice nginx start; service uwsgi start; tail -f /var/log/uwsgi/app/*.log /var/log/nginx/*.log' > start_script.sh
+RUN /bin/echo -e '#!/usr/bin/env sh\nservice nginx start; service uwsgi start; tail -qf /var/log/uwsgi/app/*.log /var/log/nginx/*.log' > start_script.sh
 
 CMD sh /start_script.sh
