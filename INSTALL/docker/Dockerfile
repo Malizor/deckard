@@ -1,11 +1,11 @@
-# This Dockerfile is experimental: it is not production ready.
+# This Dockerfile is mainly useful to ease the Deckard development process.
 # However, it may also be seen as a step-by-step tutorial for a manual installation.
 
 # You may build the image using:
 ## docker build . -t local/deckard
 
-# Then run via:
-## docker run -v /path/to/local/content/folder:/home/deckard/content -it local/deckard /bin/bash
+# Then run locally via:
+## docker run -p 80:80 -v /path/to/local/content/folder:/home/deckard/content -it local/deckard
 
 FROM ubuntu:18.10
 MAINTAINER Nicolas Delvaux, contact@nicolas-delvaux.org

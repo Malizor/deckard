@@ -31,7 +31,7 @@ For Gnome projects:
 
 #### How can I install it?
 
-Please refer to the **INSTALL** folder.
+Please refer to the **INSTALL/README.md** file.
 
 #### Why GTK? Why not $toolkit?
 
