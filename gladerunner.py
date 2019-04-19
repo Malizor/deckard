@@ -64,7 +64,6 @@ class GladeRunner:
         # Late import because of potential environment tweaking outside of
         # the class (start_broadwayd)
         builtins.Gtk = importlib.import_module("gi.repository.Gtk")
-        builtins.GObject = importlib.import_module("gi.repository.GObject")
 
         self.glade_file_path = glade_file_path
         self.lang_path = lang_path
@@ -231,7 +230,6 @@ class GladeRunner:
             for name in self.windows:
                 self.windows[name].connect("delete-event", self.close_window)
                 self.windows[name].show_all()
-            GObject.threads_init()
             Gtk.main()
 
     @classmethod
