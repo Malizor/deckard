@@ -16,7 +16,7 @@ RUN apt upgrade -y
 
 
 # Install dependencies
-RUN apt install -y nginx  gir1.2-gtk-3.0 python3-gi python3-jinja2
+RUN apt install -y nginx  gir1.2-gtk-3.0 gir1.2-handy-0.0 python3-gi python3-jinja2
 RUN apt install --no-install-recommends -y sudo uwsgi uwsgi-plugin-python3 git ca-certificates gettext libxml2-utils jq rsync gnome-themes-standard language-pack-gnome-*
 
 # Install some fonts to cover most languages

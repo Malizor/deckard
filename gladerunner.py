@@ -194,9 +194,16 @@ class GladeRunner:
                     custom_name = re.search(
                         ".*Invalid object type '(.*)'.*", message
                     ).group(1)
-                    # This will fail if this placeholder was already defined
-                    exec(placeholder_widget % {"name": custom_name})
-                    self._load(tree)
+                    if custom_name.startswith("Hdy"):
+                        # This UI needs libhandy
+                        builtins.Handy = importlib.import_module("gi.repository.Handy")
+                        Handy.init()
+                        self._load(tree)
+                    else:
+                        # Try to replace this unknown widget by a placeholder
+                        # This will fail if this placeholder was already defined
+                        exec(placeholder_widget % {"name": custom_name})
+                        self._load(tree)
                 except:
                     raise GladeRunnerException(message)
             # Any unknown internal child?

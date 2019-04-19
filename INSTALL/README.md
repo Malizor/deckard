@@ -37,7 +37,7 @@ sudo docker run -p 80:80 -v $(pwd)/../content:/home/deckard/content -v $(pwd):/h
 
 ## Manual installation
 
-In the following procedure we will assume you use at least Ubuntu 16.04.
+In the following procedure we will assume you use at least Ubuntu 19.04.
 Other distributions should work fine too, but Deckard was mainly developed
 and tested on Ubuntu.
 
@@ -52,6 +52,7 @@ You will need the following packages on Ubuntu/Debian:
 
 
 * gir1.2-gtk-3.0
+* gir1.2-handy-0.0
 * python3
 * python3-gi
 * python3-jinja2
