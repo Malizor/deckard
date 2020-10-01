@@ -119,7 +119,7 @@ function get_url_for_this_view() {
     } else {
         url += '&locale='+locale_selector.value.substr(0, i)+'&display=1';
     }
-    document.getElementById('url_view').innerHTML = url;
+    document.getElementById('url_view').textContent = url;
 }
 
 function switch_ui_selector() {
