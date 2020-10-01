@@ -34,7 +34,8 @@ var iframe = document.getElementById('iframe');
 iframe.src = 'about:blank';
 
 // URL parameters handling
-var param_locale = getParameterByName('locale');
+var url_params = new URLSearchParams(window.location.search)
+var param_locale = url_params.get('locale');
 if (!param_locale) {
     // No locale was specified, try to preselect the browser language
     param_locale = window.navigator.userLanguage || window.navigator.language;
@@ -52,7 +53,7 @@ for (var i = 0; i < locale_selector.length; i++) {
     }
 }
 
-var param_module = getParameterByName('module');
+var param_module = url_params.get('module');
 var valid_param_module = false;
 if (param_module) {
     // select this module (if it exists)
@@ -66,7 +67,7 @@ if (param_module) {
     }
 }
 
-var param_ui = getParameterByName('ui');
+var param_ui = url_params.get('ui');
 if (param_ui) {
     // select this ui (if it exists)
     for (var i = 0; i < current_ui_selector.length; i++) {
@@ -77,9 +78,9 @@ if (param_ui) {
     }
 }
 
-var param_display = getParameterByName('display');
+var param_display = url_params.get('display');
 
-var param_file = getParameterByName('file');
+var param_file = url_params.get('file');
 if (param_file) {
     // A valid module must has been selected at the same time
     if (!valid_param_module) {
@@ -93,19 +94,6 @@ if (param_file) {
     param_display = '0';
     // Display the preselected view
     spawn();
-}
-
-
-function getParameterByName(name) {
-    name = name.replace(/[\[]/, '\\\[').replace(/[\]]/, '\\\]');
-    var regex_string = '[\\?&]' + name + '=([^&#]*)';
-    var regex = new RegExp(regex_string);
-    var results = regex.exec(window.location.search);
-    if(!results) {
-        return null;
-    } else {
-        return decodeURIComponent(results[1].replace(/\+/g, ' '));
-    }
 }
 
 function get_url_for_this_view() {
