@@ -131,8 +131,8 @@ class GladeRunner:
             template.tag = "object"
             template.set("id", template.get("class"))
             parent = template.get("parent")
-            if parent == "GtkBin":
-                # GtkBin is abstract, so we must select one of its children.
+            if parent in {"GtkBin", "GtkContainer"}:
+                # These are abstract, so we must arbitrarily select one possible children.
                 parent = "GtkWindow"
             template.set("class", parent)
             del template.attrib["parent"]
