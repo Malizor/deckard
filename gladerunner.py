@@ -130,7 +130,11 @@ class GladeRunner:
                 continue
             template.tag = "object"
             template.set("id", template.get("class"))
-            template.set("class", template.get("parent"))
+            parent = template.get("parent")
+            if parent == "GtkBin":
+                # GtkBin is abstract, so we must select one of its children.
+                parent = "GtkWindow"
+            template.set("class", parent)
             del template.attrib["parent"]
 
         # Apply the mapping
