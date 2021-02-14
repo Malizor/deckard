@@ -235,7 +235,7 @@ class GladeRunner:
                     custom_name = re.search(
                         ".*Invalid object type '(.*)'.*", message
                     ).group(1)
-                    if custom_name.startswith("Hdy"):
+                    if custom_name.startswith("Hdy") and not hasattr(builtins, "Handy"):
                         # This UI needs libhandy
                         builtins.Handy = importlib.import_module("gi.repository.Handy")
                         Handy.init()
