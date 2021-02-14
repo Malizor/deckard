@@ -307,6 +307,9 @@ function get_module {
     # We don't support odd glade files with type-func attributes (evolution, I'm looking at you)
     rm -f $(grep -lr "type-func" .)
 
+    # Only consider glade files which have translatable strings
+    find $module_name -iregex ".*\.\(ui\|xml\|glade\)" -exec sh -c 'xmllint --xpath //*[@translatable] {} 2> /dev/null > /dev/null || (echo Nothing translatable in {}, removing it... && rm -f {})' \;
+
     # Some glade files do not contain anything displayable (eg: cheese, data/cheese-actions.ui)
     cd ..
     find content_tmp/$module_name -iregex ".*\.\(ui\|xml\|glade\)" -exec python3 -c "
