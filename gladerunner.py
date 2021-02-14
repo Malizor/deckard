@@ -115,6 +115,7 @@ class GladeRunner:
          - replacing unknown widgets by placeholders
          - disabling "dangerous" widgets like file choosers
          - giving a window to window-less highest level widgets
+         - show a dedicated window to control orphan StackSwitcher widgets
         """
 
         # Parse the Glade file as XML for additional processing
@@ -184,6 +185,34 @@ class GladeRunner:
             window.add(obj)
             self.windows[name] = window
 
+        # Check if embedded GtkStack are usable out of the box
+        stack_switcher_to_create = set()
+        for obj in self.builder.get_objects():
+            if isinstance(obj, Gtk.Stack):
+                if len(obj.get_children()) < 2:
+                    # No need for a StackSwitcher
+                    continue
+                for obj2 in self.builder.get_objects():
+                    if isinstance(obj2, Gtk.StackSwitcher) and obj2.get_stack() == obj:
+                        break
+                else:
+                    # We found not matching StackSwitcher for this Stack, we will create one
+                    stack_switcher_to_create.add(obj)
+
+        if stack_switcher_to_create:
+            switcher_window = Gtk.Window(title="Deckard: GtkStackSwitcher")
+            switcher_vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+            for sid in stack_switcher_to_create:
+                name = Gtk.Buildable.get_name(sid)
+                switcher_vbox.add(
+                    Gtk.Label(label="Switcher for the '%s' widget:" % name)
+                )
+                switcher_vbox.add(Gtk.StackSwitcher(stack=sid))
+                print("Created a StackSwitcher for %s" % name)
+
+            switcher_window.add(switcher_vbox)
+            Gtk.Buildable.set_name(switcher_window, "Deckard_GtkStackSwitcher")
+            self.windows["Deckard_GtkStackSwitcher"] = switcher_window
 
     def _load(self, tree):
         """Try to load a Glade file from an ElementTree.
