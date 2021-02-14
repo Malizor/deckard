@@ -276,6 +276,8 @@ class GladeRunner:
             )
         else:
             for name in self.windows:
+                # We don't want any window to be modal in our case, as it won't work well.
+                self.windows[name].set_modal(False)
                 self.windows[name].connect("delete-event", self.close_window)
                 self.windows[name].show_all()
             Gtk.main()
