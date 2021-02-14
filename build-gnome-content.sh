@@ -308,7 +308,7 @@ function get_module {
     rm -f $(grep -lr "type-func" .)
 
     # Only consider glade files which have translatable strings
-    find $module_name -iregex ".*\.\(ui\|xml\|glade\)" -exec sh -c 'xmllint --xpath //*[@translatable] {} 2> /dev/null > /dev/null || (echo Nothing translatable in {}, removing it... && rm -f {})' \;
+    find $module_name -iregex ".*\.\(ui\|xml\|glade\)" -exec sh -c 'xmllint --xpath "//*[@translatable]" {} 2> /dev/null > /dev/null || (echo Nothing translatable in {}, removing it... && rm -f {})' \;
 
     # Some glade files do not contain anything displayable (eg: cheese, data/cheese-actions.ui)
     cd ..
