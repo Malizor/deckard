@@ -155,6 +155,12 @@ class GladeRunner:
             # disable FileChooser (it can be a security issue)
             if isinstance(obj, Gtk.FileChooser):
                 obj.set_sensitive(False)
+                try:
+                    os.mkdir("/tmp/empty")
+                except FileExistsError:
+                    pass
+                obj.set_current_folder("/tmp/empty")
+                obj.connect("current-folder-changed", self.force_filechooser_path)
                 continue
             # remove links
             if hasattr(obj, "do_activate_link"):
@@ -277,6 +283,13 @@ class GladeRunner:
     @classmethod
     def ignore_link(cls, _):
         """Do not try to open links"""
+        return True
+
+    @classmethod
+    def force_filechooser_path(cls, filechooser):
+        """Do not try to open links"""
+        if filechooser.get_current_folder() != "/tmp/empty":
+            filechooser.set_current_folder("/tmp/empty")
         return True
 
     def close_window(self, window, _):
