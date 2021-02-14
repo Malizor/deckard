@@ -37,9 +37,10 @@ class %(name)s(Gtk.Label):
     __gtype_name__ = '%(name)s'
 
     def __init__(self):
-        Gtk.Label.__init__(self, "<span foreground='#DD4814'>"
-                                     "<i>unknown widget</i></span>")
-        self.set_use_markup(True)
+        super().__init__(
+            use_markup=True,
+            label="<span foreground='#DD4814'><i>unknown widget</i></span>"
+        )
 """
 
 
