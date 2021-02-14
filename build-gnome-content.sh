@@ -124,8 +124,10 @@ locales=(af_ZA \
 # Project blacklist
 # List of modules known to contain nothing displayable by Deckard
 # This list avoid us to clone these projects for nothing.
-modules_blacklist=(adwaita-icon-theme \
+modules_blacklist=(accountsservice \
+                   adwaita-icon-theme \
                    amtk \
+                   appstream-glib \
                    at-spi2-core \
                    atk \
                    atomato \
