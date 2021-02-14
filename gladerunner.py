@@ -164,25 +164,26 @@ class GladeRunner:
                     name = "gladerunner%d" % len(self.windows)
                 self.windows[name] = obj
 
-        if len(self.windows) == 0:
-            # Try to get highest level widgets and put them in windows
-            toplevel = set()
-            for obj in self.builder.get_objects():
-                if hasattr(obj, "get_toplevel"):
-                    toplevel.add(obj.get_toplevel())
-            for obj in toplevel:
-                if hasattr(obj, "is_toplevel") and obj.is_toplevel():
-                    # This is most likely a menu. It is probably embeded
-                    # in another window, so we can ignore it
-                    continue
-                window = Gtk.Window()
-                name = Gtk.Buildable.get_name(obj)
-                if name is None:
-                    name = "gladerunner%d" % len(self.windows)
-                Gtk.Buildable.set_name(window, name)
-                window.set_title(name)
-                window.add(obj)
-                self.windows[name] = window
+        # Wrap all root widgets in a GtkWindow if needed
+        toplevel = set()
+        for obj in self.builder.get_objects():
+            if hasattr(obj, "get_toplevel"):
+                toplevel.add(obj.get_toplevel())
+
+        for obj in toplevel:
+            if hasattr(obj, "is_toplevel") and obj.is_toplevel():
+                # This is most likely a menu. It is probably embeded
+                # in another window, so we can ignore it
+                continue
+            window = Gtk.Window()
+            name = Gtk.Buildable.get_name(obj)
+            if name is None:
+                name = "gladerunner%d" % len(self.windows)
+            Gtk.Buildable.set_name(window, name)
+            window.set_title(name)
+            window.add(obj)
+            self.windows[name] = window
+
 
     def _load(self, tree):
         """Try to load a Glade file from an ElementTree.
