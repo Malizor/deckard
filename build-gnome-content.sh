@@ -261,7 +261,7 @@ function get_module {
 	echo "Getting $module_name (as it was not found in the cache)..."
 	mkdir -p ../cache
 	cd ../cache
-	git clone $module_url
+	git clone $module_url $module_name
 	cd -
 	echo "$module_name was downloaded and cached."
     fi
