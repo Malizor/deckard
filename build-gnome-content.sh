@@ -314,7 +314,7 @@ function get_module {
 
     # Some glade files do not contain anything displayable (eg: cheese, data/cheese-actions.ui)
     cd ..
-    find content_tmp/$module_name -iregex ".*\.\(ui\|xml\|glade\)" -exec python3 -c "
+    find content_tmp/$module_name -iregex ".*\.\(ui\|xml\|glade\)" -exec sh -c "python3 -c \"
 import os, sys
 from gladerunner import GladeRunner
 gr = GladeRunner('{}')
@@ -327,7 +327,7 @@ except Exception as exp:
 if len(gr.windows) == 0:
     print('Nothing is displayable in {}, removing it...')
     os.remove('{}')
-" \; 2> /dev/null
+\" || (echo 'Crash while loading {}! Removing it...'  && rm -f {}) " \; 2> /dev/null
 
     cd content_tmp
 
