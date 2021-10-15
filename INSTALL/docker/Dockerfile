@@ -7,7 +7,7 @@
 # Then run locally via:
 ## docker run -p 80:80 -v /path/to/local/content/folder:/home/deckard/content -it local/deckard
 
-FROM ubuntu:21.04
+FROM ubuntu:21.10
 MAINTAINER Nicolas Delvaux, contact@nicolas-delvaux.org
 
 
@@ -51,7 +51,7 @@ RUN rm /etc/nginx/sites-enabled/default
 
 
 # Deckard itself is installed now, we only miss data from gnome.org
-#RUN cd ~deckard && export PYTHONPATH=~deckard/deckard-app && sudo -u deckard ~deckard/deckard-app/build-gnome-content.sh
+#RUN cd ~deckard && sudo -u deckard PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-gnome-content.sh
 
 # Auto-update the content folder once a day
 #RUN /bin/echo "0 2 * * * PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-gnome-content.sh > ~deckard/build-gnome-content.log" | sudo -u deckard crontab -
