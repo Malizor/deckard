@@ -32,6 +32,8 @@ from threading import Timer
 from subprocess import Popen
 import xml.etree.ElementTree as ET
 
+import gi
+
 placeholder_widget = """
 class %(name)s(Gtk.Label):
     __gtype_name__ = '%(name)s'
@@ -64,6 +66,7 @@ class GladeRunner:
 
         # Late import because of potential environment tweaking outside of
         # the class (start_broadwayd)
+        gi.require_version("Gtk", "3.0")
         builtins.Gtk = importlib.import_module("gi.repository.Gtk")
 
         self.glade_file_path = glade_file_path
