@@ -24,7 +24,7 @@ PO files in order to test their work as they translate.
 
 For Gnome projects:  
 [https://deckard.malizor.org](https://deckard.malizor.org)  
-(all UI and translations files are updated from master once a day)
+(all UI and translations files are updated from master/main once a day)
 
 
 ### FAQ
