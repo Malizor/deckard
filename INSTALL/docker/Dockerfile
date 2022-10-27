@@ -7,7 +7,7 @@
 # Then run locally via:
 ## docker run -p 80:80 -v /path/to/local/content/folder:/home/deckard/content -it local/deckard
 
-FROM ubuntu:22.04
+FROM ubuntu:22.10
 MAINTAINER Nicolas Delvaux, contact@nicolas-delvaux.org
 
 
