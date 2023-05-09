@@ -7,17 +7,16 @@
 # Then run locally via:
 ## docker run -p 80:80 -v /path/to/local/content/folder:/home/deckard/content -it local/deckard
 
-FROM ubuntu:22.10
+FROM ubuntu:23.04
 MAINTAINER Nicolas Delvaux, contact@nicolas-delvaux.org
 
 
-RUN apt-get update
-RUN apt-get upgrade -y
+RUN apt-get update && apt-get upgrade -y
 
 
 # Install dependencies
 RUN apt-get install -y nginx  gir1.2-gtk-3.0 gir1.2-handy-0.0 python3-gi python3-jinja2
-RUN apt-get install --no-install-recommends -y sudo uwsgi uwsgi-plugin-python3 git ca-certificates gettext libxml2-utils jq rsync curl gnome-themes-standard language-pack-gnome-*
+RUN apt-get install --no-install-recommends -y sudo uwsgi uwsgi-plugin-python3 git ca-certificates gettext libxml2-utils jq rsync curl language-pack-gnome-*
 
 # Install some fonts to cover most languages
 RUN apt-get install -y fonts-ubuntu fonts-lohit-guru fonts-guru-extra fonts-guru fonts-droid-fallback fonts-dejavu-extra fonts-khmeros-core fonts-lklug-sinhala fonts-sil-padauk fonts-nanum fonts-telu fonts-samyak fonts-knda fonts-beng fonts-sil-abyssinica fonts-thai-tlwg-ttf
