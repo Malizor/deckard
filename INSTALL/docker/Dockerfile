@@ -7,8 +7,8 @@
 # Then run locally via:
 ## docker run -p 80:80 -v /path/to/local/content/folder:/home/deckard/content -it local/deckard
 
-FROM ubuntu:24.10
-MAINTAINER Nicolas Delvaux, contact@nicolas-delvaux.org
+FROM ubuntu:25.04
+LABEL org.opencontainers.image.authors="Nicolas Delvaux <contact@nicolas-delvaux.org>"
 
 
 RUN apt update && apt upgrade -y
