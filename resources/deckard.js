@@ -161,7 +161,7 @@ function upload_po(remote_file_name) {
     if (remote_file_name) {
         data.append('po_name', remote_file_name);
     } else {
-        data.append('po_name', po_picker.value);
+        data.append('po_name', po_picker.files[0].name);
         data.append('po_file', po_picker.files[0]);
     }
     data.append('po_module', module_selector.value);
