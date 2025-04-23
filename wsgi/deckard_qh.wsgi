@@ -19,8 +19,9 @@
 import os
 import json
 import configparser
-from cgi import FieldStorage
 from urllib.parse import parse_qsl
+
+from multipart import parse_form_data
 from jinja2 import Environment, FileSystemLoader
 
 import libdeckard
@@ -88,24 +89,24 @@ def application(environ, start_response):
     if environ["REQUEST_METHOD"] == "POST":
         try:
             if environ["CONTENT_TYPE"].startswith("multipart/form-data"):
-                fs = FieldStorage(fp=environ["wsgi.input"], environ=environ)
-                if "po_name" not in fs or "po_module" not in fs:
+                forms, files = parse_form_data(environ)
+                if "po_name" not in forms or "po_module" not in forms:
                     raise Exception("Malformed input")
 
                 uuid = None
-                if "session" in fs:
-                    uuid = fs["session"].value
+                if "session" in forms:
+                    uuid = forms["session"]
 
-                if "po_file" in fs:
+                if "po_file" in files:
                     uuid, custom_files = sessions_manager.store_po(
                         uuid,
-                        fs["po_name"].value,
-                        fs["po_module"].value,
-                        fs["po_file"].file,
+                        forms["po_name"],
+                        forms["po_module"],
+                        files["po_file"].file,
                     )
                 else:
                     uuid, custom_files = sessions_manager.store_po(
-                        uuid, fs["po_name"].value, fs["po_module"].value
+                        uuid, forms["po_name"], forms["po_module"]
                     )
 
                 response = {
