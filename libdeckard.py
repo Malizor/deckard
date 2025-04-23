@@ -198,7 +198,8 @@ class Session:
                         # Fallback to a known locale
                         po_lang = "en_US"
                     finally:
-                        locale.resetlocale()
+                        # Go back to the default locale
+                        locale.setlocale(locale.LC_ALL, '')
                     break
 
         # create necessary directories
