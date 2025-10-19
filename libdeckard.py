@@ -199,7 +199,7 @@ class Session:
                         po_lang = "en_US"
                     finally:
                         # Go back to the default locale
-                        locale.setlocale(locale.LC_ALL, '')
+                        locale.setlocale(locale.LC_ALL, "")
                     break
 
         # create necessary directories
