@@ -7,7 +7,7 @@
 # Then run locally via:
 ## docker run -p 80:80 -v /path/to/local/content/folder:/home/deckard/content -it local/deckard
 
-FROM ubuntu:25.04
+FROM ubuntu:25.10
 LABEL org.opencontainers.image.authors="Nicolas Delvaux <contact@nicolas-delvaux.org>"
 
 
