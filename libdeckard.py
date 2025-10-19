@@ -88,7 +88,7 @@ class Session:
             if self.custom_po[language][0] != module:
                 raise DeckardException(
                     '"%s" does not exist' % language,
-                    "No such file was registered for the " "%s module." % module,
+                    "No such file was registered for the %s module." % module,
                 )
             lang_root = os.path.join(self.custom_po[language][1], "LANGS")
             # This locale has to be available on your system
@@ -175,7 +175,7 @@ class Session:
         else:
             raise DeckardException(
                 "Operation not supported",
-                "The PO download feature is not configured " "on this instance.",
+                "The PO download feature is not configured on this instance.",
             )
 
         # Try to guess the language of this PO file, default is 'en_US'
@@ -355,7 +355,7 @@ class SessionsManager:
         # This should never if you managed to create a session
         raise DeckardException(
             "Could not find a free port.",
-            "This should never happen.\n" "Please report this bug.",
+            "This should never happen.\nPlease report this bug.",
         )
 
     def spawn_runner(self, uuid, module, module_file, language):
