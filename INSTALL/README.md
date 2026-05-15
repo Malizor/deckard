@@ -3,45 +3,44 @@
 
 ## Docker
 
-Contrary to the bellow [Manual installation](#manual-installation) procedure, this one is
-recommended for development and testing purposes, as it is easier and quicker.
+This is the recommended way, both for development and production deployment.
 
 The prerequisites are the following:
-- Install **Docker**
-  (eg. via `sudo snap install docker` on Ubuntu)
+- Install **Docker** and its usual plugins
+  (eg. via `apt install docker.io docker-buildx docker-compose-v2` on Ubuntu)
 - Generate a `content` folder
   (please see the [Generate a Content folder](#generate-a-content-folder) section below)
-- Open a terminal and `cd` to the root of the Deckard git repository
+- you can pull a prebuilt image via `docker pull malizor/deckard`
 
-You can then build the Docker image for Deckard with a command like:
+
+### Docker compose
+
+An example compose file is provided in the `docker` folder. It assumes the `content` folder is available in `/opt/deckard/data/content` on the host and the git repo is in `/opt/deckard/deckard-app`.
+
+It can be ran simply with `docker compose up` when inside the `docker` folder. The app will then be available on http://localhost:8080.
+
+### Manual build
+You can manually build the Docker image with a command like:
 ```bash
-sudo docker build INSTALL/docker -t local/deckard
+docker build INSTALL/docker -t malizor/deckard
 ```
 
 To run it, considering that the `content` folder you generated earlier is
 `../content`, execute:
 ```bash
-sudo docker run -p 80:80 -v $(pwd)/../content:/home/deckard/content -it local/deckard
+docker run -p 80:80 -v $(pwd)/../content:/home/deckard/data/content -it local/deckard
 ```
 
 Then you can access your new Deckard instance on http://localhost.
 
-#### Development
-
-For development purposes, you can mount your local branch of Deckard in the
-container, in order to test your local changes directly:
-```bash
-sudo docker run -p 80:80 -v $(pwd)/../content:/home/deckard/content -v $(pwd):/home/deckard/deckard-app -it local/deckard
-```
-
 
 ## Manual installation
 
-In the following procedure we will assume you use at least Ubuntu 25.04.
+In the following procedure we will assume you use at least Ubuntu 26.04.
 Other distributions should work fine too, but Deckard was mainly developed
 and tested on Ubuntu.
 
-The recommended setup for Deckard is throught uWSGI and Nginx.  
+The recommended manual setup for Deckard is throught uWSGI and Nginx.  
 Other setups should work to, but are not tested.
 Example configuration files for Apache (libapache2-mod-wsgi-py3) and HAProxy are
 provided for information in the `INSTALL/apache+haproxy` folder.
@@ -61,10 +60,8 @@ You will need the following packages on Ubuntu/Debian:
 * nginx
 
 You will want to use the latest version of GTK+ if your interfaces depend on
-newly introduced widgets. For doing so, you should have to use the latest
-release of your distribution.  
-For example, on https://deckard.malizor.org, Deckard is hosted in a LXD container
-with the latest Ubuntu version, the host being an Ubuntu LTS.
+newly introduced widgets. For doing so, you should use the latest
+release of your distribution.
 
 
 ### Installation
@@ -139,7 +136,7 @@ On Ubuntu, installing the following packages should cover most fonts you may nee
 
 ## Generate a Content folder
 
-The Deckard app will look for a `content` folder in it's root.
+The Deckard app needs a `content` folder.
 It must have a specific layout. Here is a sample tree of it:
 
 ```
@@ -160,9 +157,13 @@ content/
 ```
 
 The `LANGS` tree should not surprise you if you are familiar with Gettext.
-The organization of files in modules folders is up to you.
+The organization of files in module folders is up to you, but this is where Glade files are supposed to be.
 
 `build-gnome-content.sh` is the script that is used on https://deckard.malizor.org to
-automatically generate the content folder from Gnome git. A Cron job is used to
-run it once a day, in order to remain up-to-date.  
+automatically generate the content folder from Gnome git.  
+You can run it with Docker:
+```bash
+docker run -v /opt/deckard/data:/home/deckard/data -ti malizor/deckard:latest bash -c 'cd ~deckard/data && PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-gnome-content.sh > ~deckard/data/build-gnome-content.log'
+```
+A Cron job can be used to ensure it remains up-to-date.  
 You may want to reuse or to adapt this script for your particular project.

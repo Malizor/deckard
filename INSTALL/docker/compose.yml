@@ -1,0 +1,29 @@
+services:
+  deckard:
+    container_name: deckard
+
+    build:
+      context: ../..
+      dockerfile: ./INSTALL/docker/Dockerfile
+
+    image: malizor/deckard:latest
+    restart: unless-stopped
+
+    ports:
+      - "8080:80"
+
+    environment:
+      AUTO_RELOAD_ON_CODE_CHANGE: "false"
+
+    volumes:
+      # Mount application source code from host
+      - /opt/deckard/deckard-app:/home/deckard/deckard-app
+      # Mount persistent content directory
+      - /opt/deckard/data:/home/deckard/data
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s

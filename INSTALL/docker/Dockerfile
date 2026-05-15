@@ -1,76 +1,126 @@
-# This Dockerfile is mainly useful to ease the Deckard development process.
-# However, it may also be seen as a step-by-step tutorial for a manual installation.
+FROM ubuntu:26.04
 
-# You may build the image using:
-## docker build . -t local/deckard
-
-# Then run locally via:
-## docker run -p 80:80 -v /path/to/local/content/folder:/home/deckard/content -it local/deckard
-
-FROM ubuntu:25.10
 LABEL org.opencontainers.image.authors="Nicolas Delvaux <contact@nicolas-delvaux.org>"
 
+ARG DEBIAN_FRONTEND=noninteractive
+ARG AUTO_RELOAD_ON_CODE_CHANGE=false
 
-RUN apt update && apt upgrade -y
+ENV LANG=en_US.UTF-8 \
+    LC_ALL=en_US.UTF-8 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+# ------------------------------------------------------------
+# Base system packages
+# ------------------------------------------------------------
+
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt,sharing=locked \
+    apt-get update && \
+    apt-get install -y --no-install-recommends \
+        git \
+        supervisor \
+        nginx \
+        uwsgi \
+        uwsgi-plugin-python3 \
+        ca-certificates \
+        gettext \
+        libxml2-utils \
+        jq \
+        rsync \
+        curl \
+        language-pack-gnome-* \
+   && apt-get install -y \
+        gir1.2-gtk-3.0 \
+        gir1.2-handy-1 \
+        python3-gi \
+        python3-jinja2 \
+        python3-multipart \
+        fonts-ubuntu \
+        fonts-lohit-guru \
+        fonts-guru-extra \
+        fonts-guru \
+        fonts-dejavu-extra \
+        fonts-droid-fallback \
+        fonts-khmeros-core \
+        fonts-lklug-sinhala \
+        fonts-sil-padauk \
+        fonts-nanum \
+        fonts-telu \
+        fonts-samyak \
+        fonts-knda \
+        fonts-beng \
+        fonts-sil-abyssinica \
+        fonts-thai-tlwg-ttf \
+    && dpkg-reconfigure locales \
+    && rm -rf /var/lib/apt/lists/*
+
+# ------------------------------------------------------------
+# Dedicated application user
+# ------------------------------------------------------------
+
+RUN useradd \
+    --create-home \
+    --shell /usr/sbin/nologin \
+    --gid www-data \
+    deckard
+
+# ------------------------------------------------------------
+# Retrieve the application
+# ------------------------------------------------------------
+
+WORKDIR /home/deckard
+
+COPY ../.. /home/deckard/deckard-app
+RUN chown -R deckard:www-data /home/deckard/deckard-app
+
+# ------------------------------------------------------------
+# GTK configuration
+# ------------------------------------------------------------
+
+RUN mkdir -p /home/deckard/.config/gtk-3.0 && \
+    printf '[Settings]\ngtk-theme-name = Adwaita\ngtk-fallback-icon-theme = gnome\n' \
+        > /home/deckard/.config/gtk-3.0/settings.ini && \
+    chown -R deckard:www-data /home/deckard/.config
+
+# ------------------------------------------------------------
+# uWSGI configuration
+# ------------------------------------------------------------
+
+RUN cp /home/deckard/deckard-app/INSTALL/nginx+uwsgi/uwsgi/deckard.ini \
+        /etc/uwsgi/apps-available/deckard.ini && \
+    ln -s /etc/uwsgi/apps-available/deckard.ini \
+        /etc/uwsgi/apps-enabled/deckard.ini && \
+    mkdir -p /run/uwsgi/app/deckard && \
+    chown deckard:www-data /run/uwsgi/app/deckard
+
+# ------------------------------------------------------------
+# nginx configuration
+# ------------------------------------------------------------
+
+RUN cp /home/deckard/deckard-app/INSTALL/nginx+uwsgi/nginx/deckard.conf \
+        /etc/nginx/sites-available/deckard.conf && \
+    ln -s /etc/nginx/sites-available/deckard.conf \
+        /etc/nginx/sites-enabled/deckard.conf && \
+    rm -f /etc/nginx/sites-enabled/default
 
 
-# Install dependencies
-RUN apt install -y nginx  gir1.2-gtk-3.0 gir1.2-handy-1 python3-gi python3-jinja2 python3-multipart
-RUN apt install --no-install-recommends -y sudo uwsgi uwsgi-plugin-python3 git ca-certificates gettext libxml2-utils jq rsync curl language-pack-gnome-*
+# ------------------------------------------------------------
+# Deckard configuration
+# ------------------------------------------------------------
 
-# Install some fonts to cover most languages
-RUN apt install -y fonts-ubuntu fonts-lohit-guru fonts-guru-extra fonts-guru fonts-droid-fallback fonts-dejavu-extra fonts-khmeros-core fonts-lklug-sinhala fonts-sil-padauk fonts-nanum fonts-telu fonts-samyak fonts-knda fonts-beng fonts-sil-abyssinica fonts-thai-tlwg-ttf
-
-# Make sure that all locales are generated
-RUN dpkg-reconfigure locales -fnoninteractive
-
-
-# Create a dedicated user
-RUN useradd deckard --create-home -s /usr/sbin/nologin -g www-data
-
-# Configure GTK decorations
-RUN sudo -u deckard mkdir -p ~deckard/.config/gtk-3.0
-RUN /bin/echo -e "[Settings]\ngtk-theme-name = Adwaita\ngtk-fallback-icon-theme = gnome\n" | sudo -u deckard tee ~deckard/.config/gtk-3.0/settings.ini > /dev/null
+RUN printf '[deckard]\ncontent_dir_path = /home/deckard/data/content\n' \
+        > /home/deckard/deckard.conf && \
+    chown deckard:www-data /home/deckard/deckard.conf && \
+    /bin/echo "env = DECKARD_CONF_FILE=/home/deckard/deckard.conf" >> /etc/uwsgi/apps-enabled/deckard.ini
 
 
-# Now install deckard itself!
+RUN if [ "$AUTO_RELOAD_ON_CODE_CHANGE" = "true" ]; then \
+        echo 'py-autoreload = 1' >> /etc/uwsgi/apps-enabled/deckard.ini ; \
+    else \
+        echo 'py-autoreload = 0' >> /etc/uwsgi/apps-enabled/deckard.ini ; \
+    fi
 
-# Get the source code
-RUN cd ~deckard && sudo -u deckard git clone http://github.com/Malizor/deckard.git ~deckard/deckard-app
-
-# Setup uWSGI
-RUN cp ~deckard/deckard-app/INSTALL/nginx+uwsgi/uwsgi/deckard.ini /etc/uwsgi/apps-available/deckard.ini
-RUN ln -s /etc/uwsgi/apps-available/deckard.ini /etc/uwsgi/apps-enabled/deckard.ini
-
-# Setup nginx
-RUN cp ~deckard/deckard-app/INSTALL/nginx+uwsgi/nginx/deckard.conf /etc/nginx/sites-available/deckard.conf
-RUN ln -s /etc/nginx/sites-available/deckard.conf /etc/nginx/sites-enabled/deckard.conf
-RUN rm /etc/nginx/sites-enabled/default
-#RUN systemctl restart nginx
-
-
-# Deckard itself is installed now, we only miss data from gnome.org
-#RUN cd ~deckard && sudo -u deckard PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-gnome-content.sh
-
-# Auto-update the content folder once a day
-#RUN /bin/echo "0 2 * * * PYTHONPATH=~deckard/deckard-app ~deckard/deckard-app/build-gnome-content.sh > ~deckard/build-gnome-content.log" | sudo -u deckard crontab -
-
-# Configure Deckard to use our content folder
-RUN /bin/echo -e "[deckard]\ncontent_dir_path = /home/deckard/content" | sudo -u deckard tee ~deckard/deckard.conf > /dev/null
-
-# Point uWSGI to our configuration file
-RUN /bin/echo "env = DECKARD_CONF_FILE=/home/deckard/deckard.conf" >> /etc/uwsgi/apps-enabled/deckard.ini
-
-# Enable the Python auto-reload feature if requested (handy for development)
-ARG auto_reload_on_code_change=true
-RUN if [ "$auto_reload_on_code_change" = "true" ] ; then /bin/echo "py-autoreload = 1" >> /etc/uwsgi/apps-enabled/deckard.ini ; fi
-#RUN systemctl restart uwsgi
-
-
-# Expose nginx
 EXPOSE 80
 
-# Create the startup script
-RUN /bin/echo -e '#!/usr/bin/env sh\nservice nginx start; service uwsgi start; tail -qf /var/log/uwsgi/app/*.log /var/log/nginx/*.log' > start_script.sh
-
-CMD sh /start_script.sh
+CMD ["/usr/bin/supervisord", "-c", "/home/deckard/deckard-app/INSTALL/docker/resources/supervisor.conf"]
