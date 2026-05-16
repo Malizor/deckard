@@ -254,7 +254,7 @@ function get_module {
 	echo "Updating the cached $module_name repository..."
 	cd ../cache/$module_name
 	git fetch origin
-	git reset --hard origin/master
+	git reset --hard $(git rev-parse --abbrev-ref --symbolic-full-name @{u})
 	git gc --prune=now  # Minimize disk space
 	cd -
     else
@@ -359,7 +359,7 @@ for module in $modules; do
     name=$(echo $module | jq -j .name)
     web_url=$(echo $module | jq -j .vcs_web)
     ext_platform=$(echo $module | jq -j .ext_platform)
-    clone_url=${web_url%/}.git
+    clone_url="${web_url%/}"; [[ $web_url != *.git ]] && clone_url="${clone_url}.git"
     # We only want projects translated on Damned-Lies.
     # Others most likely have no use of Deckard anyway.
     if [[ $ext_platform ]]; then
